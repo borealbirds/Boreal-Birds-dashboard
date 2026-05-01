@@ -109,11 +109,70 @@ The main pipeline for the dashboard looks like this.
 
 ![Main data pipeline for the dashboard](img/main-data-pipeline.png)
 
-Here is a breakdown of 
+Here is a breakdown of what the individual components of the pipeine look like.
 
+#### Data Input
+
+There are 2 data streams which we're ingesting into the dashboard- outputs from the model and static metadata. The model output consists of the different TIF files, one for each species, location, and year in the dataset. The metadata includes information relating to the bird species (including English names, lating names, genus etc.), location, and region. These will primarily feed into the main filters of the dashboard.
+
+Currently, these files are stored on a Google Drive. To improve loading speeds, we suggest preloading these model outputs to a SQL (or equivalent) database. This will enable fast retrieval and structured data validation.
+
+
+
+#### Preprocessing
+
+Preprocessing is minimal for both data streams. Since we're dealing with discrete model outputs, data format can be safely assumed to be standardized. 
+
+Before loading the data to the app, we perform some data validation checks on the metadata:
+
+- Column name validation,
+- Data type validation,
+- NaN management.
+
+Preprocessing that needs to be done on the TIF file includes:
+
+- Color band extraction,
+- CRS validation,
+- Conversion to Cloud Optimized Geotiff (COG)
+
+Our plan is to run these preprocessing steps in advance such that it is ready to be ingested into the dashboard at runtime.
+
+
+#### App
+
+The app consists of a server and UI. In this section we talk about the data incorporated by the server.
+
+Basic render targets include:
+
+- Bird Metadata: A static table of metadata that can be sliced by filters
+- Filters: The filters incorporate metadata from the excel file. These serve as lookup tables for the dashboard and will feed into the main filters / slicers in the UI.
+- Main Raster: Simple loading of the different raster bands to memory.
+- Metrics: Extraction of metrics (mean, sd of abundance, distance from detectors), from raster file.
+
+There is an opportunity for further data metrics derived from these base ones. This shall be explored at a later data and in consulatation with the client.
+
+
+#### Front End
+
+The front end of the dashboard includes the follwing visuals, at bare minimum.
+
+An interactive map that follows the following format.
+
+![Dashboard map visual](img/dashboard-visuals-map.png)
+
+A bar chart showing the population densities by region.
+
+![Dashboard bar chart visual](img/dashboard-visuals-bar-chart.png)
+
+A static table containing raw numeric metrics as seen below.
+
+![Dashboard static tables](img/dashboard-visuals-static-table.png)
+
+There is an opportunity for additional visuals, based on client feedback and consultation. These will be addressed after the basic structure of the dashboard has been implemented.
 
 
 ## Conclusion
+
 
 
 
