@@ -1,0 +1,10 @@
+---
+title: "Boreal Birds Dashboard"
+author: "Harrison Li, Joel Peterson, Suryash Chakravarty, Wesley Beard"
+date: "2024-05-07"
+format: html
+---
+
+# Boreal Birds Dashboard
+## Boreal Avian Modelling Centre
+
