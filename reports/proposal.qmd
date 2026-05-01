@@ -8,3 +8,25 @@ format: html
 # Boreal Birds Dashboard
 ## Boreal Avian Modelling Centre
 
+The Boreal Avian Modelling Centre (BAM) requires a transition from static model visuals to a high-fidelity, interactive analytical platform. Current version 4 outputs are restricted to simple data tables and static summaries, that fail to leverage the depth of the underlying machine learning models. Version 5 models introduce improved raster predictions, spatially explicit density estimates, and habitat relationship metrics across 144 species. The proposed dashboard will convert 1.5 million survey data points and 800,000 individual predictions into an accessible, decision-support tool for indivuals across government, academia, and industry.
+
+## Executive Summary
+
+## Technical Requirements and Objectives
+
+## Exploratory Data Analysis
+### Basic EDA
+
+### Data Concerns and Constraints
+
+## Proposed Solutions
+### UI/UX
+
+### Back-End
+
+## Conclusion
+
+
+## Links / References
+
+
