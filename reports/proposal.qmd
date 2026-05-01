@@ -173,8 +173,11 @@ There is an opportunity for additional visuals, based on client feedback and con
 
 ## Conclusion
 
+This proposal provides an outline for a dashboard to showcase the flagship data product of Boreal Avian Modelling (BAM) Centre. We are confident this dashboard adequately represents the detailed outputs of the prediction model, in an engaging and user friendly way. Our design methodology is that of minimalism, performance, and aesthetics- sticking to the BAM theme, while enhancing user experience. 
 
+We intend for this dashboard to serve as a landing page for the BAM website, engaging with a vast range of audiences. For researchers in the field, the dashboard serves as a visualization tool, with enhanced functionality available on demand. For the general audience, the dashboard aims to educate and inspire, while nudging the user towards more in-depth information on BAM and general conservation. 
 
+We thank you for the opportunity to work on this project, and look forward to collaborating with BAM on the final product.
 
 
 ## Links / References
