@@ -2,7 +2,12 @@
 title: "Boreal Birds Dashboard"
 author: "Harrison Li, Joel Peterson, Suryash Chakravarty, Wesley Beard"
 date: "2024-05-07"
-format: html
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: Contents
+    number-sections: true
 ---
 
 # Boreal Birds Dashboard
