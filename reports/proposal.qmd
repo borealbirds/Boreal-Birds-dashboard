@@ -16,7 +16,7 @@ The Boreal Avian Modelling Centre (BAM) requires a transition from static model 
 
 The proposed dashboard will convert 1.5 million survey data points and 800,000 individual predictions into an accessible tool for indivuals across government, academia, and industry. The dashboard serves as a landing page for visitors to the site and includes links to existing tools in the BAM portfolio, for those curious.
 
-
+![Dashboard High Level Overview](img/dashboard-mock-up-v1.png)
 
 
 ## Technical Requirements and Objectives
@@ -81,11 +81,35 @@ We are also investigating alternate Lazy-Loading options within Shiny for R.
 ## Proposed Solutions
 ### UI/UX
 
-The design brief provided by the client specified that the new dashboard should be 
+The design brief provided by the client specified that the new dashboard should achieve the following:
+
+- Maintains Existing Figures and Visuals
+- Interactive
+- Easy to Use
+- Should accomodate future model versions
+
+With this in mind, we propose the following UI design.
+
+![Features of the dashboard highlighted](img/dashboard-features-hghlighted.png)
+
+In keeping with the "minimalism" theme, we have limited the number of filters and visuals to only the most important. Additional visuals or fitlers are available to the public under an `advanced features` tab.
+
+The visuals are now interactive and dynamic, changing based on user input.
+
+Visuals used to be condensed down into one page, requiring users to scroll to view all the information relating to the dashboard. This was determined to be inefficient for the client, and so we have split each visual onto its own page.
+
+A key consideration provided by the client was the ability to view legacy models in the dashboard. This was for reproducibility, and validation of performance (since they have thoroughly vetted outputs from earlier models). To address this, we have created a separate tab in the header allowing the user to view these past visualizations if needed.
+
+Links to other BAM data products can be found in the `Model Access` tab.
 
 
 ### Data Pipeline
 
+The main pipeline for the dashboard looks like this.
+
+![Main data pipeline for the dashboard](img/main-data-pipeline.png)
+
+Here is a breakdown of 
 
 
 
