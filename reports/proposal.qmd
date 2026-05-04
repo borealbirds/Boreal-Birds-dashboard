@@ -1,7 +1,7 @@
 ---
-title: "Boreal Birds Dashboard"
+title: "Boreal Birds Dashboard Proposal Report"
 author: "Harrison Li, Joel Peterson, Suryash Chakravarty, Wesley Beard"
-date: "2024-05-07"
+date: "2026-05-08"
 format:
    pdf:
     toc: true
@@ -12,11 +12,13 @@ format:
 
 ## Executive Summary
 
-The Boreal Avian Modelling Centre (BAM) requires a transition from static model visuals to a high-fidelity, interactive analytical platform. Current version 4 outputs are restricted to simple data tables and static summaries, that fail to leverage the depth of the underlying machine learning models. Version 5 models introduce improved raster predictions, spatially explicit density estimates, and habitat relationship metrics across 144 species. 
+The Boreal Avian Modelling Centre (BAM) requires a transition from static model visuals to a high-fidelity, interactive analytical platform. The current site, which showcases Version 4 model outputs, is restricted to simple data tables and static summaries for the 144 species of boreal birds being monitored. Version 5 model results introduce improved raster predictions, spatially explicit density estimates, and habitat relationship metrics. We aim to highlight these improvements in the updated dashboard.
 
-The proposed dashboard will convert 1.5 million survey data points and 800,000 individual predictions into an accessible tool for indivuals across government, academia, and industry. The dashboard serves as a landing page for visitors to the site and includes links to existing tools in the BAM portfolio, for those curious.
+The proposed dashboard will be designed to be user-friendly and accessible to a wide range of audiences, including researchers, conservationists, and the general public. This will allow users to explore both version 4 and version 5 model outputs in an interactive way. Additionally, the dashboard serves as a landing page for visitors to the site and with include links to existing tools in the BAM portfolio, for those curious.
 
-![Dashboard High Level Overview](img/dashboard-mock-up-v1.png)
+@fig-proposed-dashboard provides an illustration of our current mock-up of the proposed dashboard. The dashboard will include filters, an interactive map, and summary charts/graphs/tables that we and the partner determines insightful. Navigation will be based on tabs to prevent minimal scrolling and intuitive searching. This Shiny app will be programmed in Python and hosted on Posit Connect Cloud, initially.
+
+![Dashboard High Level Overview](img/dashboard-mock-up-v1.png){#fig-proposed-dashboard}
 
 
 ## Technical Requirements and Objectives
