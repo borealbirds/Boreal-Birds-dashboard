@@ -20,30 +20,35 @@ The proposed dashboard will be designed to be user-friendly and accessible to a 
 
 ![Dashboard High Level Overview](img/dashboard-mock-up-v1.png){#fig-proposed-dashboard}
 
+## Introduction
 
-## Technical Requirements and Objectives
+### Addressing the Issue
 
-Improvements to current model website:
-• Current website is static. The goal is to make this more interactive and dynamic to user input.
-• Current website is targetted towards sppecialized individuals in the field, containing specialized jargon. The goal is to make this dashboard easy to use and understand for the general public.
+Our project is creating a dashboard that showcases avian model insights for improved conservation under the guidance of the Boreal Avian Modelling Centre (BAM). We will be improving upon the current model website into an interactive dashboard. A 2024 survey identified the need for more accessible and interactive tools. The current audience is made up of advanced users - both in their subject knowledge and  model and use of advanced statistical software. It would be ideal to increase this audience to a wider base.
 
-![Existing version of BAM website](img/BAM-existing-website-visuals.png)
+Additionally, since the current website is static, this does not allow for user input or interaction. This limits the ability of users to dive into the model outputs and effectively use what was produced.
 
-Audience
-• Advanced users interacting with the model products using advanced statistical software.
+### Background & Importance
 
-2024 Survey
-• Identified a need for more accessible interactive tools.
+A mandate of BAM's is to support migratory bird management and conservation across the boreal region of North America for 144 species of birds. They do this through several data-driven tools that can be used to address different conservation challenges. These applications include, but are not limited to: bird population and trend estimations; land-use planning; further understanding of avian habitat relationships; and the ability to investigate population decline.
 
-Conservation applications:
-• Population and trend estimations.
-• Conservation and land-use planning.
-• Knowledge of habitat relationships.
-• Investigating population decline.
+To be able to properly address any challenge, the tools themselves should be simple and effective for anyone accessing them to use. This is especially important relating to conservation efforts, and where we come in.
 
-“Tools need to be simple and effective for anyone to actually use them.”
+### Objectives
 
+@fig-existing-website provides elements of what the current BAM website looks like. Our goal will be to improve upon it into what was illustrated in @fig-proposed-dashboard.
 
+High level objectives include:
+
+* Update from static to dynamic website.
+* Add multiple filters, an interactive map, and additional summaries and visuals.
+* Dashboard easy to use and understandalbe for the general public. And since this will serve as a landing page for BAM, there will be links to other BAM products and general information.
+
+![Elements of Existing BAM Website](img/BAM-existing-website-visuals.png){#fig-existing-website}
+
+### The Product
+
+Our final product will be an interactive dashboard that allows users to explore the model outputs of both version 4 and version 5. We will be addressing each of our objectives to do so, as well as meeting with BAM regularly to include or exclude features that we discuss. At this time, @fig-proposed-dashboard is the best representation of what our final dashboard may look like.
 
 ## Exploratory Data Analysis
 ### Basic EDA
