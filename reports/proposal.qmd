@@ -136,4 +136,17 @@ Front End Visuals
 
 ## Evaluation & Success Criteria
 
+Clearly define:
+
+Metrics you will use and why
+What success looks like for the capstone partner
+How results will be used in practice
+Relevant stakeholders and their priorities
+
 ## Timeline
+
+Our timeline has begun with initial EDA and mock dashboard design. We have mapped out our initial objectives that the dashboard needs to meet. Then comes the process of further exploration of loading options. Tangentially, we will be working on a skeleton of the front end design and visuals with a sample of the data. This will helpful in getting feedback. This will be an iterative process, as we incorporate updates and find better ways of presenting the visuals.
+
+With an appropriate method of loading the data confirmed, we will then extend the dashboard to include more data and ensure this works. Again, here we will be incorporating feedback and adjustments, as needed.
+
+Finally, we will deploy the dashboard, finalize documentation, and hand over the project to our BAM partner.
