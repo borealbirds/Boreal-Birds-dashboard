@@ -81,83 +81,59 @@ Potential issues we found with the data include:
 
 To address this, we are exploring options using the Cloud-Optimized GeoTIF format (COG). COG is analogous to Parquet for tabular data, using internal tiling and HTTP range requests to only render what is being displayed. We are also investigating alternate Lazy-Loading options within Shiny for R. We will also be discussing this with the BAM team to ensure subsequent dashboard mantainibility for when the project is handed over.
 
+## Data Science Approach
+
 ### Data Pipeline
 
-The main pipeline for the dashboard looks like this.
+@fig-data-pipeline maps out our main pipeline for the dashboard. Following is a breakdown of the indiviudal components of the pipeline.
 
-![Main data pipeline for the dashboard](img/main-data-pipeline.png)
-
-Here is a breakdown of what the individual components of the pipeine look like.
+![Main data pipeline for the dashboard](img/main-data-pipeline.png){#fig-data-pipeline}
 
 #### Data Input
 
-There are 2 data streams which we're ingesting into the dashboard- outputs from the model and static metadata. The model output consists of the different TIF files, one for each species, location, and year in the dataset. The metadata includes information relating to the bird species (including English names, lating names, genus etc.), location, and region. These will primarily feed into the main filters of the dashboard.
+There are 2 data streams which we're ingesting into the dashboard: outputs from the model and static metadata. The model outputs consist of the different TIF files, one for each species, location, and year in the dataset. The metadata includes information relating to the bird species (including English names, lating names, genus etc.), location, and region. These will primarily feed into the main filters of the dashboard.
 
-Currently, these files are stored on a Google Drive. To improve loading speeds, we suggest preloading these model outputs to a SQL (or equivalent) database. This will enable fast retrieval and structured data validation.
-
-
+Currently, these files are stored on a Google Drive. To improve loading speeds, we suggest preloading these model outputs to a SQL (or equivalent) database. This will enable fast retrieval and structured data validation. However, we will be discussing this with the BAM team to ensure long-term maintainability.
 
 #### Preprocessing
 
 Preprocessing is minimal for both data streams. Since we're dealing with discrete model outputs, data format can be safely assumed to be standardized. 
 
-Before loading the data to the app, we perform some data validation checks on the metadata:
+Before loading the data to the app, we perform some data validation checks on the metadata: column name validation, data type validation, and NaN management.
 
-- Column name validation,
-- Data type validation,
-- NaN management.
-
-Preprocessing that needs to be done on the TIF file includes:
-
-- Color band extraction,
-- CRS validation,
-- Conversion to Cloud Optimized Geotiff (COG)
+Preprocessing that needs to be done on the TIF file include: color band extraction, CRS validation, and conversion to Cloud Optimized Geotiff (COG).
 
 Our plan is to run these preprocessing steps in advance such that it is ready to be ingested into the dashboard at runtime.
 
-
 #### App
 
-The app consists of a server and UI. In this section we talk about the data incorporated by the server.
+The Shiny app consists of a server and UI. Basic render targets (incorporated by the server) include the following:
 
-Basic render targets include:
+* Bird metadata - A static table of metadata that can be sliced by filters.
+* Filters - The filters incorporate metadata from the excel file. These serve as lookup tables for the dashboard and will feed into the main filters / slicers in the UI.
+* Main raster - Simple loading of the different raster bands to memory.
+* Metrics - Extraction of metrics (mean, sd of abundance, distance from detectors), from raster file.
 
-- Bird Metadata: A static table of metadata that can be sliced by filters
-- Filters: The filters incorporate metadata from the excel file. These serve as lookup tables for the dashboard and will feed into the main filters / slicers in the UI.
-- Main Raster: Simple loading of the different raster bands to memory.
-- Metrics: Extraction of metrics (mean, sd of abundance, distance from detectors), from raster file.
-
-There is an opportunity for further data metrics derived from these base ones. This shall be explored at a later data and in consulatation with the client.
-
+There is an opportunity for further data metrics derived from these base ones. This shall be explored at a later data and in consulatation with BAM.
 
 #### Front End
 
-The front end of the dashboard includes the follwing visuals, at bare minimum.
+The front end of the dashboard includes the following visuals, at a minimum. There is an opportunity for additional visuals, based on client feedback and consultation. These will be addressed after the basic structure of the dashboard has been implemented.
 
-An interactive map that follows the following format.
+* @fig-dashboard-map An interactive map that follows the following format.
+* @fig-dashboard-bar-chart A bar chart showing the population densities by region.
+* @fig-dashboard-static-table A static table containing raw numeric metrics as seen below.
 
-![Dashboard map visual](img/dashboard-visuals-map.png)
+::: {#fig-front-end layout-nrow=2}
+![Dashboard map visual](img/dashboard-visuals-map.png){#fig-dashboard-map}
 
-A bar chart showing the population densities by region.
+![Dashboard bar chart visual](img/dashboard-visuals-bar-chart.png){#fig-dashboard-bar-chart}
 
-![Dashboard bar chart visual](img/dashboard-visuals-bar-chart.png)
+![Dashboard static tables](img/dashboard-visuals-static-table.png){#fig-dashboard-static-table}
 
-A static table containing raw numeric metrics as seen below.
+Front End Visuals
+:::
 
-![Dashboard static tables](img/dashboard-visuals-static-table.png)
+## Evaluation & Success Criteria
 
-There is an opportunity for additional visuals, based on client feedback and consultation. These will be addressed after the basic structure of the dashboard has been implemented.
-
-
-## Conclusion
-
-This proposal provides an outline for a dashboard to showcase the flagship data product of Boreal Avian Modelling (BAM) Centre. We are confident this dashboard adequately represents the detailed outputs of the prediction model, in an engaging and user friendly way. Our design methodology is that of minimalism, performance, and aesthetics- sticking to the BAM theme, while enhancing user experience. 
-
-We intend for this dashboard to serve as a landing page for the BAM website, engaging with a vast range of audiences. For researchers in the field, the dashboard serves as a visualization tool, with enhanced functionality available on demand. For the general audience, the dashboard aims to educate and inspire, while nudging the user towards more in-depth information on BAM and general conservation. 
-
-We thank you for the opportunity to work on this project, and look forward to collaborating with BAM on the final product.
-
-
-## Links / References
-
-
+## Timeline
