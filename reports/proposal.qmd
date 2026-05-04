@@ -136,12 +136,11 @@ Front End Visuals
 
 ## Evaluation & Success Criteria
 
-Clearly define:
+Our high-level evaluation criteria include: loading speed, quality of visuals, interpretiblity, and user experience.
 
-Metrics you will use and why
-What success looks like for the capstone partner
-How results will be used in practice
-Relevant stakeholders and their priorities
+Since this project is focused on a building a dashboard, one of our main criteria will be ensuring the loaded and filtered results and any calculations performed correspond to the correct species of bird.
+
+Success will also include our capstone partner being happy with the final result - essentially, this being able to incorporate their ideas and wishes onto the dashboard. As well as expanding on its new capabilities.
 
 ## Timeline
 
