@@ -16,7 +16,7 @@ format:
 
 ## Executive Summary
 
-The Boreal Avian Modelling Centre (BAM) requires a transition from static model visuals to a high-fidelity, interactive, analytic platform. The current site, which showcases Version 4 model outputs, is restricted to simple data tables and static summaries for the 144 species of boreal birds being monitored. Version 5 model results introduce improved raster predictions, spatially explicit density estimates, and habitat relationship metrics. We aim to highlight these improvements in the updated dashboard.
+The Boreal Avian Modelling Centre (BAM) requires a transition from static model visuals to a high-fidelity, interactive, analytic platform. The current [site](https://borealbirds.github.io/ "BAM static website"), which showcases Version 4 model outputs, is restricted to simple data tables and static summaries for the 144 species of boreal birds being monitored. Version 5 model results introduce improved raster predictions, spatially explicit density estimates, and habitat relationship metrics. We aim to highlight these improvements in the updated dashboard.
 
 The proposed dashboard will be designed to be user-friendly and accessible to a wide range of audiences; including research and conservationists based users, as well as birding enthusiasts and the general public. This will allow users to interactively explore both version 4 and version 5 model outputs. Additionally, the dashboard serves as a landing page for visitors to the site providing easy-access links to existing tools in the BAM portfolio.
 
@@ -90,12 +90,12 @@ Initial EDA involved plotting the different color bands in the TIF @fig-raster-b
 Potential issues we found with the data include:
 
 -   Finely detailed raster: The native TIF raster files are \~800K predictions per TIF output. This entire high-res output is unnecessarily loaded for every interactive adjustment; even when zooming into a specific region.
--   CRS adjustment: The TIFs arrive formatted with the EPSG:3978 (Statistics Canada Lambert) Coordinate Reference System. This does not allow for caching and every render triggers a full coordinate transformation pass.
+-   [Coordinate Reference System (CRS)](https://epsg.io/ "CRS EPSG lookup") adjustment: The TIFs arrive formatted with the EPSG:3978 (Statistics Canada Lambert) CRS . This does not allow for caching and every render triggers a full coordinate transformation pass.
 -   Eager Loading of data: Every filter adjustment triggers a full TIF decode, CRS transformation, and PNG/COG encoding. This bogs down the UI resulting in a laggy and inefficient user experience.
 
-To address this, we are exploring options using the Cloud-Optimized GeoTIF format (COG). COG is analogous to Parquet for tabular data, using internal tiling and HTTP range requests to only render what is being displayed. We are also investigating alternate Lazy-Loading options within Shiny for R. We will also be discussing this with the BAM team to ensure subsequent dashboard maintainibility for when the project is handed over.
+To address this, we are exploring options using the [Cloud-Optimized GeoTIF](https://cogeo.org/ "Cloud-Optimized GeoTIF (COG)") format (COG). COG is analogous to Parquet for tabular data, using internal tiling and HTTP range requests to only render what is being displayed. We are also investigating alternate Lazy-Loading options within Shiny for R. We will also be discussing this with the BAM team to ensure subsequent dashboard maintainibility for when the project is handed over.
 
-The initial EDA conducted in *Jupyter Notebooks* and locally-run *Shiny App* can be reproduced by installing the conda [environment](https://github.com/UBC-MDS/Boreal-Birds/blob/main/environment.yml "environment.yml file") and following instructions in the [README](https://github.com/UBC-MDS/Boreal-Birds/blob/main/README.md "Boreal-Birds README")
+The initial EDA was conducted in *Jupyter Notebooks* and with a locally-run *Shiny App,* which can be reproduced by installing the conda [environment](https://github.com/UBC-MDS/Boreal-Birds/blob/main/environment.yml "environment.yml file") and following the instructions in the [README](https://github.com/UBC-MDS/Boreal-Birds/blob/main/README.md "Boreal-Birds README").
 
 \newpage
 
@@ -109,13 +109,13 @@ The initial EDA conducted in *Jupyter Notebooks* and locally-run *Shiny App* can
 
 #### Data Input
 
-There are 2 data streams which we're ingesting into the dashboard: outputs from the model and static metadata. The model outputs consist of the different TIF files, one for each species, location, and year in the dataset. The metadata includes information relating to the bird species (including English names, latin names, genus etc.), location, and region. These will primarily feed into the main filters of the dashboard.
+There are 2 data streams which we're ingesting into the dashboard: outputs from the model and static metadata. The model outputs consist of the different TIF files, one for each species, location, and year in the dataset. The metadata includes information relating to the bird species (including English names, Latin names, genus etc.), location, and region. These will primarily feed into the main filters of the dashboard.
 
-Currently, these files are stored on a Google Drive. To improve loading speeds, we suggest pre-loading these model outputs to a SQL (or equivalent) database. This will enable fast retrieval and structured data validation. However, we will be discussing this with the BAM team to ensure long-term maintainability.
+Currently, these files are stored on a Google Drive which are subjected to extended loading and downloading times. To improve on speeds, we suggest pre-loading these model outputs to a SQL (or equivalent) database which can be queried through the dashboard's back-end for speedy friction-less responses. Another method which can be applied in congruence is to cache the most frequently loaded data. These approaches will enable fast retrieval and on-demand structured data validation. However, we will be discussing this with the BAM team to ensure long-term maintainability.
 
 #### Preprocessing
 
-Preprocessing is minimal for both data streams. Since we're dealing with discrete model outputs, data format can be safely assumed to be standardized.
+There is different preprocessing required for both outlined data streams. Since we're dealing with discrete model outputs, the data format can be safely assumed to be standardized.
 
 Before loading the data to the app, we perform some data validation checks on the metadata: column name validation, data type validation, and NaN management.
 
@@ -166,11 +166,13 @@ As seen in @fig-eval-success, our high-level evaluation criteria includes:
 
 -   **User Experience**
 
-Since this project is focused on a building a dashboard, one of our main criteria will be ensuring the loaded and filtered results and any calculations performed correspond to the correct species of bird.
+Loading speeds is the most objectively measurable success criteria and will be the easiest to time and quantify the improvements as they happen. The quality of visualizations will be measured by ensuring the loaded and filtered results and any calculations performed correspond to the correct species of bird, and that the visualization contains equal or greater quality to existing visualizations - this may also be by adding tool-tips and interactivity.
 
-Success will also include the capstone partner satisfaction and enthusiasm with the final results. The overall goal is to incorporate the provided criteria, ideas, and vision into the new dashboard, as well as elaborating and expanding on its new capabilities.
+The last two key areas are related but not exclusive. Interpretibility remains a crucial component of the dashboard for anybody using the tools for any meaningful inference. The accessibility ties in to the overall user experience becoming simplified and more intuitive. The ultimate goal being to provide an improved communication of the data to the user, regardless of the user's background or domain expertise.
 
-![Evaluation & Success Criteria](images/clipboard-3029239191.png){#fig-eval-success width="665"}
+Success will also include the capstone partner satisfaction and enthusiasm with the final results. The overall goal is to incorporate the provided criteria, ideas, and vision into the new dashboard, as well as elaborating on and expanding its capabilities.
+
+![Evaluation & Success Criteria](img/BAM_eval_success.png){#fig-eval-success width="554"}
 
 \newpage
 
@@ -196,6 +198,8 @@ Finally, we will deploy the dashboard, finalize documentation, and hand over the
 -   BAMexploreR R package: <https://github.com/borealbirds/BAMexploreR>
 -   Landbird Models V5: <https://github.com/borealbirds/LandbirdModelsV5>
 -   BAM website repository: <https://github.com/borealbirds/borealbirds.github.io>
+-   Cloud Optimized GeoTIF (COG): <https://cogeo.org/>
+-   Coordinate Reference System EPSG lookup: <https://epsg.io/>
 
 **Capstone Project Working Repository**
 
