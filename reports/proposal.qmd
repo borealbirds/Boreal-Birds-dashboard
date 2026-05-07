@@ -34,7 +34,7 @@ As the current website does not allow for user input or interaction, this limits
 
 ### Background & Importance
 
-A mandate of BAM's is to support migratory bird management and conservation across the Boreal region of North America for 143 species of birds. They do this through several data-driven tools that can be used to address different conservation challenges. These applications include, but are not limited to:
+A mandate of BAM's is to support migratory bird management and conservation across the boreal region of North America for 143 species of birds. Using data-driven tools, these applications include:
 
 -   bird population and trend estimations
 
@@ -44,7 +44,7 @@ A mandate of BAM's is to support migratory bird management and conservation acro
 
 -   the ability to investigate population decline of a specific species
 
-To be able to properly address any challenge, the tools themselves should be simple and effective for anyone accessing them to use. This is especially important relating to conservation efforts and accessibility of information.
+To properly address conservation challenges, the tools created and used should be simple and effective for anyone accessing them.
 
 ### Objectives
 
