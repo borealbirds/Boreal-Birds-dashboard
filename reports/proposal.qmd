@@ -16,11 +16,11 @@ format:
 
 ## Executive Summary
 
-The Boreal Avian Modelling Centre (BAM) requires a transition from static model visuals to a high-fidelity, interactive, analytic platform. The current [site](https://borealbirds.github.io/ "BAM static website"), which showcases Version 4 model outputs, is restricted to simple data tables and static summaries for the 143 species of boreal birds being monitored. Version 5 model results introduce improved raster predictions, spatially explicit density estimates, and habitat relationship metrics. We aim to highlight these improvements in the updated dashboard.
+The Boreal Avian Modelling Centre (BAM) requires a transition from static model visuals to a high-fidelity, interactive, analytic platform. The current [site](https://borealbirds.github.io/ "BAM static website"), which showcases Version 4 model outputs, is restricted to simple data tables and static summaries for 143 species of birds across boreal North America. Version 5 model results introduce improved raster predictions, spatially explicit density estimates, and habitat relationship metrics. We aim to highlight these improvements in the updated dashboard.
 
 The proposed dashboard will be designed to be user-friendly and accessible to a wide range of audiences; including research and conservationists based users, as well as birding enthusiasts and the general public. This will allow users to interactively explore both version 4 and version 5 model outputs. Additionally, the dashboard serves as a landing page for visitors to the site providing easy-access links to existing tools in the BAM portfolio.
 
-@fig-proposed-dashboard provides an illustration of our current mock-up of the proposed dashboard. The dashboard will include filters, an interactive map, and summary charts/graphs/tables that us and the partner determine to be insightful. Navigation will be based on tabs for minimal scrolling and intuitive searching. This *Shiny App* will be initially programmed in Python and hosted on Posit Connect Cloud.
+@fig-proposed-dashboard provides an illustration of our current mock-up of the proposed dashboard. The dashboard will include filters, an interactive map, and insightful summary charts/graphs/tables. Navigation will be based on tabs for minimal scrolling and intuitive searching. This *Shiny App* will be initially programmed in Python and hosted on Posit Connect Cloud.
 
 ![Dashboard High Level Overview](img/dashboard-mock-up-v1.png){#fig-proposed-dashboard}
 
@@ -28,9 +28,9 @@ The proposed dashboard will be designed to be user-friendly and accessible to a 
 
 ### Addressing the Issue
 
-The project motivation is to improve upon and enhance the current static Boreal Avian Modelling Centre (BAM) website. A 2024 survey identified the need for more accessible and interactive tools. This has been interpreted into the initiative to create a dashboard that showcases avian model insights for improved conservation under the guidance of BAM. The current audience is made up of advanced users - both in their subject knowledge and model and use of advanced statistical software. A main objective is to increase this audience to a wider base.
+The project motivation is to improve upon and enhance the current static Boreal Avian Modelling Centre (BAM) website.
 
-As the current website does not allow for user input or interaction, this limits the ability of users to dive into the model outputs and effectively digest the current available information.
+As the current website does not allow for user input or interaction, this limits the ability to dive in and explore the avian model outputs. Additionally, the current audience is made up of advanced users - both in statistical and subject knowledge. Ensuring a wider level of accessibility could expand end-user reachability.
 
 ### Background & Importance
 
