@@ -3,18 +3,23 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - pandas
   - python
   - altair
-  - rasterio
-  - anywidget
-  - shinywidgets
-  - shiny
-  - ipykernel
-  - matplotlib
-  - openpyxl
-  - gdal
-  - polars
   - ipyleaflet
+  - rasterio
   - localtileserver
+  - pandas
+  - polars
   - fastexcel
+  - ipykernel
+  - shinywidgets
+  - anywidget
+  - openpyxl
+  - shiny
+  - quarto
+  - matplotlib
+  - gdal
+  - yaml
+  - pyyaml
+  - nbformat
+  - nbclient
