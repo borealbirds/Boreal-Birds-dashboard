@@ -18,3 +18,4 @@ dependencies:
   - ipyleaflet
   - localtileserver
   - fastexcel
+  - quarto
