@@ -1,9 +1,7 @@
-sample_data/*.csv
-sample_data/*.xlsx
-sample_data/model_objects/*
-sample_data/model_predictions/*
-.ipynb_checkpoints/*
-requirements.txt
+sample_data/*
+data/*
 
 .vscode
 .DS_Store
+__pycache__
+.ipynb_checkpoints
