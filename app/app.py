@@ -1,18 +1,16 @@
 from pathlib import Path
 
-from tabs.welcome import welcome_tab
-from tabs.model_v4 import model_v4_tab
-from tabs.model_v5 import model_v5_tab
-from tabs.methods import methods_tab
-from tabs.model_access import model_access_tab
-from server.server_v5 import server_v5
+from ui.welcome import welcome_tab
+from ui.model_v4 import model_v4_tab
+from ui.model_v5 import model_v5_tab
+from ui.methods import methods_tab
+from ui.model_access import model_access_tab
+from ui.sidebar import sidebar
 
-from sidebar import sidebar
+from server.server_v5 import server_v5
 
 import polars as pl
 from shiny import App, Inputs, reactive, render, ui
-
-from content.methods_content import methods_sections
 
 www_dir = Path(__file__).parent / "www"
 
@@ -43,7 +41,5 @@ def server(input: Inputs):
 
     # Register Model V5 outputs
     server_v5(input)
-
-img_dir = Path(__file__).parent / "img"
 
 app = App(app_ui, server, static_assets=www_dir)
