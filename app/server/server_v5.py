@@ -11,12 +11,11 @@ from shared import (
     available_regions,
     available_years,
     load_species_metadata,
-    get_species_image,
 )
-from bird import bird_card
+from modules.bird import bird_card
 
-import pandas as pd
-birds = pd.read_excel('sample_data/12_BAMV5-results_noabundance.xlsx', sheet_name='species')
+birds = load_species_metadata()
+
 
 def server_v5(input: Inputs):
     """
@@ -26,73 +25,15 @@ def server_v5(input: Inputs):
 
     @render.ui
     def selected_bird():
-        bird = birds[birds["id"] == input.species()].iloc[0]
+        bird = birds.filter(pl.col("id") == input.species())
         return bird_card(
-            species=bird["scientific"],
-            common_name=bird["english"],
-            french_name=bird["french"],
-            family=bird["family"],
-            image_url=bird["image_url"],
+            species=bird.item(0, "scientific"),
+            common_name=bird.item(0, "english"),
+            french_name=bird.item(0, "french"),
+            family=bird.item(0, "family"),
+            image_url=f"img/{bird.item(0, "id")}.jpg"
             )
 
-    # @reactive.calc
-    # def species_info():
-    #     """Lookup and return taxonomic metadata for the currently selected species."""
-    #     df = load_species_metadata()
-
-    #     species_id = input.species()
-
-    #     if not species_id:
-    #         return None
-
-    #     row = df.filter(pl.col("id") == species_id)
-
-    #     if row.height == 0:
-    #         return None
-
-    #     r = row.row(0)
-
-    #     return {
-    #         "english": r[2],
-    #         "french": r[3],
-    #         "scientific": r[1],
-    #         "family": r[4],
-    #     }
-
-    # @render.ui
-    # def bird_info():
-    #     """Render the HTML profile header featuring the species image and metadata string."""
-    #     info = species_info()
-
-    #     if info is None:
-    #         return ui.p("No species selected")
-
-    #     species_id = input.species()
-    #     img_path = get_species_image(species_id)
-    #     img_src = (
-    #         f"/img/{species_id}.jpg"
-    #         if img_path and img_path.exists()
-    #         else "https://placehold.co/200x150?text=No+Image"
-    #     )
-
-    #     return ui.div(
-    #         ui.div(
-    #             ui.img(
-    #                 id="species_img",
-    #                 src=img_src,
-    #                 style="width:200px; height:150px; object-fit:cover; border:1px solid #ddd;",
-    #             ),
-    #             ui.div(
-    #                 ui.h4(info["english"], style="margin-bottom: 4px;"),
-    #                 ui.p(
-    #                     f"{info['french']} · {info['scientific']} · Family {info['family']}",
-    #                     style="margin: 0;",
-    #                 ),
-    #                 style="padding-left: 12px;",
-    #             ),
-    #             style="display: flex; align-items: center;",
-    #         ),
-    #     )
 
     @reactive.effect
     def _update_regions():

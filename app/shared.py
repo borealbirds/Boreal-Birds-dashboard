@@ -7,8 +7,6 @@ DATA_DIR = app_dir / "data" / "model_v5"
 META_PATH = DATA_DIR / "12_BAMV5-results_noabundance.xlsx"
 
 
-
-
 def get_tif_path(species_id: str, region: str, year: int) -> Path:
     """
     Construct the path to a specific .tif file.
