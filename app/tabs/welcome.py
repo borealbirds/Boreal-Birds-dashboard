@@ -1,8 +1,8 @@
 from shiny import ui
 
-def about_tab():
+def welcome_tab():
 
     return ui.nav_panel(
-        "About",
+        "Welcome",
         ui.p("Welcome to the Boreal Birds Dashboard!"),
         )
