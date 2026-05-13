@@ -1,0 +1,50 @@
+- section: Study Area
+  content: |
+    Models were developed based on data from non-arctic portions of Canada.
+    Sampling effort varied greatly across the study area.
+    In general, northern environmental conditions were underrepresented,
+    and southern boreal conditions were overrepresented in comparison with the rest of the study area...
+
+- section: Avian Data and Subsampling
+  content: |
+    Text to be added.
+
+- section: Density Calibration, Detectability Offsets
+  content: |
+    Text to be added.
+
+- section: Environmental Covariates
+  content: |
+    Text to be added.
+
+- section: Model Building
+  content: |
+    Text to be added.
+
+- section: Model Validation
+  content: |
+    Text to be added.
+
+- section: Bootstrap Averaging and Prediction
+  content: |
+    Text to be added.
+
+- section: Density Maps
+  content: |
+    Text to be added.
+
+- section: Regional Population Estimates
+  content: |
+    Text to be added.
+
+- section: Land Cover Based Density Estimates
+  content: |
+    Text to be added.
+
+- section: Data Availability
+  content: |
+    Text to be added.
+
+- section: Citing These Results
+  content: |
+    Text to be added.
