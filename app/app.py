@@ -33,6 +33,7 @@ app_ui = ui.page_navbar(
         ),
     ),
     sidebar=sidebar(),
+    selected="Current Model", # for during development phases
     id="tabs",
     title="Boreal Birds Dashboard",
     fillable=True,
