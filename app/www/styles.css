@@ -1,0 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+:root {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F4F7F6FF;
+
+  --primary: #153B40FF; /* rgb(21, 59, 64) */
+  --secondary: #1E5055FF; /* rgb(30, 80, 85) */
+  --dark-blue: #245668FF; /* first colour  */
+  --medium-blue: #0F7279FF; /* second colour  */
+  --light-blue: #0D8F81FF; /* third colour  */
+  --blue-green: #39AB7EFF; /* four colour  */
+
+  --medium-green: #6EC574FF; /* fifth colour  */
+  --light-green: #A9DC67FF; /* six colour  */
+  --light-yellow: #EDEF5DFF; /* seventh colour yellow */
+
+  --text-primary: #222222FF;
+  --text-light: #FFFFFF;
+
+  --border-light: #D8E1dFFF;
+
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 40px;
+
+  --transition-fast: all 0.2s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Poppins, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.navbar {
+  background-color: var(--primary);
+  padding: 0.75rem 1.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+  color: var(--text-light);
+  letter-spacing: 1px;
+  transition: var(--transition-fast);
+}
+
+.navbar .navbar-brand {
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.navbar .nav-link:hover {
+  color: var(--light-yellow);
+}
+
+.navbar .nav-link.active,
+.navbar .nav-link[aria-current="page"] {
+  color: var(--light-yellow);
+}
+
+.sidebar {
+  background-color: var(--bg-secondary);
+}
+
+/* form elements */
+.form-control,
+.form-select {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 0.2rem rgba(15, 114, 121, 0.15);
+  outline: none;
+}
+
+/* general card styling */
+.card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-fast);
+}
+
+.card-header {
+  background-color: var(--primary);
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* bird information card */
+.bird-image {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bird-card {
+  padding: 0.5rem;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+}
+
+/* map */
+.map-legend {
+  background: white;
+  padding: 5px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  line-height: 1.1;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.map-legend-title {
+  margin-bottom: 3px;
+}
+
+.map-legend-gradient {
+  width: 90px;
+  height: 8px;
+  background: linear-gradient(
+    to right,
+    #ffffe5,
+    #d9f0a3,
+    #addd8e,
+    #78c679,
+    #31a354,
+    #006837
+  );
+  border: 1px solid #999;
+}
