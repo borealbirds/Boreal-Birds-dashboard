@@ -15,7 +15,7 @@ def model_v5_tab():
     shiny.ui
     """
     return ui.nav_panel(
-        "Model V5",
+        "Current Model",
         
         ui.output_ui(id="selected_bird"),
 

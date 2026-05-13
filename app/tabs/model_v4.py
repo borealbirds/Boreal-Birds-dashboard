@@ -1,9 +1,9 @@
 from shiny import ui
 
 def model_v4_tab():
-
+    """Model V4 Results"""
     return ui.nav_panel(
-        "Model V4",
+        "Historical Model",
         ui.card(
             ui.p("Bird Info Card"),
         ),
