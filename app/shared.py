@@ -5,25 +5,8 @@ app_dir = Path(__file__).parent.parent
 
 DATA_DIR = app_dir / "data" / "model_v5"
 META_PATH = DATA_DIR / "12_BAMV5-results_noabundance.xlsx"
-IMG_DIR = app_dir / "app" / "img"
 
 
-def get_species_image(species_id: str) -> Path | None:
-    """
-    Returns the local file path for a species photo.
-
-    Parameters
-    ----------
-    species_id : str
-        The unique identifier for the species (e.g., 'CAWA').
-
-    Returns
-    -------
-    Path or None
-        The path to the .jpg image if it exists, otherwise None.
-    """
-    path = IMG_DIR / f"{species_id}.jpg"
-    return path if path.exists() else None
 
 
 def get_tif_path(species_id: str, region: str, year: int) -> Path:
