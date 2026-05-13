@@ -47,7 +47,8 @@ body {
 }
 
 .navbar .navbar-brand,
-.navbar .nav-link {
+.navbar .nav-link,
+.navbar .contact-link {
   color: var(--text-light);
   letter-spacing: 1px;
   transition: var(--transition-fast);
@@ -58,7 +59,8 @@ body {
   letter-spacing: 1px;
 }
 
-.navbar .nav-link:hover {
+.navbar .nav-link:hover,
+.navbar .contact-link:hover {
   color: var(--light-yellow);
 }
 
