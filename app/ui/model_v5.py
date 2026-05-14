@@ -22,7 +22,7 @@ def model_v5_tab():
         ui.navset_card_underline(
             ui.nav_panel(
                 "Map",
-                output_widget("map_widget"),
+                ui.output_ui("map_container"),
             ),
             ui.nav_panel(
                 "Land Cover",

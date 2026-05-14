@@ -1,5 +1,5 @@
 from shiny import Inputs, reactive, ui, render
-from shinywidgets import render_widget
+from shinywidgets import render_widget, output_widget
 from ipywidgets import HTML
 from ipyleaflet import Map, basemaps, WidgetControl
 from localtileserver import TileClient, get_leaflet_tile_layer
@@ -13,6 +13,15 @@ from shared import (
     load_species_metadata,
 )
 from modules.bird import bird_card
+
+import warnings
+import numpy as np
+
+warnings.filterwarnings(
+    "ignore",
+    category=RuntimeWarning,
+    module="numpy.ma.core"
+)
 
 birds = load_species_metadata()
 
@@ -76,7 +85,7 @@ def server_v5(input: Inputs):
     @reactive.calc
     def tile_client():
         """Initialize and return a TileClient for the specific raster file selected."""
-        #species_id = input.species()
+        
         species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
         region = input.region()
         year = input.year()
@@ -94,6 +103,15 @@ def server_v5(input: Inputs):
             return None
 
         return TileClient(str(path))
+    
+    @render.ui
+    def map_container():
+        client = tile_client()
+
+        if client is None:
+            return ui.p("No data available")
+
+        return output_widget("map_widget")
 
     @render_widget
     def map_widget():
@@ -101,7 +119,7 @@ def server_v5(input: Inputs):
         client = tile_client()
 
         if client is None:
-            return ui.p("No data available")
+            return HTML("<p>No data available</p>")
 
         m = Map(
             center=client.center(),
@@ -110,7 +128,9 @@ def server_v5(input: Inputs):
         )
 
         tile_layer = get_leaflet_tile_layer(
-            client, colormap="ylgn", indexes=[1]
+            client,
+            colormap="ylgn",
+            indexes=[1]
         )
 
         m.add_layer(tile_layer)
