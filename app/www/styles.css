@@ -121,6 +121,17 @@ body {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-soft);
+  height: 220px;
+}
+
+.bird-card .card-body {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* spacing between image and text */
+.bird-card .col-sm-2 {
+  margin-right: 1rem;
 }
 
 /* map */
