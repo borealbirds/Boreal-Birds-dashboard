@@ -24,7 +24,7 @@ def sidebar():
             min=1990,
             max=2020,
             value=2020,
-            step=5,
+            step=5, ticks=True
         ),
         width=375,
     )
