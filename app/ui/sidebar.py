@@ -26,5 +26,15 @@ def sidebar():
             value=2020,
             step=5, ticks=True
         ),
+        ui.input_select(
+            "basemap",
+            "Basemap",
+            choices={
+                "positron": "CartoDB Positron",
+                "osm": "OpenStreetMap",
+                "imagery": "Esri World Imagery",
+            },
+            selected="positron",
+        ),
         width=375,
     )

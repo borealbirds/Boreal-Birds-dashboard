@@ -25,6 +25,12 @@ warnings.filterwarnings(
 
 birds = load_species_metadata()
 
+BASEMAPS = {
+    "positron": basemaps.CartoDB.Positron,
+    "osm": basemaps.OpenStreetMap.Mapnik,
+    "imagery": basemaps.Esri.WorldImagery,
+}
+
 
 def server_v5(input: Inputs):
     """
@@ -144,10 +150,13 @@ def server_v5(input: Inputs):
         if client is None:
             return HTML("<p>No data available</p>")
 
+        basemap_key = input.basemap()
+        basemap = BASEMAPS.get(basemap_key, basemaps.CartoDB.Positron)
+
         m = Map(
             center=client.center(),
             zoom=4,
-            basemap=basemaps.CartoDB.Positron,
+            basemap=basemap,
         )
 
         tile_layer = get_leaflet_tile_layer(
