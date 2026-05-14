@@ -41,7 +41,7 @@ def load_species_metadata() -> pl.DataFrame:
     return pl.read_excel(META_PATH, sheet_name="species")
 
 
-def available_species() -> list[str]:
+def species_ids() -> list[str]:
     """
     Scan the data directory for all species with available model results.
 
