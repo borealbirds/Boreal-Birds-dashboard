@@ -1,7 +1,11 @@
 from shiny import Inputs, reactive, ui, render
 from shinywidgets import render_widget, output_widget
 from ipywidgets import HTML
-from ipyleaflet import Map, basemaps, WidgetControl
+from ipyleaflet import (
+    Map, basemaps,
+    basemap_to_tiles, LayersControl, ScaleControl,
+    FullScreenControl, WidgetControl
+)
 from localtileserver import TileClient, get_leaflet_tile_layer
 
 import polars as pl
@@ -150,27 +154,39 @@ def server_v5(input: Inputs):
         if client is None:
             return HTML("<p>No data available</p>")
 
-        basemap_key = input.basemap()
-        basemap = BASEMAPS.get(basemap_key, basemaps.CartoDB.Positron)
+        center = client.center()
 
-        m = Map(
-            center=client.center(),
-            zoom=4,
-            basemap=basemap,
+        positron = basemap_to_tiles(basemaps.CartoDB.Positron)
+        positron.base = True
+        positron.name = "Positron (minimal)"
+        
+        osm = basemap_to_tiles(basemaps.OpenStreetMap.Mapnik)
+        osm.base = True
+        osm.name = "Open Street Map (default)"
+        
+        esri = basemap_to_tiles(basemap=basemaps.Esri.WorldImagery)
+        esri.base = True
+        esri.name = "World Imagery (satellite)"
+
+        mean_density = get_leaflet_tile_layer(client, colormap="ylgn", indexes=1, name="Mean Density")
+        mean_detection = get_leaflet_tile_layer(client, colormap="ylgn", indexes=3, name="Mean Detection")
+
+        m = Map(layers=[esri, positron, osm],
+                center=center,
         )
 
-        tile_layer = get_leaflet_tile_layer(
-            client,
-            colormap="ylgn",
-            indexes=[1]
+        legend = WidgetControl(
+        widget=legend_widget(),
+        position="bottomright"
         )
 
-        m.add_layer(tile_layer)
-        m.add_control(
-            WidgetControl(
-                widget=legend_widget(),
-                position="bottomright",
-            )
-        )
+        m.add(mean_density)
+        m.add(mean_detection)
+
+        m.add(legend)
+
+        m.add(FullScreenControl())
+        m.add(LayersControl(collapsed=False, position='topright'))
+        m.add(ScaleControl(position='bottomleft'))
 
         return m
