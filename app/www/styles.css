@@ -134,6 +134,27 @@ body {
   margin-right: 1rem;
 }
 
+/* NAV UNDERLINE (navset_card_underline) */
+.nav-underline .nav-link {
+  color: var(--text-light);
+  background: transparent;
+  transition: var(--transition-fast);
+  font-weight: 500;
+}
+
+.nav-underline .nav-link:hover {
+  color: var(--light-yellow);
+}
+
+.nav-underline .nav-link.active {
+  color: var(--light-yellow);
+}
+
+.nav-underline .nav-link:focus {
+  color: var(--light-yellow);
+  box-shadow: none;
+}
+
 /* map */
 .map-legend {
   background: white;
