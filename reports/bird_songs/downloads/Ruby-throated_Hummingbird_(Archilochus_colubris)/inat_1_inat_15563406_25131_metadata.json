@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Ruby-throated Hummingbird",
+  "bam_scientific_name": "Archilochus colubris",
+  "source": "iNaturalist",
+  "inat_id": "inat_15563406_25131",
+  "recordist": "eraskin",
+  "country": "Old Clark Inn, Marlinton, WV",
+  "date": "2018-08-13",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/15563406",
+  "audio_url": "https://static.inaturalist.org/sounds/25131.mp3?1534510268",
+  "local_audio_file": "inat_1_inat_15563406_25131.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

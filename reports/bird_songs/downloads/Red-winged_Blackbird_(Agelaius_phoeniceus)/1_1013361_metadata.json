@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Red-winged Blackbird",
+  "bam_scientific_name": "Agelaius phoeniceus",
+  "xeno_canto_scientific_name": "Agelaius phoeniceus",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "1013361",
+  "xeno_canto_english_name": "Red-winged Blackbird",
+  "recordist": "Stanislas Wroza",
+  "country": "Canada",
+  "location": "Charlevoix (near  Saint-Joseph-de-la-Rive), Capitale-Nationale, Québec",
+  "date": "2025-05-25",
+  "length": "0:07",
+  "duration_seconds": 7,
+  "quality": "A",
+  "type": "call, song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/1013361",
+  "audio_url": "https://xeno-canto.org/1013361/download",
+  "local_audio_file": "1_1013361_qA_0-07.mp3",
+  "selection_mode": "under 7s preferred + under 10s fallback"
+}

@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Ruby-crowned Kinglet",
+  "bam_scientific_name": "Regulus calendula",
+  "source": "iNaturalist",
+  "inat_id": "inat_269560810_1368585",
+  "recordist": "johndreynolds",
+  "country": "Pacific Spirit Regional Park, Vancouver, BC, Canada",
+  "date": "2025-04-09",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/269560810",
+  "audio_url": "https://static.inaturalist.org/sounds/1368585.m4a?1744251629",
+  "local_audio_file": "inat_1_inat_269560810_1368585.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

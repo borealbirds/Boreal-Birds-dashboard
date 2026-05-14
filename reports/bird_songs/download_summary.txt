@@ -1,0 +1,583 @@
+Xeno-canto Download Summary
+========================================
+Species attempted:              143
+Species skipped (--resume):     0
+Species with audio downloaded:  143
+Species without audio:          0
+
+Downloaded recordings by species
+----------------------------------------
+Alder Flycatcher (Empidonax alnorum) - 2 recording(s), under 7s preferred
+  - 0:01 (1s), quality B, ID 373885
+  - 0:03 (3s), quality B, ID 965423
+
+American Crow (Corvus brachyrhynchos) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 385023
+  - 0:02 (2s), quality B, ID 454607
+
+American Goldfinch (Spinus tristis) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 1040648
+  - 0:07 (7s), quality A, ID 1034478
+
+American Pipit (Anthus rubescens) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:06 (6s), quality B, ID 781927
+  - 0:10 (10s), quality D, ID 674781
+
+American Redstart (Setophaga ruticilla) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 1014856
+  - 0:06 (6s), quality A, ID 486220
+
+American Robin (Turdus migratorius) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:06 (6s), quality A, ID 1046358
+  - 0:08 (8s), quality A, ID 713003
+
+American Tree Sparrow (Spizella arborea) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_86332894_271456
+  - ? (dur unknown), quality iNat-research, ID inat_146229222_583095
+
+American Three-toed Woodpecker (Picoides dorsalis) - 1 recording(s), under 7s preferred
+  - 0:03 (3s), quality C, ID 353490
+
+Bank Swallow (Riparia riparia) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality B, ID 999867
+  - 0:05 (5s), quality B, ID 344092
+
+Baltimore Oriole (Icterus galbula) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 475642
+  - 0:06 (6s), quality A, ID 726803
+
+Barn Swallow (Hirundo rustica) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 662354
+  - 0:05 (5s), quality A, ID 375583
+
+Black-and-white Warbler (Mniotilta varia) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 418093
+  - 0:03 (3s), quality A, ID 416782
+
+Black-billed Cuckoo (Coccyzus erythropthalmus) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 547273
+  - 0:05 (5s), quality B, ID 269097
+
+Black-billed Magpie (Pica hudsonia) - 2 recording(s), under 10s fallback + under 20s fallback
+  - 0:09 (9s), quality B, ID 442868
+  - 0:18 (18s), quality A, ID 15509
+
+Bay-breasted Warbler (Setophaga castanea) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 1082107
+  - 0:05 (5s), quality A, ID 1082106
+
+Black-backed Woodpecker (Picoides arcticus) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_337351530_1758302
+  - ? (dur unknown), quality iNat-research, ID inat_6583799_12910
+
+Black-capped Chickadee (Poecile atricapillus) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 332054
+  - 0:06 (6s), quality A, ID 866009
+
+Belted Kingfisher (Megaceryle alcyon) - 2 recording(s), under 7s preferred + under 15s fallback
+  - 0:07 (7s), quality C, ID 661052
+  - 0:13 (13s), quality A, ID 1019968
+
+Blue-gray Gnatcatcher (Polioptila caerulea) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality B, ID 553977
+  - 0:05 (5s), quality B, ID 316287
+
+Brown-headed Cowbird (Molothrus ater) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 906694
+  - 0:06 (6s), quality A, ID 418533
+
+Blue-headed Vireo (Vireo solitarius) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:07 (7s), quality A, ID 13633
+  - 0:10 (10s), quality A, ID 135498
+
+Blackburnian Warbler (Setophaga fusca) - 2 recording(s), under 7s preferred
+  - 0:01 (1s), quality A, ID 1082101
+  - 0:06 (6s), quality A, ID 172919
+
+Blue Jay (Cyanocitta cristata) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 346022
+  - 0:07 (7s), quality A, ID 906702
+
+Blackpoll Warbler (Setophaga striata) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 51766
+  - 0:05 (5s), quality A, ID 1012851
+
+Bobolink (Dolichonyx oryzivorus) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 381414
+  - 0:06 (6s), quality A, ID 877072
+
+Boreal Chickadee (Poecile hudsonicus) - 2 recording(s), under 10s fallback + under 15s fallback
+  - 0:10 (10s), quality D, ID 615183
+  - 0:13 (13s), quality A, ID 46489
+
+Bohemian Waxwing (Bombycilla garrulus) - 2 recording(s), under 7s preferred
+  - 0:01 (1s), quality C, ID 453636
+  - 0:04 (4s), quality C, ID 453623
+
+Brewer's Blackbird (Euphagus cyanocephalus) - 2 recording(s), under 10s fallback + under 15s fallback
+  - 0:10 (10s), quality C, ID 585731
+  - 0:13 (13s), quality A, ID 82046
+
+Brown Creeper (Certhia americana) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 749409
+  - 0:04 (4s), quality A, ID 294130
+
+Brown Thrasher (Toxostoma rufum) - 2 recording(s), under 15s fallback
+  - 0:13 (13s), quality A, ID 939190
+  - 0:14 (14s), quality A, ID 83525
+
+Black-throated Blue Warbler (Setophaga caerulescens) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 626751
+  - 0:02 (2s), quality B, ID 566199
+
+Black-throated Green Warbler (Setophaga virens) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 416780
+  - 0:03 (3s), quality B, ID 797244
+
+Canada Warbler (Cardellina canadensis) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 841122
+  - 0:07 (7s), quality A, ID 1087236
+
+Clay-colored Sparrow (Spizella pallida) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 997646
+  - 0:06 (6s), quality A, ID 813072
+
+Cedar Waxwing (Bombycilla cedrorum) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:07 (7s), quality B, ID 37648
+  - 0:10 (10s), quality A, ID 1005316
+
+Chipping Sparrow (Spizella passerina) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 729075
+  - 0:05 (5s), quality A, ID 1081943
+
+Cliff Swallow (Petrochelidon pyrrhonota) - 2 recording(s), under 7s preferred + under 15s fallback
+  - 0:04 (4s), quality A, ID 1014024
+  - 0:14 (14s), quality C, ID 176463
+
+Cape May Warbler (Setophaga tigrina) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 418096
+  - 0:02 (2s), quality B, ID 650439
+
+Common Grackle (Quiscalus quiscula) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 316288
+  - 0:07 (7s), quality B, ID 284249
+
+Connecticut Warbler (Oporornis agilis) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:02 (2s), quality B, ID 904708
+  - 0:10 (10s), quality A, ID 371280
+
+Common Raven (Corvus corax) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 383658
+  - 0:02 (2s), quality B, ID 594144
+
+Common Yellowthroat (Geothlypis trichas) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 582712
+  - 0:03 (3s), quality no score, ID 385301
+
+Chestnut-sided Warbler (Setophaga pensylvanica) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 1014421
+  - 0:04 (4s), quality A, ID 417994
+
+Dark-eyed Junco (Junco hyemalis) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 381586
+  - 0:05 (5s), quality A, ID 254480
+
+Downy Woodpecker (Picoides pubescens) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_56924218_131260
+  - ? (dur unknown), quality iNat-research, ID inat_77774398_213707
+
+Dusky Flycatcher (Empidonax oberholseri) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 386513
+  - 0:07 (7s), quality B, ID 124641
+
+Eastern Bluebird (Sialia sialis) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality B, ID 229714
+  - 0:07 (7s), quality B, ID 324405
+
+Eastern Kingbird (Tyrannus tyrannus) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 13607
+  - 0:03 (3s), quality B, ID 367703
+
+Eastern Phoebe (Sayornis phoebe) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 363519
+  - 0:03 (3s), quality B, ID 179848
+
+Eastern Towhee (Pipilo erythrophthalmus) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:02 (2s), quality no score, ID 554032
+  - 0:09 (9s), quality A, ID 722360
+
+Eastern Wood-Pewee (Contopus virens) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality B, ID 477597
+  - 0:05 (5s), quality B, ID 666127
+
+European Starling (Sturnus vulgaris) - 2 recording(s), under 7s preferred + under 15s fallback
+  - 0:03 (3s), quality A, ID 628940
+  - 0:11 (11s), quality A, ID 981795
+
+Evening Grosbeak (Coccothraustes vespertinus) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_333010568_1729721
+  - ? (dur unknown), quality iNat-research, ID inat_60571510_138070
+
+Field Sparrow (Spizella pusilla) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 905268
+  - 0:02 (2s), quality A, ID 386528
+
+Fox Sparrow (Passerella iliaca) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 5772
+  - 0:05 (5s), quality A, ID 445569
+
+Great Crested Flycatcher (Myiarchus crinitus) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 357427
+  - 0:06 (6s), quality B, ID 316298
+
+Golden-crowned Kinglet (Regulus satrapa) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 135599
+  - 0:03 (3s), quality A, ID 14480
+
+Golden-crowned Sparrow (Zonotrichia atricapilla) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 66176
+  - 0:05 (5s), quality A, ID 1045707
+
+Gray-cheeked Thrush (Catharus minimus) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality B, ID 679279
+  - 0:03 (3s), quality B, ID 680360
+
+Gray Jay (Perisoreus canadensis) - 2 recording(s), under 15s fallback + under 20s fallback
+  - 0:14 (14s), quality C, ID 343892
+  - 0:18 (18s), quality B, ID 185329
+
+Gray Catbird (Dumetella carolinensis) - 2 recording(s), under 7s preferred
+  - 0:07 (7s), quality A, ID 367704
+  - 0:05 (5s), quality B, ID 1012949
+
+Grasshopper Sparrow (Ammodramus savannarum) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 111487
+  - 0:04 (4s), quality A, ID 104530
+
+Greater Yellowlegs (Tringa melanoleuca) - 2 recording(s), under 7s preferred
+  - 0:00 (dur unknown), quality A, ID 612348
+  - 0:05 (5s), quality A, ID 612347
+
+Golden-winged Warbler (Vermivora chrysoptera) - 2 recording(s), under 7s preferred
+  - 0:01 (1s), quality A, ID 373887
+  - 0:02 (2s), quality A, ID 418334
+
+Hammond's Flycatcher (Empidonax hammondii) - 2 recording(s), under 7s preferred
+  - 0:07 (7s), quality B, ID 222769
+  - 0:06 (6s), quality C, ID 107814
+
+Hairy Woodpecker (Picoides villosus) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_287722615_1511374
+  - ? (dur unknown), quality iNat-research, ID inat_287722615_1511375
+
+Hermit Thrush (Catharus guttatus) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:04 (4s), quality A, ID 750452
+  - 0:10 (10s), quality A, ID 933560
+
+Horned Lark (Eremophila alpestris) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality B, ID 424771
+  - 0:05 (5s), quality B, ID 709745
+
+House Sparrow (Passer domesticus) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 632102
+  - 0:06 (6s), quality A, ID 539455
+
+House Wren (Troglodytes aedon) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 1048918
+  - 0:02 (2s), quality A, ID 985376
+
+Indigo Bunting (Passerina cyanea) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:07 (7s), quality A, ID 574079
+  - 0:09 (9s), quality A, ID 123896
+
+Killdeer (Charadrius vociferus) - 2 recording(s), under 7s preferred
+  - 0:07 (7s), quality B, ID 1021925
+  - 0:07 (7s), quality B, ID 1021924
+
+Lapland Longspur (Calcarius lapponicus) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 383730
+  - 0:07 (7s), quality A, ID 1045852
+
+Le Conte's Sparrow (Ammodramus leconteii) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_187283894_829623
+  - ? (dur unknown), quality iNat-research, ID inat_268268060_1358885
+
+Least Flycatcher (Empidonax minimus) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 1014724
+  - 0:05 (5s), quality A, ID 1002526
+
+Lesser Yellowlegs (Tringa flavipes) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 686693
+  - 0:07 (7s), quality A, ID 674365
+
+Lincoln's Sparrow (Melospiza lincolnii) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality B, ID 1020875
+  - 0:06 (6s), quality B, ID 1020876
+
+Magnolia Warbler (Setophaga magnolia) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 729540
+  - 0:03 (3s), quality A, ID 962395
+
+Marsh Wren (Cistothorus palustris) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 419373
+  - 0:05 (5s), quality A, ID 417865
+
+Mountain Bluebird (Sialia currucoides) - 1 recording(s), under 25s extended (1 max)
+  - 0:25 (25s), quality A, ID 15012
+
+Mourning Dove (Zenaida macroura) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 382741
+  - 0:07 (7s), quality A, ID 583581
+
+Mourning Warbler (Geothlypis philadelphia) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 419821
+  - 0:03 (3s), quality A, ID 419820
+
+Nashville Warbler (Oreothlypis ruficapilla) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_43936305_77905
+  - ? (dur unknown), quality iNat-research, ID inat_113191096_407359
+
+Nelson's Sparrow (Ammodramus nelsoni) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_284568410_1488222
+  - ? (dur unknown), quality iNat-research, ID inat_171587923_762401
+
+Northern Cardinal (Cardinalis cardinalis) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 858755
+  - 0:04 (4s), quality A, ID 920145
+
+Northern Flicker (Colaptes auratus) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality B, ID 282514
+  - 0:04 (4s), quality B, ID 122631
+
+Northern Parula (Setophaga americana) - 2 recording(s), under 7s preferred
+  - 0:01 (1s), quality A, ID 83528
+  - 0:02 (2s), quality A, ID 331329
+
+Northern Waterthrush (Parkesia noveboracensis) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 420223
+  - 0:06 (6s), quality A, ID 940909
+
+Orange-crowned Warbler (Oreothlypis celata) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_108450828_369725
+  - ? (dur unknown), quality iNat-research, ID inat_108567924_370401
+
+Olive-sided Flycatcher (Contopus cooperi) - 2 recording(s), under 7s preferred
+  - 0:01 (1s), quality A, ID 962388
+  - 0:02 (2s), quality B, ID 325126
+
+Ovenbird (Seiurus aurocapilla) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 417447
+  - 0:05 (5s), quality A, ID 841137
+
+Palm Warbler (Setophaga palmarum) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality B, ID 54140
+  - 0:05 (5s), quality B, ID 1102779
+
+Philadelphia Vireo (Vireo philadelphicus) - 2 recording(s), under 10s fallback + under 15s fallback
+  - 0:10 (10s), quality C, ID 76995
+  - 0:14 (14s), quality A, ID 1013932
+
+Pine Grosbeak (Pinicola enucleator) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality C, ID 485262
+  - 0:05 (5s), quality C, ID 810527
+
+Pine Siskin (Spinus pinus) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:04 (4s), quality A, ID 138299
+  - 0:09 (9s), quality A, ID 1014789
+
+Pine Warbler (Setophaga pinus) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 308663
+  - 0:07 (7s), quality A, ID 712989
+
+Pileated Woodpecker (Dryocopus pileatus) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 351542
+  - 0:07 (7s), quality A, ID 1012561
+
+Purple Finch (Carpodacus purpureus) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_23093283_35778
+  - ? (dur unknown), quality iNat-research, ID inat_202154866_926128
+
+Rose-breasted Grosbeak (Pheucticus ludovicianus) - 2 recording(s), under 10s fallback
+  - 0:10 (10s), quality A, ID 43406
+  - 0:08 (8s), quality B, ID 589362
+
+Red-breasted Nuthatch (Sitta canadensis) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 753160
+  - 0:02 (2s), quality B, ID 1203
+
+Ruby-crowned Kinglet (Regulus calendula) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_269560810_1368585
+  - ? (dur unknown), quality iNat-research, ID inat_324414714_1684090
+
+Red Crossbill (Loxia curvirostra) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 686964
+  - 0:07 (7s), quality A, ID 974355
+
+Red-eyed Vireo (Vireo olivaceus) - 2 recording(s), under 7s preferred + under 20s fallback
+  - 0:07 (7s), quality A, ID 417986
+  - 0:17 (17s), quality A, ID 840741
+
+Rock Pigeon (Columba livia) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 116226
+  - 0:01 (1s), quality B, ID 862852
+
+Ruby-throated Hummingbird (Archilochus colubris) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_15563406_25131
+  - ? (dur unknown), quality iNat-research, ID inat_117685964_443436
+
+Rusty Blackbird (Euphagus carolinus) - 2 recording(s), under 7s preferred
+  - 0:00 (dur unknown), quality B, ID 835995
+  - 0:04 (4s), quality B, ID 235415
+
+Ruffed Grouse (Bonasa umbellus) - 2 recording(s), under 7s preferred + under 20s fallback
+  - 0:06 (6s), quality A, ID 1013723
+  - 0:17 (17s), quality D, ID 1013054
+
+Red-winged Blackbird (Agelaius phoeniceus) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:07 (7s), quality A, ID 1013361
+  - 0:09 (9s), quality A, ID 713846
+
+Savannah Sparrow (Passerculus sandwichensis) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 534764
+  - 0:06 (6s), quality A, ID 531980
+
+Scarlet Tanager (Piranga olivacea) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality B, ID 417444
+  - 0:04 (4s), quality no score, ID 564227
+
+Sedge Wren (Cistothorus platensis) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 101714
+  - 0:07 (7s), quality A, ID 981244
+
+Sooty Grouse (Dendragapus fuliginosus) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality C, ID 728093
+  - 0:07 (7s), quality C, ID 728092
+
+Solitary Sandpiper (Tringa solitaria) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 674366
+  - 0:06 (6s), quality B, ID 1021714
+
+Song Sparrow (Melospiza melodia) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 721106
+  - 0:03 (3s), quality A, ID 744397
+
+Spotted Sandpiper (Actitis macularius) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 448472
+  - 0:04 (4s), quality B, ID 109328
+
+Swamp Sparrow (Melospiza georgiana) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 418343
+  - 0:05 (5s), quality A, ID 729071
+
+Swainson's Thrush (Catharus ustulatus) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:03 (3s), quality A, ID 1046351
+  - 0:09 (9s), quality A, ID 206692
+
+Tennessee Warbler (Oreothlypis peregrina) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_227606283_1123179
+  - ? (dur unknown), quality iNat-research, ID inat_293420701_1545473
+
+Townsend's Solitaire (Myadestes townsendi) - 2 recording(s), under 7s preferred + under 15s fallback
+  - 0:07 (7s), quality C, ID 668554
+  - 0:15 (15s), quality A, ID 512411
+
+Townsend's Warbler (Setophaga townsendi) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality B, ID 595940
+  - 0:03 (3s), quality B, ID 487102
+
+Tree Swallow (Tachycineta bicolor) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality B, ID 912131
+  - 0:05 (5s), quality B, ID 1012442
+
+Upland Sandpiper (Bartramia longicauda) - 2 recording(s), under 7s preferred
+  - 0:07 (7s), quality A, ID 1012869
+  - 0:05 (5s), quality B, ID 1012868
+
+Varied Thrush (Ixoreus naevius) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality B, ID 110519
+  - 0:06 (6s), quality B, ID 670955
+
+Veery (Catharus fuscescens) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 1012564
+  - 0:07 (7s), quality A, ID 433589
+
+Vesper Sparrow (Pooecetes gramineus) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 440253
+  - 0:05 (5s), quality A, ID 939202
+
+Warbling Vireo (Vireo gilvus) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 1103916
+  - 0:05 (5s), quality A, ID 477609
+
+White-breasted Nuthatch (Sitta carolinensis) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 443271
+  - 0:04 (4s), quality B, ID 912134
+
+White-crowned Sparrow (Zonotrichia leucophrys) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 1045666
+  - 0:04 (4s), quality A, ID 513210
+
+Western Tanager (Piranga ludoviciana) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 14403
+  - 0:07 (7s), quality no score, ID 324863
+
+Western Wood-Pewee (Contopus sordidulus) - 2 recording(s), under 7s preferred
+  - 0:06 (6s), quality A, ID 736227
+  - 0:06 (6s), quality A, ID 553402
+
+Willow Ptarmigan (Lagopus lagopus) - 2 recording(s), under 7s preferred
+  - 0:04 (4s), quality A, ID 246556
+  - 0:06 (6s), quality A, ID 353581
+
+Wilson's Snipe (Gallinago delicata) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 1011215
+  - 0:05 (5s), quality A, ID 1008747
+
+Wilson's Warbler (Cardellina pusilla) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 749987
+  - 0:06 (6s), quality A, ID 480058
+
+Winter Wren (Troglodytes hiemalis) - 2 recording(s), under 10s fallback
+  - 0:08 (8s), quality A, ID 1015166
+  - 0:08 (8s), quality A, ID 965432
+
+Wood Thrush (Hylocichla mustelina) - 2 recording(s), under 7s preferred
+  - 0:05 (5s), quality A, ID 1070717
+  - 0:06 (6s), quality A, ID 811951
+
+White-throated Sparrow (Zonotrichia albicollis) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 735692
+  - 0:03 (3s), quality A, ID 720928
+
+White-winged Crossbill (Loxia leucoptera) - 2 recording(s), under 7s preferred
+  - 0:07 (7s), quality B, ID 588139
+  - 0:07 (7s), quality C, ID 859256
+
+Yellow-bellied Flycatcher (Empidonax flaviventris) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality B, ID 659301
+  - 0:02 (2s), quality D, ID 371387
+
+Yellow-bellied Sapsucker (Sphyrapicus varius) - 2 recording(s), iNaturalist fallback
+  - ? (dur unknown), quality iNat-research, ID inat_124821018_491154
+  - ? (dur unknown), quality iNat-research, ID inat_257624296_1281129
+
+Yellow Warbler (Setophaga petechia) - 2 recording(s), under 7s preferred
+  - 0:01 (1s), quality A, ID 614
+  - 0:02 (2s), quality A, ID 574062
+
+Yellow-headed Blackbird (Xanthocephalus xanthocephalus) - 2 recording(s), under 7s preferred
+  - 0:03 (3s), quality A, ID 381417
+  - 0:05 (5s), quality B, ID 43419
+
+Yellow-rumped Warbler (Setophaga coronata) - 2 recording(s), under 7s preferred + under 10s fallback
+  - 0:02 (2s), quality B, ID 1084143
+  - 0:09 (9s), quality A, ID 188619
+
+Yellow-throated Vireo (Vireo flavifrons) - 2 recording(s), under 7s preferred
+  - 0:02 (2s), quality A, ID 384645
+  - 0:07 (7s), quality A, ID 417991
+
+
+Species without audio
+----------------------------------------
+None

@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Barn Swallow",
+  "bam_scientific_name": "Hirundo rustica",
+  "xeno_canto_scientific_name": "Hirundo rustica",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "375583",
+  "xeno_canto_english_name": "Barn Swallow",
+  "recordist": "Roby",
+  "country": "Switzerland",
+  "location": "Brissago, Locarno, Ticino",
+  "date": "2017-06-15",
+  "length": "0:05",
+  "duration_seconds": 5,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/375583",
+  "audio_url": "https://xeno-canto.org/375583/download",
+  "local_audio_file": "2_375583_qA_0-05.mp3",
+  "selection_mode": "under 7s preferred"
+}

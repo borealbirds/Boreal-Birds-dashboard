@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Bay-breasted Warbler",
+  "bam_scientific_name": "Setophaga castanea",
+  "xeno_canto_scientific_name": "Setophaga castanea",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "1082107",
+  "xeno_canto_english_name": "Bay-breasted Warbler",
+  "recordist": "David Darrell-Lambert",
+  "country": "Canada",
+  "location": "Point Pelee National Park, Essex County, Ontario",
+  "date": "2019-05-16",
+  "length": "0:04",
+  "duration_seconds": 4,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/1082107",
+  "audio_url": "https://xeno-canto.org/1082107/download",
+  "local_audio_file": "1_1082107_qA_0-04.mp3",
+  "selection_mode": "under 7s preferred"
+}

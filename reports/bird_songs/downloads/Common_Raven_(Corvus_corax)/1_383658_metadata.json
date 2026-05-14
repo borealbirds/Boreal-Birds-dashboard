@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Common Raven",
+  "bam_scientific_name": "Corvus corax",
+  "xeno_canto_scientific_name": "Corvus corax",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "383658",
+  "xeno_canto_english_name": "Northern Raven",
+  "recordist": "Terje Kolaas",
+  "country": "Norway",
+  "location": "Levanger, Nord-Trøndelag",
+  "date": "2017-03-28",
+  "length": "0:03",
+  "duration_seconds": 3,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/383658",
+  "audio_url": "https://xeno-canto.org/383658/download",
+  "local_audio_file": "1_383658_qA_0-03.mp3",
+  "selection_mode": "under 7s preferred"
+}

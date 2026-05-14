@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Golden-winged Warbler",
+  "bam_scientific_name": "Vermivora chrysoptera",
+  "xeno_canto_scientific_name": "Vermivora chrysoptera",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "418334",
+  "xeno_canto_english_name": "Golden-winged Warbler",
+  "recordist": "Sue Riffe",
+  "country": "United States",
+  "location": "Au Sable SF - Big Creek Rd, Michigan",
+  "date": "2018-05-11",
+  "length": "0:02",
+  "duration_seconds": 2,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/418334",
+  "audio_url": "https://xeno-canto.org/418334/download",
+  "local_audio_file": "2_418334_qA_0-02.mp3",
+  "selection_mode": "under 7s preferred"
+}

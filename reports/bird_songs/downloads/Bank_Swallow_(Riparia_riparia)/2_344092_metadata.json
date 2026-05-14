@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Bank Swallow",
+  "bam_scientific_name": "Riparia riparia",
+  "xeno_canto_scientific_name": "Riparia riparia",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "344092",
+  "xeno_canto_english_name": "Sand Martin",
+  "recordist": "Tero Linjama",
+  "country": "Finland",
+  "location": "Tikkala, Jyväskylä, Central Finland",
+  "date": "2008-06-06",
+  "length": "0:05",
+  "duration_seconds": 5,
+  "quality": "B",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/344092",
+  "audio_url": "https://xeno-canto.org/344092/download",
+  "local_audio_file": "2_344092_qB_0-05.mp3",
+  "selection_mode": "under 7s preferred"
+}

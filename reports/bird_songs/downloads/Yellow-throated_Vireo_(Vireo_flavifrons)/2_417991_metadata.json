@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Yellow-throated Vireo",
+  "bam_scientific_name": "Vireo flavifrons",
+  "xeno_canto_scientific_name": "Vireo flavifrons",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "417991",
+  "xeno_canto_english_name": "Yellow-throated Vireo",
+  "recordist": "Sue Riffe",
+  "country": "United States",
+  "location": "Lawrence Woods SNP",
+  "date": "2018-05-06",
+  "length": "0:07",
+  "duration_seconds": 7,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/417991",
+  "audio_url": "https://xeno-canto.org/417991/download",
+  "local_audio_file": "2_417991_qA_0-07.mp3",
+  "selection_mode": "under 7s preferred"
+}
