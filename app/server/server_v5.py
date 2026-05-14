@@ -110,7 +110,7 @@ def server_v5(input: Inputs):
         )
 
         tile_layer = get_leaflet_tile_layer(
-            client, colormap="ylgn", indexes=[input.raster_band()]
+            client, colormap="ylgn", indexes=[1]
         )
 
         m.add_layer(tile_layer)
