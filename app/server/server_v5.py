@@ -85,7 +85,7 @@ def server_v5(input: Inputs):
     @reactive.calc
     def tile_client():
         """Initialize and return a TileClient for the specific raster file selected."""
-        
+
         species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
         region = input.region()
         year = input.year()
@@ -104,8 +104,31 @@ def server_v5(input: Inputs):
 
         return TileClient(str(path))
     
+    @reactive.calc
+    def legend_widget():
+        """Generate reactive numerical legend for map"""
+        client = tile_client()
+
+        if client is None:
+            return HTML("<div>No data</div>")
+
+        band = client.dataset.read(1).astype(float)
+
+        rmin = float(np.nanmin(band))
+        rmax = float(np.nanmax(band))
+
+        return HTML(f"""
+        <div class="map-legend">
+            <div class="map-legend-title">
+                <b>{rmin:.4f} → {rmax:.4f}</b>
+            </div>
+            <div class="map-legend-gradient"></div>
+        </div>
+        """)
+
     @render.ui
     def map_container():
+        """Map container to handle cases where no data is avaliable"""
         client = tile_client()
 
         if client is None:
@@ -134,19 +157,9 @@ def server_v5(input: Inputs):
         )
 
         m.add_layer(tile_layer)
-        legend = HTML(value="""
-        <div class="map-legend">
-            <div class="map-legend-title">
-                <b>Low → High</b>
-            </div>
-
-            <div class="map-legend-gradient"></div>
-        </div>
-        """)
-
         m.add_control(
             WidgetControl(
-                widget=legend,
+                widget=legend_widget(),
                 position="bottomright",
             )
         )
