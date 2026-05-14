@@ -11,8 +11,10 @@ from shared import (
     available_regions,
     available_years,
     load_species_metadata,
-    get_species_image,
 )
+from modules.bird import bird_card
+
+birds = load_species_metadata()
 
 
 def server_v5(input: Inputs):
@@ -21,69 +23,22 @@ def server_v5(input: Inputs):
     and spatial visualization.
     """
 
-    @reactive.calc
-    def species_info():
-        """Lookup and return taxonomic metadata for the currently selected species."""
-        df = load_species_metadata()
-
-        species_id = input.species()
-
-        if not species_id:
-            return None
-
-        row = df.filter(pl.col("id") == species_id)
-
-        if row.height == 0:
-            return None
-
-        r = row.row(0)
-
-        return {
-            "english": r[2],
-            "french": r[3],
-            "scientific": r[1],
-            "family": r[4],
-        }
-
     @render.ui
-    def bird_info():
-        """Render the HTML profile header featuring the species image and metadata string."""
-        info = species_info()
+    def selected_bird():
+        bird = birds.filter(pl.col("english") == input.species())
+        return bird_card(
+            species=bird.item(0, "scientific"),
+            common_name=bird.item(0, "english"),
+            french_name=bird.item(0, "french"),
+            family=bird.item(0, "family"),
+            image_url=f"img/{bird.item(0, "id")}.jpg"
+            )
 
-        if info is None:
-            return ui.p("No species selected")
-
-        species_id = input.species()
-        img_path = get_species_image(species_id)
-        img_src = (
-            f"/img/{species_id}.jpg"
-            if img_path and img_path.exists()
-            else "https://placehold.co/200x150?text=No+Image"
-        )
-
-        return ui.div(
-            ui.div(
-                ui.img(
-                    id="species_img",
-                    src=img_src,
-                    style="width:200px; height:150px; object-fit:cover; border:1px solid #ddd;",
-                ),
-                ui.div(
-                    ui.h4(info["english"], style="margin-bottom: 4px;"),
-                    ui.p(
-                        f"{info['french']} · {info['scientific']} · Family {info['family']}",
-                        style="margin: 0;",
-                    ),
-                    style="padding-left: 12px;",
-                ),
-                style="display: flex; align-items: center;",
-            ),
-        )
 
     @reactive.effect
     def _update_regions():
         """Update the region dropdown choices dynamically based on species availability."""
-        species_id = input.species()
+        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
 
         if not species_id:
             ui.update_select("region", choices=[], selected=None)
@@ -100,7 +55,7 @@ def server_v5(input: Inputs):
     @reactive.effect
     def _update_year_range():
         """Update the slider range and default value based on available temporal data."""
-        species_id = input.species()
+        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
         region = input.region()
 
         if not species_id or not region:
@@ -121,7 +76,8 @@ def server_v5(input: Inputs):
     @reactive.calc
     def tile_client():
         """Initialize and return a TileClient for the specific raster file selected."""
-        species_id = input.species()
+        #species_id = input.species()
+        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
         region = input.region()
         year = input.year()
 
@@ -159,31 +115,14 @@ def server_v5(input: Inputs):
 
         m.add_layer(tile_layer)
         legend = HTML(value="""
-            <div style="
-                background: white;
-                padding: 5px 6px;
-                border-radius: 3px;
-                font-size: 10px;
-                line-height: 1.1;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-            ">
-                <div style="margin-bottom: 3px;"><b>Low → High</b></div>
-                <div style="
-                    width: 90px;
-                    height: 8px;
-                    background: linear-gradient(
-                        to right,
-                        #ffffe5,
-                        #d9f0a3,
-                        #addd8e,
-                        #78c679,
-                        #31a354,
-                        #006837
-                    );
-                    border: 1px solid #999;
-                "></div>
+        <div class="map-legend">
+            <div class="map-legend-title">
+                <b>Low → High</b>
             </div>
-            """)
+
+            <div class="map-legend-gradient"></div>
+        </div>
+        """)
 
         m.add_control(
             WidgetControl(
