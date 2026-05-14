@@ -25,7 +25,7 @@ def server_v5(input: Inputs):
 
     @render.ui
     def selected_bird():
-        bird = birds.filter(pl.col("id") == input.species())
+        bird = birds.filter(pl.col("english") == input.species())
         return bird_card(
             species=bird.item(0, "scientific"),
             common_name=bird.item(0, "english"),
@@ -38,7 +38,7 @@ def server_v5(input: Inputs):
     @reactive.effect
     def _update_regions():
         """Update the region dropdown choices dynamically based on species availability."""
-        species_id = input.species()
+        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
 
         if not species_id:
             ui.update_select("region", choices=[], selected=None)
@@ -55,7 +55,7 @@ def server_v5(input: Inputs):
     @reactive.effect
     def _update_year_range():
         """Update the slider range and default value based on available temporal data."""
-        species_id = input.species()
+        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
         region = input.region()
 
         if not species_id or not region:
@@ -76,7 +76,8 @@ def server_v5(input: Inputs):
     @reactive.calc
     def tile_client():
         """Initialize and return a TileClient for the specific raster file selected."""
-        species_id = input.species()
+        #species_id = input.species()
+        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
         region = input.region()
         year = input.year()
 

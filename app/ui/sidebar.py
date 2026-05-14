@@ -1,23 +1,22 @@
 from shiny import ui
-from shared import available_species
+from shared import load_species_metadata
 
 
 def sidebar():
-    species_choices = available_species()
-
-    initial_species = species_choices[0] if species_choices else None
+    species_choices = sorted(load_species_metadata().get_column("english").to_list())
 
     return ui.sidebar(
         ui.input_select(
             "species",
             "Species",
             choices=species_choices,
-            selected=initial_species,
+            size=10
         ),
         ui.input_select(
             "region",
             "Region",
             choices=[],
+            size=3
         ),
         ui.input_slider(
             "year",
@@ -27,4 +26,5 @@ def sidebar():
             value=2020,
             step=5,
         ),
+        width=375,
     )
