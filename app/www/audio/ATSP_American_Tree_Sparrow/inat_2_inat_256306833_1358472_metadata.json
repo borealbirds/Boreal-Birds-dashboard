@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "American Tree Sparrow",
+  "bam_scientific_name": "Spizella arborea",
+  "source": "iNaturalist",
+  "inat_id": "inat_256306833_1358472",
+  "recordist": "anneclewis",
+  "country": "Bellevue Second III Precinct, NE, USA",
+  "date": "2024-12-26",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/256306833",
+  "audio_url": "https://static.inaturalist.org/sounds/1358472.m4a?1743592530",
+  "local_audio_file": "inat_2_inat_256306833_1358472.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

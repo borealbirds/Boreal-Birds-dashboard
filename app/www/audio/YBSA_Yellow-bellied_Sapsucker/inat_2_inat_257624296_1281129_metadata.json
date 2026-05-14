@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Yellow-bellied Sapsucker",
+  "bam_scientific_name": "Sphyrapicus varius",
+  "source": "iNaturalist",
+  "inat_id": "inat_257624296_1281129",
+  "recordist": "afluharty",
+  "country": "Holly Berry Rd, Fredericksburg, VA, US",
+  "date": "2025-01-06",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/257624296",
+  "audio_url": "https://static.inaturalist.org/sounds/1281129.m4a?1736191891",
+  "local_audio_file": "inat_2_inat_257624296_1281129.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

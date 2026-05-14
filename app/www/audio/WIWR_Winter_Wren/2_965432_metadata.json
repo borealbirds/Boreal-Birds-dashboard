@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Winter Wren",
+  "bam_scientific_name": "Troglodytes hiemalis",
+  "xeno_canto_scientific_name": "Troglodytes hiemalis",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "965432",
+  "xeno_canto_english_name": "Winter Wren",
+  "recordist": "A Richardson",
+  "country": "Canada",
+  "location": "Thunder Bay, Thunder Bay District, Ontario",
+  "date": "2024-07-26",
+  "length": "0:08",
+  "duration_seconds": 8,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/965432",
+  "audio_url": "https://xeno-canto.org/965432/download",
+  "local_audio_file": "2_965432_qA_0-08.mp3",
+  "selection_mode": "under 10s fallback"
+}

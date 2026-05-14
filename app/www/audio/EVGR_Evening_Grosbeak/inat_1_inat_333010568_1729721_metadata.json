@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Evening Grosbeak",
+  "bam_scientific_name": "Coccothraustes vespertinus",
+  "source": "iNaturalist",
+  "inat_id": "inat_333010568_1729721",
+  "recordist": "juncoco",
+  "country": "West Grey, ON, CA",
+  "date": "2026-01-01",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/333010568",
+  "audio_url": "https://static.inaturalist.org/sounds/1729721.m4a?1767279800",
+  "local_audio_file": "inat_1_inat_333010568_1729721.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "American Redstart",
+  "bam_scientific_name": "Setophaga ruticilla",
+  "xeno_canto_scientific_name": "Setophaga ruticilla",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "486220",
+  "xeno_canto_english_name": "American Redstart",
+  "recordist": "Stephen Chase",
+  "country": "Canada",
+  "location": "Hamilton, Hamilton Division, Ontario",
+  "date": "2019-07-07",
+  "length": "0:06",
+  "duration_seconds": 6,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/486220",
+  "audio_url": "https://xeno-canto.org/486220/download",
+  "local_audio_file": "2_486220_qA_0-06.mp3",
+  "selection_mode": "under 7s preferred"
+}

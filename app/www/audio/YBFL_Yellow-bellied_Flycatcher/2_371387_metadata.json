@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Yellow-bellied Flycatcher",
+  "bam_scientific_name": "Empidonax flaviventris",
+  "xeno_canto_scientific_name": "Empidonax flaviventris",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "371387",
+  "xeno_canto_english_name": "Yellow-bellied Flycatcher",
+  "recordist": "Matt Wistrand",
+  "country": "United States",
+  "location": "Elsen's Hill, DuPage County, Illinois",
+  "date": "2017-05-22",
+  "length": "0:02",
+  "duration_seconds": 2,
+  "quality": "D",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/371387",
+  "audio_url": "https://xeno-canto.org/371387/download",
+  "local_audio_file": "2_371387_qD_0-02.mp3",
+  "selection_mode": "under 7s preferred"
+}

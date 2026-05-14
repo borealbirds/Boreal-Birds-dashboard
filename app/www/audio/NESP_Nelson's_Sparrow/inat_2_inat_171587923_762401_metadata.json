@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Nelson's Sparrow",
+  "bam_scientific_name": "Ammodramus nelsoni",
+  "source": "iNaturalist",
+  "inat_id": "inat_171587923_762401",
+  "recordist": "dmschock",
+  "country": "Alberta, CA",
+  "date": "2023-07-07",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/171587923",
+  "audio_url": "https://static.inaturalist.org/sounds/762401.m4a?1688750135",
+  "local_audio_file": "inat_2_inat_171587923_762401.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

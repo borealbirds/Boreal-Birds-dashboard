@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Ruffed Grouse",
+  "bam_scientific_name": "Bonasa umbellus",
+  "xeno_canto_scientific_name": "Bonasa umbellus",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "1013054",
+  "xeno_canto_english_name": "Ruffed Grouse",
+  "recordist": "Stanislas Wroza",
+  "country": "Canada",
+  "location": "Réserve nationale de faune du cap Tourmente, La Côte-de-Beaupré, Québec",
+  "date": "2025-05-22",
+  "length": "0:17",
+  "duration_seconds": 17,
+  "quality": "D",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/1013054",
+  "audio_url": "https://xeno-canto.org/1013054/download",
+  "local_audio_file": "2_1013054_qD_0-17.mp3",
+  "selection_mode": "under 7s preferred + under 20s fallback"
+}

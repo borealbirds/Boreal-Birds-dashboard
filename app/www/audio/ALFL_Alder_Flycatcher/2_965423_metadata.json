@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Alder Flycatcher",
+  "bam_scientific_name": "Empidonax alnorum",
+  "xeno_canto_scientific_name": "Empidonax alnorum",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "965423",
+  "xeno_canto_english_name": "Alder Flycatcher",
+  "recordist": "A Richardson",
+  "country": "Canada",
+  "location": "Thunder Bay, Thunder Bay District, Ontario",
+  "date": "2024-07-26",
+  "length": "0:03",
+  "duration_seconds": 3,
+  "quality": "B",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/965423",
+  "audio_url": "https://xeno-canto.org/965423/download",
+  "local_audio_file": "2_965423_qB_0-03.mp3",
+  "selection_mode": "under 7s preferred"
+}

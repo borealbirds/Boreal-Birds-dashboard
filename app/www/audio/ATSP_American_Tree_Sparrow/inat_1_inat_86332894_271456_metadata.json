@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "American Tree Sparrow",
+  "bam_scientific_name": "Spizella arborea",
+  "source": "iNaturalist",
+  "inat_id": "inat_86332894_271456",
+  "recordist": "lmatthias",
+  "country": "Division No. 11, CA-AB, CA",
+  "date": "2021-04-18",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/86332894",
+  "audio_url": "https://static.inaturalist.org/sounds/271456.mp3?1625868436",
+  "local_audio_file": "inat_1_inat_86332894_271456.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Swamp Sparrow",
+  "bam_scientific_name": "Melospiza georgiana",
+  "xeno_canto_scientific_name": "Melospiza georgiana",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "729071",
+  "xeno_canto_english_name": "Swamp Sparrow",
+  "recordist": "William Whitehead",
+  "country": "United States",
+  "location": "Great SWamp NWR, Morris County, New Jersey",
+  "date": "2022-06-03",
+  "length": "0:05",
+  "duration_seconds": 5,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/729071",
+  "audio_url": "https://xeno-canto.org/729071/download",
+  "local_audio_file": "2_729071_qA_0-05.mp3",
+  "selection_mode": "under 7s preferred"
+}
