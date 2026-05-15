@@ -15,6 +15,7 @@ from shared import (
     available_regions,
     available_years,
     load_species_metadata,
+    load_abundance_data
 )
 from modules.bird import bird_card
 
@@ -28,6 +29,7 @@ warnings.filterwarnings(
 )
 
 birds = load_species_metadata()
+abundances = load_abundance_data()
 
 BASEMAPS = {
     "positron": basemaps.CartoDB.Positron,
@@ -190,3 +192,24 @@ def server_v5(input: Inputs):
         m.add(ScaleControl(position='bottomleft'))
 
         return m
+    
+    @render.data_frame
+    def population_size():
+        df = abundances.filter(
+            (pl.col("english") == input.species()) #& 
+            # (pl.col("year") == input.year())
+        )
+        print(abundances.select("id").unique(), input.species())
+        df = df.select([
+            'year',
+            'region', 
+            'population_estimate', 
+            'population_lower', 
+            'population_upper', 
+            'density_estimate', 
+            'density_lower', 
+            'density_upper'
+        ])
+        print(df)
+
+        return render.DataGrid(df, selection_mode="rows")

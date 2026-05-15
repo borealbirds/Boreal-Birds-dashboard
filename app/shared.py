@@ -4,7 +4,7 @@ import polars as pl
 app_dir = Path(__file__).parent.parent
 
 DATA_DIR = app_dir / "data" / "model_v5"
-META_PATH = DATA_DIR / "12_BAMV5-results_noabundance.xlsx"
+META_PATH = DATA_DIR / "12_BAMV5-results.xlsx"
 
 
 def get_tif_path(species_id: str, region: str, year: int) -> Path:
@@ -39,6 +39,17 @@ def load_species_metadata() -> pl.DataFrame:
         A Polars DataFrame containing the 'species' sheet metadata.
     """
     return pl.read_excel(META_PATH, sheet_name="species")
+
+def load_abundance_data() -> pl.DataFrame:
+    """
+    Load species taxonomic and descriptive data from the Excel results summary file.
+
+    Returns
+    -------
+    pl.DataFrame
+        A Polars DataFrame containing the 'species' sheet metadata.
+    """
+    return pl.read_excel(META_PATH, sheet_name="abundances")
 
 
 def species_ids() -> list[str]:
