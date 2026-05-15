@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Killdeer",
+  "bam_scientific_name": "Charadrius vociferus",
+  "xeno_canto_scientific_name": "Charadrius vociferus",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "1021924",
+  "xeno_canto_english_name": "Killdeer",
+  "recordist": "Stanislas Wroza",
+  "country": "Canada",
+  "location": "Isle aux Coudres",
+  "date": "2025-05-25",
+  "length": "0:07",
+  "duration_seconds": 7,
+  "quality": "B",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/1021924",
+  "audio_url": "https://xeno-canto.org/1021924/download",
+  "local_audio_file": "2_1021924_qB_0-07.mp3",
+  "selection_mode": "under 7s preferred"
+}

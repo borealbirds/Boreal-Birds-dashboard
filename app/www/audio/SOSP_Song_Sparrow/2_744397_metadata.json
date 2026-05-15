@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Song Sparrow",
+  "bam_scientific_name": "Melospiza melodia",
+  "xeno_canto_scientific_name": "Melospiza melodia",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "744397",
+  "xeno_canto_english_name": "Song Sparrow",
+  "recordist": "Frank Roos",
+  "country": "Netherlands",
+  "location": "Nieuw Namen, Hulst, Zeeland",
+  "date": "2022-02-02",
+  "length": "0:03",
+  "duration_seconds": 3,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/744397",
+  "audio_url": "https://xeno-canto.org/744397/download",
+  "local_audio_file": "2_744397_qA_0-03.mp3",
+  "selection_mode": "under 7s preferred"
+}

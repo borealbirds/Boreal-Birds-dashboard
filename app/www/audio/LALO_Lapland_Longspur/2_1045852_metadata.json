@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Lapland Longspur",
+  "bam_scientific_name": "Calcarius lapponicus",
+  "xeno_canto_scientific_name": "Calcarius lapponicus",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "1045852",
+  "xeno_canto_english_name": "Lapland Longspur",
+  "recordist": "AUDEVARD Aurélien",
+  "country": "United States",
+  "location": "Utqiagvik, North Slope, Barrow, Alaska",
+  "date": "2022-06-12",
+  "length": "0:07",
+  "duration_seconds": 7,
+  "quality": "A",
+  "type": "call, song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/1045852",
+  "audio_url": "https://xeno-canto.org/1045852/download",
+  "local_audio_file": "2_1045852_qA_0-07.mp3",
+  "selection_mode": "under 7s preferred"
+}

@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Boreal Chickadee",
+  "bam_scientific_name": "Poecile hudsonicus",
+  "xeno_canto_scientific_name": "Poecile hudsonicus",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "615183",
+  "xeno_canto_english_name": "Boreal Chickadee",
+  "recordist": "Roxane Filion",
+  "country": "Canada",
+  "location": "Timmins, Cochrane District, Ontario",
+  "date": "2021-01-15",
+  "length": "0:10",
+  "duration_seconds": 10,
+  "quality": "D",
+  "type": "call, song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/615183",
+  "audio_url": "https://xeno-canto.org/615183/download",
+  "local_audio_file": "1_615183_qD_0-10.mp3",
+  "selection_mode": "under 10s fallback + under 15s fallback"
+}

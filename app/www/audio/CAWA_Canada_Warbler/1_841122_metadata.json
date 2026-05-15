@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Canada Warbler",
+  "bam_scientific_name": "Cardellina canadensis",
+  "xeno_canto_scientific_name": "Cardellina canadensis",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "841122",
+  "xeno_canto_english_name": "Canada Warbler",
+  "recordist": "Marc Boisvert",
+  "country": "Canada",
+  "location": "Marais Des Carouges, Amherst, Les  Laurentides, Quebec",
+  "date": "2023-07-05",
+  "length": "0:02",
+  "duration_seconds": 2,
+  "quality": "A",
+  "type": "alarm call, song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/841122",
+  "audio_url": "https://xeno-canto.org/841122/download",
+  "local_audio_file": "1_841122_qA_0-02.mp3",
+  "selection_mode": "under 7s preferred"
+}

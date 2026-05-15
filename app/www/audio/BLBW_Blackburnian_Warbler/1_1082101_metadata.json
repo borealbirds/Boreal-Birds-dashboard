@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Blackburnian Warbler",
+  "bam_scientific_name": "Setophaga fusca",
+  "xeno_canto_scientific_name": "Setophaga fusca",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "1082101",
+  "xeno_canto_english_name": "Blackburnian Warbler",
+  "recordist": "David Darrell-Lambert",
+  "country": "Canada",
+  "location": "Point Pelee National Park, Essex County, Ontario",
+  "date": "2019-05-17",
+  "length": "0:01",
+  "duration_seconds": 1,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/1082101",
+  "audio_url": "https://xeno-canto.org/1082101/download",
+  "local_audio_file": "1_1082101_qA_0-01.mp3",
+  "selection_mode": "under 7s preferred"
+}

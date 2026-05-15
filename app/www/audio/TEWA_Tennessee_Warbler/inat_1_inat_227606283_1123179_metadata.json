@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Tennessee Warbler",
+  "bam_scientific_name": "Oreothlypis peregrina",
+  "source": "iNaturalist",
+  "inat_id": "inat_227606283_1123179",
+  "recordist": "kazeki",
+  "country": "Division No. 6, CA-AB, CA",
+  "date": "2024-07-06",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/227606283",
+  "audio_url": "https://static.inaturalist.org/sounds/1123179.m4a?1720297146",
+  "local_audio_file": "inat_1_inat_227606283_1123179.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Nelson's Sparrow",
+  "bam_scientific_name": "Ammodramus nelsoni",
+  "source": "iNaturalist",
+  "inat_id": "inat_284568410_1488222",
+  "recordist": "pillwixler",
+  "country": "DuPage County, IL, USA",
+  "date": "2025-05-25",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/284568410",
+  "audio_url": "https://static.inaturalist.org/sounds/1488222.wav?1748358993",
+  "local_audio_file": "inat_1_inat_284568410_1488222.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

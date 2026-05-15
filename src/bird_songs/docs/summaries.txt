@@ -1,0 +1,17 @@
+Xeno-canto Download Summary
+========================================
+Species attempted:              143
+Species skipped (--resume):     142
+Species with audio downloaded:  1
+Species without audio:          0
+
+Downloaded recordings by species
+----------------------------------------
+[CAJA] Gray Jay (Perisoreus canadensis) - 2 recording(s), under 15s fallback + under 20s fallback
+  - 0:14 (14s), quality C, ID 343892
+  - 0:18 (18s), quality B, ID 185329
+
+
+Species without audio
+----------------------------------------
+None

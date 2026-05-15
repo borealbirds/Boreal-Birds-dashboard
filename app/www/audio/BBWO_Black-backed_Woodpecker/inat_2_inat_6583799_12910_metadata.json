@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Black-backed Woodpecker",
+  "bam_scientific_name": "Picoides arcticus",
+  "source": "iNaturalist",
+  "inat_id": "inat_6583799_12910",
+  "recordist": "neilvinson",
+  "country": "Albert, CA-NB, CA",
+  "date": "2017-06-10",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/6583799",
+  "audio_url": "https://static.inaturalist.org/sounds/12910.wav?1502938396",
+  "local_audio_file": "inat_2_inat_6583799_12910.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Boreal Chickadee",
+  "bam_scientific_name": "Poecile hudsonicus",
+  "xeno_canto_scientific_name": "Poecile hudsonicus",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "46489",
+  "xeno_canto_english_name": "Boreal Chickadee",
+  "recordist": "Andrew Spencer",
+  "country": "United States",
+  "location": "Stockholm, Aroostook Co., Maine",
+  "date": "2010-04-05",
+  "length": "0:13",
+  "duration_seconds": 13,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/2.5/",
+  "xeno_canto_url": "https://xeno-canto.org/46489",
+  "audio_url": "https://xeno-canto.org/46489/download",
+  "local_audio_file": "2_46489_qA_0-13.mp3",
+  "selection_mode": "under 10s fallback + under 15s fallback"
+}

@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Magnolia Warbler",
+  "bam_scientific_name": "Setophaga magnolia",
+  "xeno_canto_scientific_name": "Setophaga magnolia",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "962395",
+  "xeno_canto_english_name": "Magnolia Warbler",
+  "recordist": "A Richardson",
+  "country": "Canada",
+  "location": "Thunder Bay, Thunder Bay District, Ontario",
+  "date": "2024-07-26",
+  "length": "0:03",
+  "duration_seconds": 3,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/962395",
+  "audio_url": "https://xeno-canto.org/962395/download",
+  "local_audio_file": "2_962395_qA_0-03.mp3",
+  "selection_mode": "under 7s preferred"
+}

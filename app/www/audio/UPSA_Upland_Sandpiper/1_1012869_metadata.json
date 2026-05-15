@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Upland Sandpiper",
+  "bam_scientific_name": "Bartramia longicauda",
+  "xeno_canto_scientific_name": "Bartramia longicauda",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "1012869",
+  "xeno_canto_english_name": "Upland Sandpiper",
+  "recordist": "Stanislas Wroza",
+  "country": "Canada",
+  "location": "Lotbinière (near  Notre-Dame-du-Sacré-Coeur-d'Issoudun), Chaudière-Appalaches, Québec",
+  "date": "2025-05-20",
+  "length": "0:07",
+  "duration_seconds": 7,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/1012869",
+  "audio_url": "https://xeno-canto.org/1012869/download",
+  "local_audio_file": "1_1012869_qA_0-07.mp3",
+  "selection_mode": "under 7s preferred"
+}
