@@ -1,7 +1,11 @@
 from shiny import Inputs, reactive, ui, render
-from shinywidgets import render_widget
+from shinywidgets import render_widget, output_widget
 from ipywidgets import HTML
-from ipyleaflet import Map, basemaps, WidgetControl
+from ipyleaflet import (
+    Map, basemaps,
+    basemap_to_tiles, LayersControl, ScaleControl,
+    FullScreenControl, WidgetControl
+)
 from localtileserver import TileClient, get_leaflet_tile_layer
 
 import polars as pl
@@ -14,7 +18,22 @@ from shared import (
 )
 from modules.bird import bird_card
 
+import warnings
+import numpy as np
+
+warnings.filterwarnings(
+    "ignore",
+    category=RuntimeWarning,
+    module="numpy.ma.core"
+)
+
 birds = load_species_metadata()
+
+BASEMAPS = {
+    "positron": basemaps.CartoDB.Positron,
+    "osm": basemaps.OpenStreetMap.Mapnik,
+    "imagery": basemaps.Esri.WorldImagery,
+}
 
 
 def server_v5(input: Inputs):
@@ -76,7 +95,7 @@ def server_v5(input: Inputs):
     @reactive.calc
     def tile_client():
         """Initialize and return a TileClient for the specific raster file selected."""
-        #species_id = input.species()
+
         species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
         region = input.region()
         year = input.year()
@@ -94,6 +113,38 @@ def server_v5(input: Inputs):
             return None
 
         return TileClient(str(path))
+    
+    @reactive.calc
+    def legend_widget():
+        """Generate reactive numerical legend for map"""
+        client = tile_client()
+
+        if client is None:
+            return HTML("<div>No data</div>")
+
+        band = client.dataset.read(1).astype(float)
+
+        rmin = float(np.nanmin(band))
+        rmax = float(np.nanmax(band))
+
+        return HTML(f"""
+        <div class="map-legend">
+            <div class="map-legend-title">
+                <b>{rmin:.4f} → {rmax:.4f}</b>
+            </div>
+            <div class="map-legend-gradient"></div>
+        </div>
+        """)
+
+    @render.ui
+    def map_container():
+        """Map container to handle cases where no data is avaliable"""
+        client = tile_client()
+
+        if client is None:
+            return ui.p("No data available")
+
+        return output_widget("map_widget")
 
     @render_widget
     def map_widget():
@@ -101,34 +152,41 @@ def server_v5(input: Inputs):
         client = tile_client()
 
         if client is None:
-            return ui.p("No data available")
+            return HTML("<p>No data available</p>")
 
-        m = Map(
-            center=client.center(),
-            zoom=4,
-            basemap=basemaps.CartoDB.Positron,
+        center = client.center()
+
+        positron = basemap_to_tiles(basemaps.CartoDB.Positron)
+        positron.base = True
+        positron.name = "Positron (minimal)"
+        
+        osm = basemap_to_tiles(basemaps.OpenStreetMap.Mapnik)
+        osm.base = True
+        osm.name = "Open Street Map (default)"
+        
+        esri = basemap_to_tiles(basemap=basemaps.Esri.WorldImagery)
+        esri.base = True
+        esri.name = "World Imagery (satellite)"
+
+        mean_density = get_leaflet_tile_layer(client, colormap="ylgn", indexes=1, name="Mean Density")
+        mean_detection = get_leaflet_tile_layer(client, colormap="ylgn", indexes=3, name="Mean Detection")
+
+        m = Map(layers=[esri, positron, osm],
+                center=center,
         )
 
-        tile_layer = get_leaflet_tile_layer(
-            client, colormap="ylgn", indexes=[input.raster_band()]
+        legend = WidgetControl(
+        widget=legend_widget(),
+        position="bottomright"
         )
 
-        m.add_layer(tile_layer)
-        legend = HTML(value="""
-        <div class="map-legend">
-            <div class="map-legend-title">
-                <b>Low → High</b>
-            </div>
+        m.add(mean_density)
+        m.add(mean_detection)
 
-            <div class="map-legend-gradient"></div>
-        </div>
-        """)
+        m.add(legend)
 
-        m.add_control(
-            WidgetControl(
-                widget=legend,
-                position="bottomright",
-            )
-        )
+        m.add(FullScreenControl())
+        m.add(LayersControl(collapsed=False, position='topright'))
+        m.add(ScaleControl(position='bottomleft'))
 
         return m

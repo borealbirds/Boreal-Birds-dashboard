@@ -22,18 +22,7 @@ def model_v5_tab():
         ui.navset_card_underline(
             ui.nav_panel(
                 "Map",
-                ui.input_radio_buttons(
-                    "raster_band",
-                    None,
-                    choices={
-                        1: "Mean Density (Male birds/hectare)",
-                        2: "Standard Deviation",
-                        3: "Mean Distance",
-                    },
-                    selected=1,
-                    inline=True
-                ),
-                output_widget("map_widget"),
+                ui.output_ui("map_container"),
             ),
             ui.nav_panel(
                 "Land Cover",
