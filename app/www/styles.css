@@ -126,7 +126,6 @@ body {
 
 .bird-card .card-body {
   height: 100%;
-  overflow: hidden;
 }
 
 /* spacing between image and text */
