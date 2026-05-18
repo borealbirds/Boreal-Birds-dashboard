@@ -15,6 +15,7 @@ from shared import (
     available_regions,
     available_years,
     load_species_metadata,
+    load_abundance_data
 )
 from modules.bird import bird_card
 
@@ -28,6 +29,7 @@ warnings.filterwarnings(
 )
 
 birds = load_species_metadata()
+abundances = load_abundance_data()
 
 BASEMAPS = {
     "positron": basemaps.CartoDB.Positron,
@@ -113,38 +115,6 @@ def server_v5(input: Inputs):
             return None
 
         return TileClient(str(path))
-    
-    @reactive.calc
-    def legend_widget():
-        """Generate reactive numerical legend for map"""
-        client = tile_client()
-
-        if client is None:
-            return HTML("<div>No data</div>")
-
-        band = client.dataset.read(1).astype(float)
-
-        rmin = float(np.nanmin(band))
-        rmax = float(np.nanmax(band))
-
-        return HTML(f"""
-        <div class="map-legend">
-            <div class="map-legend-title">
-                <b>{rmin:.4f} → {rmax:.4f}</b>
-            </div>
-            <div class="map-legend-gradient"></div>
-        </div>
-        """)
-
-    @render.ui
-    def map_container():
-        """Map container to handle cases where no data is avaliable"""
-        client = tile_client()
-
-        if client is None:
-            return ui.p("No data available")
-
-        return output_widget("map_widget")
 
     @render_widget
     def map_widget():
@@ -175,9 +145,20 @@ def server_v5(input: Inputs):
                 center=center,
         )
 
+        band = client.dataset.read(1).astype(float)
+        rmin = float(np.nanmin(band))
+        rmax = float(np.nanmax(band))
+
         legend = WidgetControl(
-        widget=legend_widget(),
-        position="bottomright"
+            widget=HTML(f"""
+            <div class="map-legend">
+                <div class="map-legend-title">
+                    <b>{rmin:.4f} → {rmax:.4f}</b>
+                </div>
+                <div class="map-legend-gradient"></div>
+            </div>
+            """),
+            position="bottomright"
         )
 
         m.add(mean_density)
@@ -190,3 +171,24 @@ def server_v5(input: Inputs):
         m.add(ScaleControl(position='bottomleft'))
 
         return m
+    
+    @render.data_frame
+    def population_size():
+        df = abundances.filter(
+            (pl.col("english") == input.species()) #& 
+            # (pl.col("year") == input.year())
+        )
+        print(abundances.select("id").unique(), input.species())
+        df = df.select([
+            'year',
+            'region', 
+            'population_estimate', 
+            'population_lower', 
+            'population_upper', 
+            'density_estimate', 
+            'density_lower', 
+            'density_upper'
+        ])
+        print(df)
+
+        return render.DataGrid(df, selection_mode="rows")

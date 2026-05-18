@@ -22,7 +22,7 @@ def model_v5_tab():
         ui.navset_card_underline(
             ui.nav_panel(
                 "Map",
-                ui.output_ui("map_container"),
+                output_widget("map_widget"),
             ),
             ui.nav_panel(
                 "Land Cover",
@@ -30,7 +30,8 @@ def model_v5_tab():
             ),
             ui.nav_panel(
                 "Population Size",
-                ui.p("population_size_placeholder"),
+                # ui.p("population_size_placeholder"),
+                ui.output_data_frame("population_size"), 
             ),
             title="Model Results",
         ),
