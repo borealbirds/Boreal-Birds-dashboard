@@ -1,0 +1,16 @@
+ipyleaflet
+rasterio
+localtileserver
+polars
+shinywidgets
+openpyxl
+shiny
+fastexcel
+
+# altair
+# pandas
+# ipykernel
+# anywidget
+# matplotlib
+# gdal
+# pyyaml
