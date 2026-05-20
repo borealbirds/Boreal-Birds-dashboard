@@ -9,6 +9,7 @@ from ipyleaflet import (
 from localtileserver import TileClient, get_leaflet_tile_layer
 
 import polars as pl
+import requests
 
 from shared import (
     get_tif_path,
@@ -31,12 +32,15 @@ warnings.filterwarnings(
 birds = load_species_metadata()
 abundances = load_abundance_data()
 
-BASEMAPS = {
-    "positron": basemaps.CartoDB.Positron,
-    "osm": basemaps.OpenStreetMap.Mapnik,
-    "imagery": basemaps.Esri.WorldImagery,
-}
-
+def url_exists(url: str) -> bool:
+    """
+    Ensure url for the file exists in the server
+    """
+    try:
+        r = requests.head(url, timeout=10)
+        return r.status_code == 200
+    except Exception:
+        return False
 
 def server_v5(input: Inputs):
     """
@@ -115,15 +119,33 @@ def server_v5(input: Inputs):
             return None
 
         return TileClient(str(path))
+    
+    @reactive.calc
+    def file_url():
+        species_id = birds.filter(
+            pl.col("english") == input.species()
+        ).item(0, "id")
+
+        region = input.region()
+        year = input.year()
+
+        if not species_id or not region or not year:
+            return None
+
+        return get_tif_path(species_id, region, int(year))
 
     @render_widget
     def map_widget():
         """Generate the interactive map widget with the tile layer and legend."""
-        client = tile_client()
+        url = file_url()
 
-        if client is None:
+        if not url:
             return HTML("<p>No data available</p>")
 
+        if not url_exists(url):
+            return HTML("<p>Raster not found on server</p>")
+
+        client = TileClient(url)
         center = client.center()
 
         positron = basemap_to_tiles(basemaps.CartoDB.Positron)
