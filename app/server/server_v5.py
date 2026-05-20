@@ -2,11 +2,10 @@ from shiny import Inputs, reactive, ui, render
 from shinywidgets import render_widget, output_widget
 from ipywidgets import HTML
 from ipyleaflet import (
-    Map, basemaps,
+    Map, basemaps, TileLayer,
     basemap_to_tiles, LayersControl, ScaleControl,
     FullScreenControl, WidgetControl
 )
-from localtileserver import TileClient, get_leaflet_tile_layer
 
 import polars as pl
 import requests
@@ -32,9 +31,19 @@ warnings.filterwarnings(
 birds = load_species_metadata()
 abundances = load_abundance_data()
 
+# Live Posit Connect Cloud dynamic map tiler base domain address
+PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
+
+# Hardcoded fallback center metrics for geographic bounding contexts
+REGION_CENTERS = {
+    "Alaska": [64, -149],
+    "Canada": [55, -106],
+    "Lower48": [47.0, -97.0]
+}
+
 def url_exists(url: str) -> bool:
     """
-    Ensure url for the file exists in the server
+    Ensure url for the file exists in the data host server
     """
     try:
         r = requests.head(url, timeout=10)
@@ -57,8 +66,7 @@ def server_v5(input: Inputs):
             french_name=bird.item(0, "french"),
             family=bird.item(0, "family"),
             image_url=f"img/{bird.item(0, "id")}.jpg"
-            )
-
+        )
 
     @reactive.effect
     def _update_regions():
@@ -97,31 +105,10 @@ def server_v5(input: Inputs):
             max=max(years),
             value=max(years),
         )
-
-    @reactive.calc
-    def tile_client():
-        """Initialize and return a TileClient for the specific raster file selected."""
-
-        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
-        region = input.region()
-        year = input.year()
-
-        if not species_id or not region or not year:
-            return None
-
-        path = get_tif_path(
-            species_id,
-            region,
-            int(year),
-        )
-
-        if not path.exists():
-            return None
-
-        return TileClient(str(path))
     
     @reactive.calc
     def file_url():
+        """Construct the remote URL string path for the selected raster."""
         species_id = birds.filter(
             pl.col("english") == input.species()
         ).item(0, "id")
@@ -134,20 +121,48 @@ def server_v5(input: Inputs):
 
         return get_tif_path(species_id, region, int(year))
 
+    @reactive.calc
+    def raster_statistics():
+        """Query min/max data statistics remotely using the TiTiler metadata API."""
+        url = file_url()
+        if not url or not url_exists(url):
+            return {"min": 0.0, "max": 1.0}
+            
+        try:
+            encoded_cog = requests.utils.quote(url, safe="")
+            # Query the statistics endpoint exposed by the tiler
+            stats_url = f"{PRODUCTION_TILER_BASE}/cog/statistics?url={encoded_cog}"
+            res = requests.get(stats_url, timeout=5).json()
+            
+            band_key = list(res.keys())[0] if res else None
+            if band_key:
+                band_stats = res[band_key]
+                return {
+                    "min": float(band_stats.get("min", 0.0)),
+                    "max": float(band_stats.get("max", 1.0))
+                }
+            return {"min": 0.0, "max": 1.0}
+        except Exception:
+            print(f"Error fetching TiTiler statistics: {e}")
+            return {"min": 0.0, "max": 1.0}
+
     @render_widget
     def map_widget():
-        """Generate the interactive map widget with the tile layer and legend."""
+        """Generate the interactive map widget leveraging the remote cloud tiler engine."""
         url = file_url()
 
         if not url:
-            return HTML("<p>No data available</p>")
+            return HTML("<p>Loading / No data available</p>")
 
         if not url_exists(url):
-            return HTML("<p>Raster not found on server</p>")
+            return HTML("<p>Raster not found on data server</p>")
 
-        client = TileClient(url)
-        center = client.center()
+        encoded_cog = requests.utils.quote(url, safe="")
+        
+        # center on the selected region
+        map_center = REGION_CENTERS.get(input.region(), [60.0, -110.0])
 
+        # Basemaps
         positron = basemap_to_tiles(basemaps.CartoDB.Positron)
         positron.base = True
         positron.name = "Positron (minimal)"
@@ -160,16 +175,13 @@ def server_v5(input: Inputs):
         esri.base = True
         esri.name = "World Imagery (satellite)"
 
-        mean_density = get_leaflet_tile_layer(client, colormap="ylgn", indexes=1, name="Mean Density")
-        # mean_detection = get_leaflet_tile_layer(client, colormap="ylgn", indexes=3, name="Mean Detection")
+        # Initialize core map interface
+        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4)
 
-        m = Map(layers=[esri, positron, osm],
-                center=center,
-        )
-
-        band = client.dataset.read(1).astype(float)
-        rmin = float(np.nanmin(band))
-        rmax = float(np.nanmax(band))
+        # generate legend utilizing remote data calculations
+        stats = raster_statistics()
+        rmin = stats["min"]
+        rmax = stats["max"]
 
         legend = WidgetControl(
             widget=HTML(f"""
@@ -183,11 +195,19 @@ def server_v5(input: Inputs):
             position="bottomright"
         )
 
-        m.add(mean_density)
-        # m.add(mean_detection)
+        # request tiles from the titiler API gateway
+        tile_string = f"{PRODUCTION_TILER_BASE}/cog/tiles/{{z}}/{{x}}/{{y}}.png?url={encoded_cog}&colormap_name=ylgn&rescale={rmin},{rmax}"
+        
+        mean_density = TileLayer(
+            url=tile_string,
+            name="Mean Density",
+            # opacity=0.75
+        )
 
+        m.add(mean_density)
         m.add(legend)
 
+        # controls
         m.add(FullScreenControl())
         m.add(LayersControl(collapsed=False, position='topright'))
         m.add(ScaleControl(position='bottomleft'))
@@ -197,10 +217,8 @@ def server_v5(input: Inputs):
     @render.data_frame
     def population_size():
         df = abundances.filter(
-            (pl.col("english") == input.species()) #& 
-            # (pl.col("year") == input.year())
+            (pl.col("english") == input.species())
         )
-        print(abundances.select("id").unique(), input.species())
         df = df.select([
             'year',
             'region', 
@@ -211,6 +229,5 @@ def server_v5(input: Inputs):
             'density_lower', 
             'density_upper'
         ])
-        print(df)
 
         return render.DataGrid(df, selection_mode="rows")
