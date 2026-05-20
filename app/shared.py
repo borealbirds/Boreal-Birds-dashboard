@@ -4,6 +4,7 @@ from io import BytesIO
 from pathlib import Path
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import tempfile
 
 app_dir = Path(__file__).parent.parent
 
@@ -161,3 +162,15 @@ def available_years(species_id: str, region: str) -> list[int]:
             continue
 
     return sorted(years)
+
+def download_tif(url: str) -> str:
+    r = requests.get(url, stream=True, timeout=120)
+    r.raise_for_status()
+
+    tmp = tempfile.NamedTemporaryFile(suffix=".tif", delete=False)
+
+    for chunk in r.iter_content(8192):
+        tmp.write(chunk)
+
+    tmp.close()
+    return tmp.name
