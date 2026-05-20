@@ -3,7 +3,8 @@ import polars as pl
 
 app_dir = Path(__file__).parent.parent
 
-DATA_DIR = app_dir / "data" / "model_v5"
+# DATA_DIR = app_dir / "data" / "model_v5" # local testing
+DATA_DIR = app_dir / "posit_data" / "model_v5" # testing posit deployments
 META_PATH = DATA_DIR / "12_BAMV5-results.xlsx"
 
 
