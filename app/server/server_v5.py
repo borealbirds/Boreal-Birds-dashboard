@@ -161,7 +161,7 @@ def server_v5(input: Inputs):
         esri.name = "World Imagery (satellite)"
 
         mean_density = get_leaflet_tile_layer(client, colormap="ylgn", indexes=1, name="Mean Density")
-        mean_detection = get_leaflet_tile_layer(client, colormap="ylgn", indexes=3, name="Mean Detection")
+        # mean_detection = get_leaflet_tile_layer(client, colormap="ylgn", indexes=3, name="Mean Detection")
 
         m = Map(layers=[esri, positron, osm],
                 center=center,
@@ -184,7 +184,7 @@ def server_v5(input: Inputs):
         )
 
         m.add(mean_density)
-        m.add(mean_detection)
+        # m.add(mean_detection)
 
         m.add(legend)
 
