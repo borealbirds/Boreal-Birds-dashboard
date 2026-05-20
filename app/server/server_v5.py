@@ -16,8 +16,7 @@ from shared import (
     available_regions,
     available_years,
     load_species_metadata,
-    load_abundance_data, 
-    download_tif
+    load_abundance_data
 )
 from modules.bird import bird_card
 
@@ -146,8 +145,7 @@ def server_v5(input: Inputs):
         if not url_exists(url):
             return HTML("<p>Raster not found on server</p>")
 
-        local_path = download_tif(url)
-        client = TileClient(local_path)
+        client = TileClient(url)
         center = client.center()
 
         positron = basemap_to_tiles(basemaps.CartoDB.Positron)
