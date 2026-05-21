@@ -14,6 +14,16 @@ from shiny import App, Inputs, reactive, render, ui
 
 www_dir = Path(__file__).parent / "www"
 
+FOOTER = ui.div(
+    ui.HTML(
+        '&copy; 2026 '
+        '<a href="https://borealbirds.ca/" target="_blank">Boreal Avian Modelling Project </a>'
+        'under a '
+        '<a href="https://creativecommons.org/licenses/by-sa/4.0/", target="_blank"> CC BY-SA 4.0 license </a>'
+    ),
+    class_="footer"
+)
+
 app_ui = ui.page_navbar(
     ui.head_content(ui.include_css(str(www_dir / "styles.css"))),
     ui.nav_spacer(),
@@ -30,11 +40,18 @@ app_ui = ui.page_navbar(
             class_="contact-link"
         ),
     ),
-    sidebar=sidebar(),
     selected="Current Model", # for during development phases
     id="tabs",
-    title="Boreal Birds Dashboard",
+    title=ui.tags.a(
+        ui.tags.img(
+            src="img/BAM-Logo-WhiteText.svg",
+            alt="Boreal Avian Modelling Centre Dashboard",
+            height="60"
+        ),
+        href="#",
+    ),
     fillable=True,
+    footer=FOOTER
 )
 
 def server(input: Inputs):
