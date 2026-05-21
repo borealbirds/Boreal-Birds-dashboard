@@ -106,6 +106,12 @@ body {
   text-transform: uppercase;
 }
 
+.welcome-card, 
+.model-access-card  {
+  width: 75%;
+  margin: 0 auto;
+}
+
 /* bird information card */
 .bird-image {
   width: 130px;
@@ -181,4 +187,11 @@ body {
     #006837
   );
   border: 1px solid #999;
+}
+
+.footer {
+  text-align: center;
+  padding: 0.5rem;
+  border-top: 1px solid var(--border-light);
+  font-size: 0.8rem;
 }
