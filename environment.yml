@@ -24,3 +24,5 @@ dependencies:
   - nbformat
   - nbclient
   - bs4
+  - geopandas
+
