@@ -4,18 +4,22 @@ from ipywidgets import HTML
 from ipyleaflet import (
     Map, basemaps, TileLayer,
     basemap_to_tiles, LayersControl, ScaleControl,
-    FullScreenControl, WidgetControl
+    FullScreenControl, WidgetControl, GeoJSON
 )
 
-import polars as pl
+import json
 import requests
+import polars as pl
+import geopandas as gpd
+from functools import lru_cache
 
 from shared import (
     get_tif_path,
     available_regions,
     available_years,
     load_species_metadata,
-    load_abundance_data
+    load_abundance_data,
+    load_subregion_boundaries
 )
 from modules.bird import bird_card
 
@@ -30,6 +34,7 @@ warnings.filterwarnings(
 
 birds = load_species_metadata()
 abundances = load_abundance_data()
+subregions = load_subregion_boundaries()
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
 PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
@@ -51,6 +56,21 @@ def url_exists(url: str) -> bool:
     except Exception:
         return False
 
+def get_region_gdf(region: str):
+
+    gdf = subregions
+
+    if region == "Canada":
+        gdf = gdf[gdf["bcr"].str.startswith("can")]
+
+    elif region == "Lower48":
+        gdf = gdf[gdf["bcr"].str.startswith("usa")]
+
+    elif region == "Alaska":
+        gdf = gdf[gdf["bcr"] == "Alaska"]
+
+    return gdf
+
 def server_v5(input: Inputs):
     """
     Main server logic for the Model V5 tab, managing reactive data flow 
@@ -59,7 +79,7 @@ def server_v5(input: Inputs):
 
     @render.ui
     def selected_bird():
-        bird = birds.filter(pl.col("english") == input.species())
+        bird = birds.filter(pl.col("english") == input.species_v5())
         return bird_card(
             species=bird.item(0, "scientific"),
             common_name=bird.item(0, "english"),
@@ -71,16 +91,16 @@ def server_v5(input: Inputs):
     @reactive.effect
     def _update_regions():
         """Update the region dropdown choices dynamically based on species availability."""
-        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
+        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
 
         if not species_id:
-            ui.update_select("region", choices=[], selected=None)
+            ui.update_select("region_v5", choices=[], selected=None)
             return
 
         regions = available_regions(species_id)
 
         ui.update_select(
-            "region",
+            "region_v5",
             choices=regions,
             selected=regions[0] if regions else None,
         )
@@ -88,8 +108,8 @@ def server_v5(input: Inputs):
     @reactive.effect
     def _update_year_range():
         """Update the slider range and default value based on available temporal data."""
-        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
-        region = input.region()
+        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
+        region = input.region_v5()
 
         if not species_id or not region:
             return
@@ -100,7 +120,7 @@ def server_v5(input: Inputs):
             return
 
         ui.update_slider(
-            "year",
+            "year_v5",
             min=min(years),
             max=max(years),
             value=max(years),
@@ -110,11 +130,11 @@ def server_v5(input: Inputs):
     def file_url():
         """Construct the remote URL string path for the selected raster."""
         species_id = birds.filter(
-            pl.col("english") == input.species()
+            pl.col("english") == input.species_v5()
         ).item(0, "id")
 
-        region = input.region()
-        year = input.year()
+        region = input.region_v5()
+        year = input.year_v5()
 
         if not species_id or not region or not year:
             return None
@@ -142,7 +162,7 @@ def server_v5(input: Inputs):
                     "max": float(band_stats.get("max", 1.0))
                 }
             return {"min": 0.0, "max": 1.0}
-        except Exception:
+        except Exception as e:
             print(f"Error fetching TiTiler statistics: {e}")
             return {"min": 0.0, "max": 1.0}
 
@@ -160,7 +180,7 @@ def server_v5(input: Inputs):
         encoded_cog = requests.utils.quote(url, safe="")
         
         # center on the selected region
-        map_center = REGION_CENTERS.get(input.region(), [60.0, -110.0])
+        map_center = REGION_CENTERS.get(input.region_v5(), [60.0, -110.0])
 
         # Basemaps
         positron = basemap_to_tiles(basemaps.CartoDB.Positron)
@@ -196,12 +216,17 @@ def server_v5(input: Inputs):
         )
 
         # request tiles from the titiler API gateway
-        tile_string = f"{PRODUCTION_TILER_BASE}/cog/tiles/{{z}}/{{x}}/{{y}}.png?url={encoded_cog}&colormap_name=ylgn&rescale={rmin},{rmax}"
+        tile_string = (
+            f"{PRODUCTION_TILER_BASE}"
+            f"/cog/tiles/{{z}}/{{x}}/{{y}}.png"
+            f"?url={encoded_cog}"
+            f"&colormap_name=ylgn"
+            f"&rescale={rmin},{rmax}"
+        )
         
         mean_density = TileLayer(
             url=tile_string,
             name="Mean Density",
-            # opacity=0.75
         )
 
         m.add(mean_density)
@@ -217,7 +242,7 @@ def server_v5(input: Inputs):
     @render.data_frame
     def population_size():
         df = abundances.filter(
-            (pl.col("english") == input.species())
+            (pl.col("english") == input.species_v5())
         )
         df = df.select([
             'year',

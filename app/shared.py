@@ -1,17 +1,19 @@
 import requests
 import polars as pl
 from io import BytesIO
+import geopandas as gpd
 from pathlib import Path
 from bs4 import BeautifulSoup
+from functools import lru_cache
 from urllib.parse import urljoin
 
 app_dir = Path(__file__).parent.parent
 
 REMOTE_DATA_FOLDER = "dashboard/"
 BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
-DATA_DIR = app_dir / "data" / "model_v5"
-META_PATH = DATA_DIR / "12_BAMV5-results.xlsx"
-
+DATA_DIR = app_dir / "data"
+V5_META_PATH = DATA_DIR / "model_v5" / "12_BAMV5-results.xlsx"
+BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
 
 def get_tif_path(species_id: str, region: str, year: int) -> str:
     """
@@ -25,6 +27,26 @@ def get_tif_path(species_id: str, region: str, year: int) -> str:
         f"{species_id}/{region}/{filename}"
     )
 
+@lru_cache(maxsize=1)
+def load_subregion_boundaries() -> gpd.GeoDataFrame:
+    """
+    Load and preprocess ecological subregion boundaries for leaflet rendering.
+
+    Returns
+    -------
+    gpd.GeoDataFrame
+        Simplified subregion polygons in EPSG:4326.
+    """
+
+    gdf = gpd.read_file(BOUNDARIES_PATH)
+
+    # convert from EPSG:3978 to EPSG:4326
+    gdf = gdf.to_crs(epsg=4326)
+
+    # simplify boundaries to load faster
+    gdf["geometry"] = gdf.geometry.simplify(0.01)
+
+    return gdf
 
 def load_species_metadata() -> pl.DataFrame:
     """
@@ -35,7 +57,7 @@ def load_species_metadata() -> pl.DataFrame:
     pl.DataFrame
         A Polars DataFrame containing the 'species' sheet metadata.
     """
-    return pl.read_excel(META_PATH, sheet_name="species")
+    return pl.read_excel(V5_META_PATH, sheet_name="species")
 
 def load_abundance_data() -> pl.DataFrame:
     """
@@ -46,7 +68,7 @@ def load_abundance_data() -> pl.DataFrame:
     pl.DataFrame
         A Polars DataFrame containing the 'species' sheet metadata.
     """
-    return pl.read_excel(META_PATH, sheet_name="abundances")
+    return pl.read_excel(V5_META_PATH, sheet_name="abundances")
 
 def list_directory(url: str) -> list[str]:
     """
