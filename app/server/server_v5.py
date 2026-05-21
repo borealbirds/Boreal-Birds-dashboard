@@ -1,12 +1,12 @@
 from shiny import Inputs, reactive, ui, render
-from shinywidgets import render_widget, output_widget
+from shinywidgets import render_widget, output_widget, render_altair
 from ipywidgets import HTML
 from ipyleaflet import (
     Map, basemaps, TileLayer,
     basemap_to_tiles, LayersControl, ScaleControl,
     FullScreenControl, WidgetControl
 )
-
+import altair as alt
 import polars as pl
 import requests
 
@@ -214,11 +214,16 @@ def server_v5(input: Inputs):
 
         return m
     
-    @render.data_frame
-    def population_size():
-        df = abundances.filter(
+    @reactive.calc
+    def population_data():
+        return abundances.filter(
             (pl.col("english") == input.species())
         )
+
+    @render.data_frame
+    def population_size():
+        df = population_data()
+
         df = df.select([
             'year',
             'region', 
@@ -231,3 +236,75 @@ def server_v5(input: Inputs):
         ])
 
         return render.DataGrid(df, selection_mode="rows")
+
+    @render_altair
+    def population_chart():
+
+        df = population_data()
+
+        points = alt.Chart(df).mark_point(
+            filled=True,
+            color='green'
+        ).encode(
+            alt.X('population_estimate').title('Abundance (M males)').scale(type="log"),
+            alt.Y('region').title("").sort(
+                field='population_estimate',
+                order='descending'
+            ),
+            tooltip=alt.Tooltip([
+                "population_estimate",
+                "population_lower",
+                "population_upper",
+            ])
+        ).properties(
+            width="container",
+            height=500
+        )
+
+        error_bars = points.mark_rule().encode(
+            x='population_lower',
+            x2='population_upper',
+        )
+
+        return (points + error_bars).properties(
+            title=alt.Title(
+                f"Regional Population Estimates for {input.species()}",
+                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
+            )
+        )
+
+    @render_altair
+    def density_chart():
+
+        df = population_data()
+
+        points = alt.Chart(df).mark_point(
+            filled=True,
+            color='green'
+        ).encode(
+            alt.X('density_estimate').title('Density (males/ha)'),
+            alt.Y('region').title("").sort(
+                field='density_estimate',
+                order='descending'
+            ),
+            tooltip=alt.Tooltip([
+                "density_estimate",
+                "density_lower",
+                "density_upper"
+            ])
+        ).properties(
+            width="container",
+            height=500
+        )
+
+        error_bars = points.mark_rule().encode(
+            x='density_lower',
+            x2='density_upper',
+        )
+
+        return (points + error_bars).properties(
+            title=alt.Title(
+                f"Regional Density Estimates for {input.species()}",
+                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
+            )
+        )
