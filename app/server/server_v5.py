@@ -57,19 +57,61 @@ def url_exists(url: str) -> bool:
         return False
 
 def get_region_gdf(region: str):
-
     gdf = subregions
+    alaska_bcr = ["usa2", "usa41423", "usa43", "usa40", "usa5"]
 
     if region == "Canada":
-        gdf = gdf[gdf["bcr"].str.startswith("can")]
+        return gdf[gdf["bcr"].str.startswith("can")]
 
-    elif region == "Lower48":
-        gdf = gdf[gdf["bcr"].str.startswith("usa")]
+    if region == "Lower48":
+        return gdf[
+            gdf["bcr"].str.startswith("usa") &
+            ~gdf["bcr"].isin(alaska_bcr)
+        ]
 
-    elif region == "Alaska":
-        gdf = gdf[gdf["bcr"] == "Alaska"]
+    if region == "Alaska":
+        return gdf[gdf["bcr"].isin(alaska_bcr)]
 
     return gdf
+
+def build_region_layer(region_name: str):
+
+    region_gdf = get_region_gdf(region_name)
+
+    geojson_data = json.loads(
+        region_gdf.to_json(drop_id=True)
+    )
+
+    # for feature in geojson_data["features"]:
+
+    #     props = feature["properties"]
+
+    #     feature["properties"]["tooltip"] = (
+    #         "<div style='font-size:13px;'>"
+    #         f"<b>Country:</b> {props.get('country', 'Unknown')}<br>"
+    #         f"<b>BCR:</b> {props.get('bcr', 'Unknown')}"
+    #         "</div>"
+    #     )
+
+    layer = GeoJSON(
+        data=geojson_data,
+        style={
+            "color": "white",
+            "weight": 1.5,
+            "fillColor": "white",
+            "fillOpacity": 0.05,
+            "opacity": 0.7,
+        },
+        hover_style={
+            "color": "#00FFFF",
+            "weight": 3,
+            "fillColor": "#00FFFF",
+            "fillOpacity": 0.20,
+        },
+        name=f"Subregion Boundaries"
+    )
+
+    return layer
 
 def server_v5(input: Inputs):
     """
@@ -166,6 +208,12 @@ def server_v5(input: Inputs):
             print(f"Error fetching TiTiler statistics: {e}")
             return {"min": 0.0, "max": 1.0}
 
+    REGION_LAYERS = {
+        "Canada": build_region_layer("Canada"),
+        "Lower48": build_region_layer("Lower48"),
+        "Alaska": build_region_layer("Alaska"),
+    }
+
     @render_widget
     def map_widget():
         """Generate the interactive map widget leveraging the remote cloud tiler engine."""
@@ -231,6 +279,17 @@ def server_v5(input: Inputs):
 
         m.add(mean_density)
         m.add(legend)
+
+        region = input.region_v5()
+
+        if region == "Canada":
+            m.add(REGION_LAYERS["Canada"])
+
+        elif region == "Lower48":
+            m.add(REGION_LAYERS["Lower48"])
+
+        elif region == "Alaska":
+            m.add(REGION_LAYERS["Alaska"])
 
         # controls
         m.add(FullScreenControl())
