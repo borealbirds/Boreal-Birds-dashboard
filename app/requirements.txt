@@ -8,8 +8,8 @@ shiny
 fastexcel
 bs4
 geopandas
+altair
 
-# altair
 # pandas
 # ipykernel
 # anywidget

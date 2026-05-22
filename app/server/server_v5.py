@@ -1,13 +1,14 @@
 from shiny import Inputs, reactive, ui, render
-from shinywidgets import render_widget, output_widget
+from shinywidgets import render_widget, output_widget, render_altair
 from ipywidgets import HTML
 from ipyleaflet import (
-    Map, basemaps, TileLayer,
+    Map, basemaps, TileLayer, GeoData,
     basemap_to_tiles, LayersControl, ScaleControl,
     FullScreenControl, WidgetControl, GeoJSON
 )
 
 import json
+import altair as alt
 import requests
 import polars as pl
 import geopandas as gpd
@@ -35,6 +36,7 @@ warnings.filterwarnings(
 birds = load_species_metadata()
 abundances = load_abundance_data()
 subregions = load_subregion_boundaries()
+
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
 PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
@@ -122,12 +124,27 @@ def server_v5(input: Inputs):
     @render.ui
     def selected_bird():
         bird = birds.filter(pl.col("english") == input.species_v5())
+
+        pop_dict = (
+            population_data()
+            .filter(pl.col("region").is_in(["Canada", "Alaska", "Lower48"]))
+            .select(["region", "population_estimate"])
+            .rows_by_key(key="region", named=True, unique=True)
+        )
+
+        canada = pop_dict.get("Canada", {}).get("population_estimate", "No Model Estimates")
+        alaska = pop_dict.get("Alaska", {}).get("population_estimate", "No Model Estimates")
+        lower48 = pop_dict.get("Lower48", {}).get("population_estimate", "No Model Estimates")
+
         return bird_card(
             species=bird.item(0, "scientific"),
             common_name=bird.item(0, "english"),
             french_name=bird.item(0, "french"),
             family=bird.item(0, "family"),
-            image_url=f"img/{bird.item(0, "id")}.jpg"
+            image_url=f"img/{bird.item(0, "id")}.jpg",
+            canada_pop=canada,
+            alaska_pop=alaska,
+            lower48_pop=lower48
         )
 
     @reactive.effect
@@ -244,7 +261,7 @@ def server_v5(input: Inputs):
         esri.name = "World Imagery (satellite)"
 
         # Initialize core map interface
-        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4)
+        m = Map(layers=[esri, positron, osm], center=map_center, zoom=3)
 
         # generate legend utilizing remote data calculations
         stats = raster_statistics()
@@ -298,11 +315,16 @@ def server_v5(input: Inputs):
 
         return m
     
-    @render.data_frame
-    def population_size():
-        df = abundances.filter(
+    @reactive.calc
+    def population_data():
+        return abundances.filter(
             (pl.col("english") == input.species_v5())
         )
+
+    @render.data_frame
+    def population_size():
+        df = population_data()
+
         df = df.select([
             'year',
             'region', 
@@ -315,3 +337,75 @@ def server_v5(input: Inputs):
         ])
 
         return render.DataGrid(df, selection_mode="rows")
+
+    @render_altair
+    def population_chart():
+
+        df = population_data()
+
+        points = alt.Chart(df).mark_point(
+            filled=True,
+            color='green'
+        ).encode(
+            alt.X('population_estimate').title('Abundance (M males)').scale(type="log"),
+            alt.Y('region').title("").sort(
+                field='population_estimate',
+                order='descending'
+            ),
+            tooltip=alt.Tooltip([
+                "population_estimate",
+                "population_lower",
+                "population_upper",
+            ])
+        ).properties(
+            width="container",
+            height=500
+        )
+
+        error_bars = points.mark_rule().encode(
+            x='population_lower',
+            x2='population_upper',
+        )
+
+        return (points + error_bars).properties(
+            title=alt.Title(
+                f"Regional Population Estimates for {input.species()}",
+                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
+            )
+        )
+
+    @render_altair
+    def density_chart():
+
+        df = population_data()
+
+        points = alt.Chart(df).mark_point(
+            filled=True,
+            color='green'
+        ).encode(
+            alt.X('density_estimate').title('Density (males/ha)'),
+            alt.Y('region').title("").sort(
+                field='density_estimate',
+                order='descending'
+            ),
+            tooltip=alt.Tooltip([
+                "density_estimate",
+                "density_lower",
+                "density_upper"
+            ])
+        ).properties(
+            width="container",
+            height=500
+        )
+
+        error_bars = points.mark_rule().encode(
+            x='density_lower',
+            x2='density_upper',
+        )
+
+        return (points + error_bars).properties(
+            title=alt.Title(
+                f"Regional Density Estimates for {input.species()}",
+                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
+            )
+        )

@@ -1,7 +1,11 @@
+#from icons import question_circle_fill
+
 from shiny import ui
 from shinywidgets import output_widget
 
 from ui.sidebar import sidebar
+
+from icons import question_circle_fill
 
 def model_v5_tab():
     """
@@ -31,10 +35,24 @@ def model_v5_tab():
                     ui.p("land_cover_placeholder"),
                 ),
                 ui.nav_panel(
+                    "Population Estimates",
+                    ui.card(output_widget("population_chart"), full_screen=True),
+                ),
+                ui.nav_panel(
+                    "Density Estimates",
+                    ui.card(output_widget("density_chart"), full_screen=True),
+                ),
+                ui.nav_panel(
                     "Population Size",
                     ui.output_data_frame("population_size"), 
                 ),
-                title="Model Results",
-            ),
+                title=ui.tooltip(
+                    ui.span("Model Results ", question_circle_fill),
+                    "Population size (M males) is based on summing up predictive maps by regions.",
+                    placement="right",
+                    id="results_tooltip",
+                    class_="results_tooltip"
+                )
+            )
         )
     )
