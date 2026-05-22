@@ -60,12 +60,27 @@ def server_v5(input: Inputs):
     @render.ui
     def selected_bird():
         bird = birds.filter(pl.col("english") == input.species())
+
+        pop_dict = (
+            population_data()
+            .filter(pl.col("region").is_in(["Canada", "Alaska", "Lower48"]))
+            .select(["region", "population_estimate"])
+            .rows_by_key(key="region", named=True, unique=True)
+        )
+
+        canada = pop_dict.get("Canada", {}).get("population_estimate", "No Model Estimates")
+        alaska = pop_dict.get("Alaska", {}).get("population_estimate", "No Model Estimates")
+        lower48 = pop_dict.get("Lower48", {}).get("population_estimate", "No Model Estimates")
+
         return bird_card(
             species=bird.item(0, "scientific"),
             common_name=bird.item(0, "english"),
             french_name=bird.item(0, "french"),
             family=bird.item(0, "family"),
-            image_url=f"img/{bird.item(0, "id")}.jpg"
+            image_url=f"img/{bird.item(0, "id")}.jpg",
+            canada_pop=canada,
+            alaska_pop=alaska,
+            lower48_pop=lower48
         )
 
     @reactive.effect
