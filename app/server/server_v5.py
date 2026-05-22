@@ -261,7 +261,7 @@ def server_v5(input: Inputs):
         esri.name = "World Imagery (satellite)"
 
         # Initialize core map interface
-        m = Map(layers=[esri, positron, osm], center=map_center, zoom=3)
+        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4)
 
         # generate legend utilizing remote data calculations
         stats = raster_statistics()
@@ -369,7 +369,7 @@ def server_v5(input: Inputs):
 
         return (points + error_bars).properties(
             title=alt.Title(
-                f"Regional Population Estimates for {input.species()}",
+                f"Regional Population Estimates for {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
             )
         )
@@ -405,7 +405,7 @@ def server_v5(input: Inputs):
 
         return (points + error_bars).properties(
             title=alt.Title(
-                f"Regional Density Estimates for {input.species()}",
+                f"Regional Density Estimates for {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
             )
         )
