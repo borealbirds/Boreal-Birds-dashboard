@@ -1,6 +1,8 @@
 from shiny import ui
 
-def bird_card(species, common_name, french_name, family, image_url):
+from icons import question_circle_fill
+
+def bird_card(species, common_name, french_name, family, image_url, canada_pop, alaska_pop, lower48_pop):
     return ui.card(
         ui.card_body(
             ui.row(
@@ -12,10 +14,16 @@ def bird_card(species, common_name, french_name, family, image_url):
                     ui.div(ui.strong("Family "), family),
                 ),
                 ui.column(5,
-                    ui.h4("Population Size"),
-                    ui.div(ui.strong("Canada "), ui.em("Placeholder")),
-                    ui.div(ui.strong("Alaska "), ui.em("Placeholder")),
-                    ui.div(ui.strong("Lower 48 (US) "), ui.em("Placeholder")),
+                    ui.h4(
+                        ui.tooltip(
+                        ui.span("Population Estimates ", question_circle_fill),
+                        "in Million males",
+                        placement="right",
+                        )
+                    ),
+                    ui.div(ui.strong("Canada "), f"{canada_pop}"),
+                    ui.div(ui.strong("Alaska "), f"{alaska_pop}"),
+                    ui.div(ui.strong("Lower 48 (US) "), f"{lower48_pop}"),
                 ),
             ),
         ),

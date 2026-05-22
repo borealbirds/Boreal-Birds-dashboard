@@ -7,8 +7,8 @@ openpyxl
 shiny
 fastexcel
 bs4
-
-# altair
+geopandas
+altair
 # pandas
 # ipykernel
 # anywidget
