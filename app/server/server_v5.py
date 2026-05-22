@@ -2,7 +2,7 @@ from shiny import Inputs, reactive, ui, render
 from shinywidgets import render_widget, output_widget, render_altair
 from ipywidgets import HTML
 from ipyleaflet import (
-    Map, basemaps, TileLayer,
+    Map, basemaps, TileLayer, GeoData,
     basemap_to_tiles, LayersControl, ScaleControl,
     FullScreenControl, WidgetControl
 )
@@ -30,6 +30,13 @@ warnings.filterwarnings(
 
 birds = load_species_metadata()
 abundances = load_abundance_data()
+
+from pathlib import Path
+import geopandas as gpd
+gdf = gpd.read_file(Path(__file__).parent.parent.parent / "data" / "boundaries")
+gdf = gdf.to_crs(epsg=4326)
+gdf = gdf[1:32]
+
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
 PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
@@ -161,6 +168,13 @@ def server_v5(input: Inputs):
             print(f"Error fetching TiTiler statistics: {e}")
             return {"min": 0.0, "max": 1.0}
 
+    geo_data_layer = GeoData(
+        geo_dataframe=gdf,
+        style={'color': 'blue', 'fillOpacity': 0, 'opacity': 0.7, 'weight': 1},
+        hover_style={'fillColor': 'red', 'fillOpacity': 0.5},
+        name='Boundaries Layer'
+    )
+
     @render_widget
     def map_widget():
         """Generate the interactive map widget leveraging the remote cloud tiler engine."""
@@ -191,7 +205,7 @@ def server_v5(input: Inputs):
         esri.name = "World Imagery (satellite)"
 
         # Initialize core map interface
-        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4)
+        m = Map(layers=[esri, positron, osm], center=map_center, zoom=3)
 
         # generate legend utilizing remote data calculations
         stats = raster_statistics()
@@ -218,7 +232,7 @@ def server_v5(input: Inputs):
             name="Mean Density",
             # opacity=0.75
         )
-
+        m.add(geo_data_layer)
         m.add(mean_density)
         m.add(legend)
 
