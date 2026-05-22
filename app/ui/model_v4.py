@@ -7,7 +7,7 @@ def model_v4_tab():
     return ui.nav_panel(
         "Historical Model",
         ui.layout_sidebar(
-            sidebar(),
+            sidebar("v4"),
             ui.card(
                 ui.p("Bird Info Card"),
             ),

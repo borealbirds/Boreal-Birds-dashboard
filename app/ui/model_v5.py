@@ -23,7 +23,7 @@ def model_v5_tab():
     return ui.nav_panel(
         "Current Model",
         ui.layout_sidebar(
-            sidebar(),
+            sidebar("v5"),
             ui.output_ui(id="selected_bird"),
             ui.navset_card_underline(
                 ui.nav_panel(

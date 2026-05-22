@@ -2,24 +2,25 @@ from shiny import ui
 from shared import load_species_metadata
 
 
-def sidebar():
+def sidebar(model_version: str):
+    """ model version: v4 or v5 """
     species_choices = sorted(load_species_metadata().get_column("english").to_list())
 
     return ui.sidebar(
         ui.input_select(
-            "species",
+            f"species_{model_version}",
             "Species",
             choices=species_choices,
             size=10
         ),
         ui.input_select(
-            "region",
+            f"region_{model_version}",
             "Region",
             choices=[],
             size=3
         ),
         ui.input_slider(
-            "year",
+            f"year_{model_version}",
             "Year",
             min=1990,
             max=2020,

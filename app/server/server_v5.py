@@ -4,18 +4,23 @@ from ipywidgets import HTML
 from ipyleaflet import (
     Map, basemaps, TileLayer, GeoData,
     basemap_to_tiles, LayersControl, ScaleControl,
-    FullScreenControl, WidgetControl
+    FullScreenControl, WidgetControl, GeoJSON
 )
+
+import json
 import altair as alt
-import polars as pl
 import requests
+import polars as pl
+import geopandas as gpd
+from functools import lru_cache
 
 from shared import (
     get_tif_path,
     available_regions,
     available_years,
     load_species_metadata,
-    load_abundance_data
+    load_abundance_data,
+    load_subregion_boundaries
 )
 from modules.bird import bird_card
 
@@ -30,12 +35,7 @@ warnings.filterwarnings(
 
 birds = load_species_metadata()
 abundances = load_abundance_data()
-
-from pathlib import Path
-import geopandas as gpd
-gdf = gpd.read_file(Path(__file__).parent.parent.parent / "data" / "boundaries")
-gdf = gdf.to_crs(epsg=4326)
-gdf = gdf[1:32]
+subregions = load_subregion_boundaries()
 
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
@@ -58,6 +58,63 @@ def url_exists(url: str) -> bool:
     except Exception:
         return False
 
+def get_region_gdf(region: str):
+    gdf = subregions
+    alaska_bcr = ["usa2", "usa41423", "usa43", "usa40", "usa5"]
+
+    if region == "Canada":
+        return gdf[gdf["bcr"].str.startswith("can")]
+
+    if region == "Lower48":
+        return gdf[
+            gdf["bcr"].str.startswith("usa") &
+            ~gdf["bcr"].isin(alaska_bcr)
+        ]
+
+    if region == "Alaska":
+        return gdf[gdf["bcr"].isin(alaska_bcr)]
+
+    return gdf
+
+def build_region_layer(region_name: str):
+
+    region_gdf = get_region_gdf(region_name)
+
+    geojson_data = json.loads(
+        region_gdf.to_json(drop_id=True)
+    )
+
+    # for feature in geojson_data["features"]:
+
+    #     props = feature["properties"]
+
+    #     feature["properties"]["tooltip"] = (
+    #         "<div style='font-size:13px;'>"
+    #         f"<b>Country:</b> {props.get('country', 'Unknown')}<br>"
+    #         f"<b>BCR:</b> {props.get('bcr', 'Unknown')}"
+    #         "</div>"
+    #     )
+
+    layer = GeoJSON(
+        data=geojson_data,
+        style={
+            "color": "white",
+            "weight": 1.5,
+            "fillColor": "white",
+            "fillOpacity": 0.05,
+            "opacity": 0.7,
+        },
+        hover_style={
+            "color": "#00FFFF",
+            "weight": 3,
+            "fillColor": "#00FFFF",
+            "fillOpacity": 0.20,
+        },
+        name=f"Subregion Boundaries"
+    )
+
+    return layer
+
 def server_v5(input: Inputs):
     """
     Main server logic for the Model V5 tab, managing reactive data flow 
@@ -66,7 +123,7 @@ def server_v5(input: Inputs):
 
     @render.ui
     def selected_bird():
-        bird = birds.filter(pl.col("english") == input.species())
+        bird = birds.filter(pl.col("english") == input.species_v5())
 
         pop_dict = (
             population_data()
@@ -93,16 +150,16 @@ def server_v5(input: Inputs):
     @reactive.effect
     def _update_regions():
         """Update the region dropdown choices dynamically based on species availability."""
-        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
+        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
 
         if not species_id:
-            ui.update_select("region", choices=[], selected=None)
+            ui.update_select("region_v5", choices=[], selected=None)
             return
 
         regions = available_regions(species_id)
 
         ui.update_select(
-            "region",
+            "region_v5",
             choices=regions,
             selected=regions[0] if regions else None,
         )
@@ -110,8 +167,8 @@ def server_v5(input: Inputs):
     @reactive.effect
     def _update_year_range():
         """Update the slider range and default value based on available temporal data."""
-        species_id = birds.filter(pl.col("english") == input.species()).item(0, "id")
-        region = input.region()
+        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
+        region = input.region_v5()
 
         if not species_id or not region:
             return
@@ -122,7 +179,7 @@ def server_v5(input: Inputs):
             return
 
         ui.update_slider(
-            "year",
+            "year_v5",
             min=min(years),
             max=max(years),
             value=max(years),
@@ -132,11 +189,11 @@ def server_v5(input: Inputs):
     def file_url():
         """Construct the remote URL string path for the selected raster."""
         species_id = birds.filter(
-            pl.col("english") == input.species()
+            pl.col("english") == input.species_v5()
         ).item(0, "id")
 
-        region = input.region()
-        year = input.year()
+        region = input.region_v5()
+        year = input.year_v5()
 
         if not species_id or not region or not year:
             return None
@@ -164,16 +221,15 @@ def server_v5(input: Inputs):
                     "max": float(band_stats.get("max", 1.0))
                 }
             return {"min": 0.0, "max": 1.0}
-        except Exception:
+        except Exception as e:
             print(f"Error fetching TiTiler statistics: {e}")
             return {"min": 0.0, "max": 1.0}
 
-    geo_data_layer = GeoData(
-        geo_dataframe=gdf,
-        style={'color': 'blue', 'fillOpacity': 0, 'opacity': 0.7, 'weight': 1},
-        hover_style={'fillColor': 'red', 'fillOpacity': 0.5},
-        name='Boundaries Layer'
-    )
+    REGION_LAYERS = {
+        "Canada": build_region_layer("Canada"),
+        "Lower48": build_region_layer("Lower48"),
+        "Alaska": build_region_layer("Alaska"),
+    }
 
     @render_widget
     def map_widget():
@@ -189,7 +245,7 @@ def server_v5(input: Inputs):
         encoded_cog = requests.utils.quote(url, safe="")
         
         # center on the selected region
-        map_center = REGION_CENTERS.get(input.region(), [60.0, -110.0])
+        map_center = REGION_CENTERS.get(input.region_v5(), [60.0, -110.0])
 
         # Basemaps
         positron = basemap_to_tiles(basemaps.CartoDB.Positron)
@@ -205,7 +261,7 @@ def server_v5(input: Inputs):
         esri.name = "World Imagery (satellite)"
 
         # Initialize core map interface
-        m = Map(layers=[esri, positron, osm], center=map_center, zoom=3)
+        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4)
 
         # generate legend utilizing remote data calculations
         stats = raster_statistics()
@@ -225,16 +281,32 @@ def server_v5(input: Inputs):
         )
 
         # request tiles from the titiler API gateway
-        tile_string = f"{PRODUCTION_TILER_BASE}/cog/tiles/{{z}}/{{x}}/{{y}}.png?url={encoded_cog}&colormap_name=ylgn&rescale={rmin},{rmax}"
+        tile_string = (
+            f"{PRODUCTION_TILER_BASE}"
+            f"/cog/tiles/{{z}}/{{x}}/{{y}}.png"
+            f"?url={encoded_cog}"
+            f"&colormap_name=ylgn"
+            f"&rescale={rmin},{rmax}"
+        )
         
         mean_density = TileLayer(
             url=tile_string,
             name="Mean Density",
-            # opacity=0.75
         )
-        m.add(geo_data_layer)
+
         m.add(mean_density)
         m.add(legend)
+
+        region = input.region_v5()
+
+        if region == "Canada":
+            m.add(REGION_LAYERS["Canada"])
+
+        elif region == "Lower48":
+            m.add(REGION_LAYERS["Lower48"])
+
+        elif region == "Alaska":
+            m.add(REGION_LAYERS["Alaska"])
 
         # controls
         m.add(FullScreenControl())
@@ -246,7 +318,7 @@ def server_v5(input: Inputs):
     @reactive.calc
     def population_data():
         return abundances.filter(
-            (pl.col("english") == input.species())
+            (pl.col("english") == input.species_v5())
         )
 
     @render.data_frame
@@ -297,7 +369,7 @@ def server_v5(input: Inputs):
 
         return (points + error_bars).properties(
             title=alt.Title(
-                f"Regional Population Estimates for {input.species()}",
+                f"Regional Population Estimates for {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
             )
         )
@@ -333,7 +405,7 @@ def server_v5(input: Inputs):
 
         return (points + error_bars).properties(
             title=alt.Title(
-                f"Regional Density Estimates for {input.species()}",
+                f"Regional Density Estimates for {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
             )
         )
