@@ -70,6 +70,27 @@ def load_abundance_data() -> pl.DataFrame:
     """
     return pl.read_excel(V5_META_PATH, sheet_name="abundances")
 
+def load_region_data() -> pl.DataFrame:
+    """Load region-level data from the Excel results summary file.
+
+    Returns
+    -------
+    pl.DataFrame
+        A Polars DataFrame containing the 'regions' sheet data.
+    """
+
+    regions = pl.read_excel(
+    V5_META_PATH,
+    sheet_name="regions",
+    columns=["region", "type", "country", "name", "area_km2", "total_surveys", "bootstrap_surveys"]
+    )
+
+    regions = regions.with_columns(
+        (pl.col("name") + " (" + pl.col("region") + ")").alias("name_adj")
+    )
+    
+    return regions
+
 def list_directory(url: str) -> list[str]:
     """
     Parse Apache directory listing and return entries.
