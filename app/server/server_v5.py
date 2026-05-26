@@ -20,7 +20,8 @@ from shared import (
     available_years,
     load_species_metadata,
     load_abundance_data,
-    load_subregion_boundaries
+    load_subregion_boundaries,
+    load_region_data
 )
 from modules.bird import bird_card
 
@@ -36,6 +37,7 @@ warnings.filterwarnings(
 birds = load_species_metadata()
 abundances = load_abundance_data()
 subregions = load_subregion_boundaries()
+region_dict = load_region_data().rows_by_key(key="region", named=True, unique=True)
 
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
@@ -310,8 +312,8 @@ def server_v5(input: Inputs):
 
         # controls
         m.add(FullScreenControl())
-        m.add(LayersControl(collapsed=False, position='topright'))
-        m.add(ScaleControl(position='bottomleft'))
+        m.add(LayersControl(collapsed=False, position="topright"))
+        m.add(ScaleControl(position="bottomleft"))
 
         return m
     
@@ -326,14 +328,14 @@ def server_v5(input: Inputs):
         df = population_data()
 
         df = df.select([
-            'year',
-            'region', 
-            'population_estimate', 
-            'population_lower', 
-            'population_upper', 
-            'density_estimate', 
-            'density_lower', 
-            'density_upper'
+            "year",
+            "region", 
+            "population_estimate", 
+            "population_lower", 
+            "population_upper", 
+            "density_estimate", 
+            "density_lower", 
+            "density_upper"
         ])
 
         return render.DataGrid(df, selection_mode="rows")
@@ -345,33 +347,67 @@ def server_v5(input: Inputs):
 
         points = alt.Chart(df).mark_point(
             filled=True,
-            color='green'
         ).encode(
-            alt.X('population_estimate').title('Abundance (M males)').scale(type="log"),
-            alt.Y('region').title("").sort(
-                field='population_estimate',
-                order='descending'
+            alt.X("population_estimate:Q")
+                .title("Abundance (M males)")
+                .scale(type="log"),
+            alt.Y("region_name:N")
+                .title(None)
+                .sort(
+                    field="population_estimate",
+                    order="descending",
+                )
+                .axis(labelLimit=0),
+            alt.Color(
+                "country_name:N",
+                legend=alt.Legend(title="Country")
             ),
-            tooltip=alt.Tooltip([
-                "population_estimate",
-                "population_lower",
-                "population_upper",
-            ])
-        ).properties(
-            width="container",
-            height=500
+        ).transform_calculate(
+            region_name=f"{region_dict}[datum.region].name_adj",
+            country_name=f"{region_dict}[datum.region].country"
         )
+
+        nearest = alt.selection_point(
+            nearest=True,
+            on="pointerover",
+            fields=["population_estimate"],
+            empty=False
+        )
+        when_near = alt.when(nearest)
+
+        highlight = points.mark_point(
+            size=50,
+            stroke="#153B40FF",
+        ).encode(
+            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
+        )
+
+        rules = alt.Chart(df).mark_rule(
+            color="#153B40FF",
+        ).encode(
+            x="population_estimate:Q",
+            opacity=alt.when(nearest)
+                .then(alt.value(0.5))
+                .otherwise(alt.value(0)),
+            tooltip=[
+                alt.Tooltip("population_estimate:Q", title="Population Estimate"),
+                alt.Tooltip("population_lower:Q", title="Lower Estimate"),
+                alt.Tooltip("population_upper:Q", title="Upper Estimate"),
+        ]
+        ).add_params(nearest)
 
         error_bars = points.mark_rule().encode(
-            x='population_lower',
-            x2='population_upper',
+            x="population_lower:Q",
+            x2="population_upper:Q",
         )
 
-        return (points + error_bars).properties(
+        return (points + error_bars + rules + highlight).properties(
             title=alt.Title(
-                f"Regional Population Estimates for {input.species_v5()}",
+                f"Regional Population Estimates for the {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
-            )
+            ),
+            width="container",
+            height=750
         )
 
     @render_altair
@@ -381,31 +417,64 @@ def server_v5(input: Inputs):
 
         points = alt.Chart(df).mark_point(
             filled=True,
-            color='green'
         ).encode(
-            alt.X('density_estimate').title('Density (males/ha)'),
-            alt.Y('region').title("").sort(
-                field='density_estimate',
-                order='descending'
+            alt.X("density_estimate:Q")
+                .title("Density (males/ha)"),
+            alt.Y("region_name:N")
+                .title(None)
+                .sort(
+                    field="density_estimate",
+                    order="descending",
+                )
+                .axis(labelLimit=0),
+            alt.Color(
+                "country_name:N",
+                legend=alt.Legend(title="Country")
             ),
-            tooltip=alt.Tooltip([
-                "density_estimate",
-                "density_lower",
-                "density_upper"
-            ])
-        ).properties(
-            width="container",
-            height=500
+        ).transform_calculate(
+            region_name=f"{region_dict}[datum.region].name_adj",
+            country_name=f"{region_dict}[datum.region].country"
         )
+
+        nearest = alt.selection_point(
+            nearest=True,
+            on="pointerover",
+            fields=["density_estimate"],
+            empty=False
+        )
+        when_near = alt.when(nearest)
+
+        highlight = points.mark_point(
+            size=50,
+            stroke="#153B40FF",
+        ).encode(
+            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
+        )
+
+        rules = alt.Chart(df).mark_rule(
+            color="#153B40FF",
+        ).encode(
+            x="density_estimate:Q",
+            opacity=alt.when(nearest)
+                .then(alt.value(0.5))
+                .otherwise(alt.value(0)),
+            tooltip=[
+                alt.Tooltip("density_estimate:Q", title="Density Estimate"),
+                alt.Tooltip("density_lower:Q", title="Lower Estimate"),
+                alt.Tooltip("density_upper:Q", title="Upper Estimate"),
+        ]
+        ).add_params(nearest)
 
         error_bars = points.mark_rule().encode(
-            x='density_lower',
-            x2='density_upper',
+            x="density_lower:Q",
+            x2="density_upper:Q",
         )
 
-        return (points + error_bars).properties(
+        return (points + error_bars + rules + highlight).properties(
             title=alt.Title(
                 f"Regional Density Estimates for {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
-            )
+            ),
+            width="container",
+            height=750
         )
