@@ -100,10 +100,10 @@ def build_region_layer(region_name: str):
     layer = GeoJSON(
         data=geojson_data,
         style={
-            "color": "white",
-            "weight": 1.5,
+            "color": "black",
+            "weight": 1.25,
             "fillColor": "white",
-            "fillOpacity": 0.05,
+            "fillOpacity": 0,
             "opacity": 0.7,
         },
         hover_style={
