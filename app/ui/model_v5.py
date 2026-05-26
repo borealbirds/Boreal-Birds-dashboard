@@ -26,6 +26,7 @@ def model_v5_tab():
             sidebar("v5"),
             ui.output_ui(id="selected_bird"),
             ui.navset_card_underline(
+                ui.nav_spacer(),
                 ui.nav_panel(
                     "Map",
                     output_widget("map_widget"),
@@ -35,15 +36,15 @@ def model_v5_tab():
                     ui.p("land_cover_placeholder"),
                 ),
                 ui.nav_panel(
-                    "Population Estimates",
+                    "Population",
                     ui.card(output_widget("population_chart"), full_screen=True),
                 ),
                 ui.nav_panel(
-                    "Density Estimates",
+                    "Density",
                     ui.card(output_widget("density_chart"), full_screen=True),
                 ),
                 ui.nav_panel(
-                    "Population Size",
+                    "Download",
                     ui.output_data_frame("population_size"), 
                 ),
                 title=ui.tooltip(
