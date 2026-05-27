@@ -11,7 +11,7 @@ def sidebar(model_version: str):
             f"species_{model_version}",
             "Species",
             choices=species_choices,
-            size=7
+            size=10
         ),
         ui.input_select(
             f"region_{model_version}",
@@ -25,7 +25,9 @@ def sidebar(model_version: str):
             min=1990,
             max=2020,
             value=2020,
-            step=5, ticks=True
+            step=5,
+            ticks=True,
+            sep=''
         ),
         width=375,
     )
