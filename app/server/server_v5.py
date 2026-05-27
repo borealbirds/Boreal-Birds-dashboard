@@ -1,24 +1,31 @@
 from shiny import Inputs, reactive, ui, render
-from shinywidgets import render_widget, output_widget
+from shinywidgets import render_widget, output_widget, render_altair
 from ipywidgets import HTML
 from ipyleaflet import (
-    Map, basemaps, TileLayer,
+    Map, basemaps, TileLayer, GeoData,
     basemap_to_tiles, LayersControl, ScaleControl,
-    FullScreenControl, WidgetControl
+    FullScreenControl, WidgetControl, GeoJSON
 )
 
-import polars as pl
+import json
+import altair as alt
 import requests
+import polars as pl
+import geopandas as gpd
+from functools import lru_cache
 
-from icons import question_circle_fill
 from icons import question_circle_fill
 from shared import (
     get_tif_path,
     available_regions,
     available_years,
     load_species_metadata,
-    load_abundance_data
+    load_abundance_data,
+    load_subregion_boundaries,
+    load_region_data
 )
+from modules.bird import bird_card
+
 import warnings
 import numpy as np
 
@@ -30,6 +37,8 @@ warnings.filterwarnings(
 
 birds = load_species_metadata()
 abundances = load_abundance_data()
+subregions = load_subregion_boundaries()
+region_dict = load_region_data().rows_by_key(key="region", named=True, unique=True)
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
 PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
@@ -50,6 +59,63 @@ def url_exists(url: str) -> bool:
         return r.status_code == 200
     except Exception:
         return False
+
+def get_region_gdf(region: str):
+    gdf = subregions
+    alaska_bcr = ["usa2", "usa41423", "usa43", "usa40", "usa5"]
+
+    if region == "Canada":
+        return gdf[gdf["bcr"].str.startswith("can")]
+
+    if region == "Lower48":
+        return gdf[
+            gdf["bcr"].str.startswith("usa") &
+            ~gdf["bcr"].isin(alaska_bcr)
+        ]
+
+    if region == "Alaska":
+        return gdf[gdf["bcr"].isin(alaska_bcr)]
+
+    return gdf
+
+def build_region_layer(region_name: str):
+
+    region_gdf = get_region_gdf(region_name)
+
+    geojson_data = json.loads(
+        region_gdf.to_json(drop_id=True)
+    )
+
+    # for feature in geojson_data["features"]:
+
+    #     props = feature["properties"]
+
+    #     feature["properties"]["tooltip"] = (
+    #         "<div style='font-size:13px;'>"
+    #         f"<b>Country:</b> {props.get('country', 'Unknown')}<br>"
+    #         f"<b>BCR:</b> {props.get('bcr', 'Unknown')}"
+    #         "</div>"
+    #     )
+
+    layer = GeoJSON(
+        data=geojson_data,
+        style={
+            "color": "black",
+            "weight": 1.25,
+            "fillColor": "white",
+            "fillOpacity": 0,
+            "opacity": 0.7,
+        },
+        hover_style={
+            "color": "#00FFFF",
+            "weight": 3,
+            "fillColor": "#00FFFF",
+            "fillOpacity": 0.20,
+        },
+        name=f"Subregion Boundaries"
+    )
+
+    return layer
 
 def server_v5(input: Inputs):
     """
@@ -189,9 +255,15 @@ def server_v5(input: Inputs):
                     "max": float(band_stats.get("max", 1.0))
                 }
             return {"min": 0.0, "max": 1.0}
-        except Exception:
+        except Exception as e:
             print(f"Error fetching TiTiler statistics: {e}")
             return {"min": 0.0, "max": 1.0}
+    
+    REGION_LAYERS = {
+        "Canada": build_region_layer("Canada"),
+        "Lower48": build_region_layer("Lower48"),
+        "Alaska": build_region_layer("Alaska"),
+    }
 
     @render_widget
     def map_widget():
@@ -223,7 +295,7 @@ def server_v5(input: Inputs):
         esri.name = "World Imagery (satellite)"
 
         # Initialize core map interface
-        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4, attribution_control=False)
+        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4, scroll_wheel_zoom=True)
 
         # generate legend utilizing remote data calculations
         stats = raster_statistics()
@@ -243,24 +315,46 @@ def server_v5(input: Inputs):
         )
 
         # request tiles from the titiler API gateway
-        tile_string = f"{PRODUCTION_TILER_BASE}/cog/tiles/{{z}}/{{x}}/{{y}}.png?url={encoded_cog}&colormap_name=ylgn&rescale={rmin},{rmax}"
-        
+        tile_string = (
+            f"{PRODUCTION_TILER_BASE}"
+            f"/cog/tiles/{{z}}/{{x}}/{{y}}.png"
+            f"?url={encoded_cog}"
+            f"&colormap_name=ylgn"
+            f"&rescale={rmin},{rmax}"
+        )
+
         mean_density = TileLayer(
             url=tile_string,
             name="Mean Density",
-            # opacity=0.75
         )
 
         m.add(mean_density)
         m.add(legend)
 
+        region = input.region_v5()
+
+        if region == "Canada":
+            m.add(REGION_LAYERS["Canada"])
+
+        elif region == "Lower48":
+            m.add(REGION_LAYERS["Lower48"])
+
+        elif region == "Alaska":
+            m.add(REGION_LAYERS["Alaska"])
+
         # controls
         m.add(FullScreenControl())
-        m.add(LayersControl(collapsed=False, position='topright'))
-        m.add(ScaleControl(position='bottomleft'))
+        m.add(LayersControl(collapsed=False, position="topright"))
+        m.add(ScaleControl(position="bottomleft"))
 
         return m
-    
+
+    @reactive.calc
+    def population_data():
+        return abundances.filter(
+            (pl.col("english") == input.species_v5())
+        )
+
     @render.data_frame
     def population_size():
         region = input.region_v5()
@@ -274,15 +368,16 @@ def server_v5(input: Inputs):
             (pl.col("region")  == region) &
             (pl.col("year")    == str(year))
         )
+
         df = df.select([
-            'year',
-            'region',
-            'population_estimate',
-            'population_lower',
-            'population_upper',
-            'density_estimate',
-            'density_lower',
-            'density_upper',
+            "year",
+            "region", 
+            "population_estimate", 
+            "population_lower", 
+            "population_upper", 
+            "density_estimate", 
+            "density_lower", 
+            "density_upper"
         ])
         return render.DataGrid(df, selection_mode="rows")
 
@@ -335,4 +430,144 @@ def server_v5(input: Inputs):
             ui.div(ui.span("Song 1", class_="song-label"), class_="song-row"),
             ui.div(ui.span("Song 2", class_="song-label"), class_="song-row"),
             class_="songs-container",
+        )
+    
+    # ── Chart details ───────────────────────────────────────────────────────
+    @render_altair
+    def population_chart():
+
+        df = population_data()
+
+        points = alt.Chart(df).mark_point(
+            filled=True,
+        ).encode(
+            alt.X("population_estimate:Q")
+                .title("Abundance (M males)")
+                .scale(type="log"),
+            alt.Y("region_name:N")
+                .title(None)
+                .sort(
+                    field="population_estimate",
+                    order="descending",
+                )
+                .axis(labelLimit=0),
+            alt.Color(
+                "country_name:N",
+                legend=alt.Legend(title="Country")
+            ),
+        ).transform_calculate(
+            region_name=f"{region_dict}[datum.region].name_adj",
+            country_name=f"{region_dict}[datum.region].country"
+        )
+
+        nearest = alt.selection_point(
+            nearest=True,
+            on="pointerover",
+            fields=["population_estimate"],
+            empty=False
+        )
+        when_near = alt.when(nearest)
+
+        highlight = points.mark_point(
+            size=50,
+            stroke="#153B40FF",
+        ).encode(
+            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
+        )
+
+        rules = alt.Chart(df).mark_rule(
+            color="#153B40FF",
+        ).encode(
+            x="population_estimate:Q",
+            opacity=alt.when(nearest)
+                .then(alt.value(0.5))
+                .otherwise(alt.value(0)),
+            tooltip=[
+                alt.Tooltip("population_estimate:Q", title="Population Estimate"),
+                alt.Tooltip("population_lower:Q", title="Lower Estimate"),
+                alt.Tooltip("population_upper:Q", title="Upper Estimate"),
+        ]
+        ).add_params(nearest)
+
+        error_bars = points.mark_rule().encode(
+            x="population_lower:Q",
+            x2="population_upper:Q",
+        )
+
+        return (points + error_bars + rules + highlight).properties(
+            title=alt.Title(
+                f"Regional Population Estimates for the {input.species_v5()}",
+                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
+            ),
+            width="container",
+            height=750
+        )
+
+    @render_altair
+    def density_chart():
+
+        df = population_data()
+
+        points = alt.Chart(df).mark_point(
+            filled=True,
+        ).encode(
+            alt.X("density_estimate:Q")
+                .title("Density (males/ha)"),
+            alt.Y("region_name:N")
+                .title(None)
+                .sort(
+                    field="density_estimate",
+                    order="descending",
+                )
+                .axis(labelLimit=0),
+            alt.Color(
+                "country_name:N",
+                legend=alt.Legend(title="Country")
+            ),
+        ).transform_calculate(
+            region_name=f"{region_dict}[datum.region].name_adj",
+            country_name=f"{region_dict}[datum.region].country"
+        )
+
+        nearest = alt.selection_point(
+            nearest=True,
+            on="pointerover",
+            fields=["density_estimate"],
+            empty=False
+        )
+        when_near = alt.when(nearest)
+
+        highlight = points.mark_point(
+            size=50,
+            stroke="#153B40FF",
+        ).encode(
+            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
+        )
+
+        rules = alt.Chart(df).mark_rule(
+            color="#153B40FF",
+        ).encode(
+            x="density_estimate:Q",
+            opacity=alt.when(nearest)
+                .then(alt.value(0.5))
+                .otherwise(alt.value(0)),
+            tooltip=[
+                alt.Tooltip("density_estimate:Q", title="Density Estimate"),
+                alt.Tooltip("density_lower:Q", title="Lower Estimate"),
+                alt.Tooltip("density_upper:Q", title="Upper Estimate"),
+        ]
+        ).add_params(nearest)
+
+        error_bars = points.mark_rule().encode(
+            x="density_lower:Q",
+            x2="density_upper:Q",
+        )
+
+        return (points + error_bars + rules + highlight).properties(
+            title=alt.Title(
+                f"Regional Density Estimates for {input.species_v5()}",
+                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
+            ),
+            width="container",
+            height=750
         )
