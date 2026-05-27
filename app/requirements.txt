@@ -9,7 +9,7 @@ fastexcel
 bs4
 geopandas
 altair
-
+xlsxwriter
 # pandas
 # ipykernel
 # anywidget
