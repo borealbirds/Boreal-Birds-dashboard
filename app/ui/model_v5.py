@@ -5,9 +5,18 @@ from icons import question_circle_fill
 
 def model_v5_tab():
     """
+    This function constructs a navigation panel containing a bird information 
+    header and a multi-tabbed card interface. The card interface allows users 
+    to toggle between a spatial map with band selection, land cover analytics, 
+    and population size estimates.
+
     Current Model tab — compact bird header with MAP/INFO toggle.
     MAP view: interactive map, land cover, population, density, download.
     INFO view: species info, photo gallery, songs.
+
+    Returns
+    -------
+    shiny.ui
     """
     return ui.nav_panel(
         "Current Model",
@@ -15,20 +24,23 @@ def model_v5_tab():
             sidebar("v5"),
 
             # ── Compact bird header + MAP/INFO toggle ──────────────────
-            ui.div(
-                ui.output_ui("selected_bird"),
-                ui.div(
-                    ui.input_radio_buttons(
-                        "view_toggle",
-                        None,
-                        choices={"map": "Map", "info": "Info"},
-                        selected="map",
-                        inline=True,
+            # ui.card(
+                ui.layout_columns(
+                    ui.output_ui("selected_bird"),
+                    ui.div(
+                        ui.input_radio_buttons(
+                            "view_toggle",
+                            None,
+                            choices={"map": "Map", "info": "Info"},
+                            selected="map",
+                            inline=True,
+                        ),
+                        class_="toggle-wrapper",
                     ),
-                    class_="toggle-wrapper",
+                    col_widths=(8, -1 , 3),
+                    class_="bird-header-row",
                 ),
-                class_="bird-header-row",
-            ),
+            # ),
 
             # ── MAP view ───────────────────────────────────────────────
             ui.panel_conditional(
