@@ -6,13 +6,17 @@ from ipyleaflet import (
     basemap_to_tiles, LayersControl, ScaleControl,
     FullScreenControl, WidgetControl, GeoJSON
 )
-
+from datetime import date
 import json
 import altair as alt
 import requests
 import polars as pl
+from pathlib import Path
 import geopandas as gpd
 from functools import lru_cache
+
+import xlsxwriter
+import io
 
 from shared import (
     get_tif_path,
@@ -478,3 +482,32 @@ def server_v5(input: Inputs):
             width="container",
             height=750
         )
+    
+    @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
+    def downloadAll():
+
+        return str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
+
+    @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
+    def downloadFiltered():
+
+        model_results = str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
+        metadata = pl.read_excel(model_results, sheet_name="metadata")
+        species = pl.read_excel(model_results, sheet_name="species").filter(pl.col("english") == input.species_v5())
+        regions = pl.read_excel(model_results, sheet_name="regions")
+        variables = pl.read_excel(model_results, sheet_name="variables")
+        importance = pl.read_excel(model_results, sheet_name="importance").filter(pl.col("english") == input.species_v5())
+        validation = pl.read_excel(model_results, sheet_name="validation").filter(pl.col("english") == input.species_v5())
+        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(pl.col("english") == input.species_v5())
+
+        with io.BytesIO() as buffer:
+            workbook = xlsxwriter.Workbook(buffer, {'in_memory': True})
+            metadata.write_excel(workbook=workbook, worksheet="metadata", autofilter=False, autofit=True)
+            species.write_excel(workbook=workbook, worksheet="species", autofilter=False, autofit=True)
+            regions.write_excel(workbook=workbook, worksheet="regions", autofilter=False, autofit=True)
+            variables.write_excel(workbook=workbook, worksheet="variables", autofilter=False, autofit=False)
+            importance.write_excel(workbook=workbook, worksheet="importance", autofilter=False, autofit=True)
+            validation.write_excel(workbook=workbook, worksheet="validation", autofilter=False, autofit=True)
+            abundances.write_excel(workbook=workbook, worksheet="abundances", autofilter=False, autofit=True)
+            workbook.close()
+            yield buffer.getvalue()
