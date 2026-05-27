@@ -70,6 +70,27 @@ def load_abundance_data() -> pl.DataFrame:
     """
     return pl.read_excel(V5_META_PATH, sheet_name="abundances")
 
+def load_region_data() -> pl.DataFrame:
+    """Load region-level data from the Excel results summary file.
+
+    Returns
+    -------
+    pl.DataFrame
+        A Polars DataFrame containing the 'regions' sheet data.
+    """
+
+    regions = pl.read_excel(
+    V5_META_PATH,
+    sheet_name="regions",
+    columns=["region", "type", "country", "name", "area_km2", "total_surveys", "bootstrap_surveys"]
+    )
+
+    regions = regions.with_columns(
+        (pl.col("name") + " (" + pl.col("region") + ")").alias("name_adj")
+    )
+    
+    return regions
+
 def list_directory(url: str) -> list[str]:
     """
     Parse Apache directory listing and return entries.
@@ -110,8 +131,18 @@ def species_ids() -> list[str]:
 
 def available_regions(species_id: str) -> list[str]:
     """
-    List available regions for a species.
-    Tries the remote Apache server first; falls back to local data/model_v5/.
+    Identify geographic regions for a specific species and 
+    list available regions from remote Apache directory.
+
+    Parameters
+    ----------
+    species_id : str
+        The unique identifier for the species.
+
+    Returns
+    -------
+    list of str
+        Sorted list of region names found within the species' directory.
     """
     species_url = urljoin(BASE_URL, f"{species_id}/")
     try:
@@ -134,8 +165,22 @@ def available_regions(species_id: str) -> list[str]:
 
 def available_years(species_id: str, region: str) -> list[int]:
     """
-    List available model years for a species and region.
-    Tries the remote Apache server first; falls back to local data/model_v5/.
+    Parse available model years for a specific species and region by scanning filenames.
+
+    This function looks for .tif files following the naming convention 
+    '{species}_{region}_{year}.tif' and extracts the integer year.
+
+    Parameters
+    ----------
+    species_id : str
+        The unique identifier for the species.
+    region : str
+        The geographic region identifier.
+
+    Returns
+    -------
+    list of int
+        Sorted list of years found for the given parameters.
     """
     region_url = urljoin(BASE_URL, f"{species_id}/{region}/")
 
