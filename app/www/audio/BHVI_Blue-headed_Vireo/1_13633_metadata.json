@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Blue-headed Vireo",
+  "bam_scientific_name": "Vireo solitarius",
+  "xeno_canto_scientific_name": "Vireo solitarius",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "13633",
+  "xeno_canto_english_name": "Blue-headed Vireo",
+  "recordist": "Chris Parrish",
+  "country": "Canada",
+  "location": "Baie Sainte Marguerite, Saguenay, Quebec",
+  "date": "2007-05-24",
+  "length": "0:07",
+  "duration_seconds": 7,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/2.5/",
+  "xeno_canto_url": "https://xeno-canto.org/13633",
+  "audio_url": "https://xeno-canto.org/13633/download",
+  "local_audio_file": "1_13633_qA_0-07.mp3",
+  "selection_mode": "under 7s preferred + under 10s fallback"
+}

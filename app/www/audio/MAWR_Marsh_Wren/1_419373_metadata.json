@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Marsh Wren",
+  "bam_scientific_name": "Cistothorus palustris",
+  "xeno_canto_scientific_name": "Cistothorus palustris",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "419373",
+  "xeno_canto_english_name": "Marsh Wren",
+  "recordist": "Sue Riffe",
+  "country": "United States",
+  "location": "Lower Latham, Weld County, Colorado",
+  "date": "2018-06-06",
+  "length": "0:03",
+  "duration_seconds": 3,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/419373",
+  "audio_url": "https://xeno-canto.org/419373/download",
+  "local_audio_file": "1_419373_qA_0-03.mp3",
+  "selection_mode": "under 7s preferred"
+}

@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Evening Grosbeak",
+  "bam_scientific_name": "Coccothraustes vespertinus",
+  "source": "iNaturalist",
+  "inat_id": "inat_60571510_138070",
+  "recordist": "kevtolan",
+  "country": "Charles Downer State Forest, Sharon, VT, US",
+  "date": "2020-04-18",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/60571510",
+  "audio_url": "https://static.inaturalist.org/sounds/138070.wav?1600908656",
+  "local_audio_file": "inat_2_inat_60571510_138070.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

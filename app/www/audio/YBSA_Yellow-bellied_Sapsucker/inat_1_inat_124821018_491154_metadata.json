@@ -1,0 +1,15 @@
+{
+  "bam_common_name": "Yellow-bellied Sapsucker",
+  "bam_scientific_name": "Sphyrapicus varius",
+  "source": "iNaturalist",
+  "inat_id": "inat_124821018_491154",
+  "recordist": "rwp84",
+  "country": "Wheelerville Road, Mendon, VT, USA",
+  "date": "2022-07-01",
+  "duration_seconds": null,
+  "quality": "iNat-research",
+  "inat_url": "https://www.inaturalist.org/observations/124821018",
+  "audio_url": "https://static.inaturalist.org/sounds/491154.wav?1656982835",
+  "local_audio_file": "inat_1_inat_124821018_491154.mp3",
+  "selection_mode": "iNaturalist fallback"
+}

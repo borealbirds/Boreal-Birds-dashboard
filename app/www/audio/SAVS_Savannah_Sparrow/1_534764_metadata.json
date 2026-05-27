@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Savannah Sparrow",
+  "bam_scientific_name": "Passerculus sandwichensis",
+  "xeno_canto_scientific_name": "Passerculus sandwichensis",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "534764",
+  "xeno_canto_english_name": "Savannah Sparrow",
+  "recordist": "Isain Contreras Rodríguez",
+  "country": "Mexico",
+  "location": "Paredones, Ahome, Sinaloa",
+  "date": "2020-03-15",
+  "length": "0:04",
+  "duration_seconds": 4,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/534764",
+  "audio_url": "https://xeno-canto.org/534764/download",
+  "local_audio_file": "1_534764_qA_0-04.mp3",
+  "selection_mode": "under 7s preferred"
+}

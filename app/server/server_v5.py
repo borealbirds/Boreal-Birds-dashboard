@@ -1,19 +1,125 @@
 from shiny import Inputs, reactive, ui, render
-from shinywidgets import render_widget
+from shinywidgets import render_widget, output_widget, render_altair
 from ipywidgets import HTML
-from ipyleaflet import Map, basemaps, WidgetControl
-from localtileserver import TileClient, get_leaflet_tile_layer
-
+from ipyleaflet import (
+    Map, basemaps, TileLayer, GeoData,
+    basemap_to_tiles, LayersControl, ScaleControl,
+    FullScreenControl, WidgetControl, GeoJSON
+)
+from datetime import date
+import json
+import altair as alt
+import requests
 import polars as pl
+from pathlib import Path
+import geopandas as gpd
+from functools import lru_cache
+
+import xlsxwriter
+import io
 
 from shared import (
     get_tif_path,
     available_regions,
     available_years,
     load_species_metadata,
-    get_species_image,
+    load_abundance_data,
+    load_subregion_boundaries,
+    load_region_data
+)
+from modules.bird import bird_card
+
+import warnings
+import numpy as np
+
+warnings.filterwarnings(
+    "ignore",
+    category=RuntimeWarning,
+    module="numpy.ma.core"
 )
 
+birds = load_species_metadata()
+abundances = load_abundance_data()
+subregions = load_subregion_boundaries()
+region_dict = load_region_data().rows_by_key(key="region", named=True, unique=True)
+
+
+# Live Posit Connect Cloud dynamic map tiler base domain address
+PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
+
+# Hardcoded fallback center metrics for geographic bounding contexts
+REGION_CENTERS = {
+    "Alaska": [64, -149],
+    "Canada": [55, -106],
+    "Lower48": [47.0, -97.0]
+}
+
+def url_exists(url: str) -> bool:
+    """
+    Ensure url for the file exists in the data host server
+    """
+    try:
+        r = requests.head(url, timeout=10)
+        return r.status_code == 200
+    except Exception:
+        return False
+
+def get_region_gdf(region: str):
+    gdf = subregions
+    alaska_bcr = ["usa2", "usa41423", "usa43", "usa40", "usa5"]
+
+    if region == "Canada":
+        return gdf[gdf["bcr"].str.startswith("can")]
+
+    if region == "Lower48":
+        return gdf[
+            gdf["bcr"].str.startswith("usa") &
+            ~gdf["bcr"].isin(alaska_bcr)
+        ]
+
+    if region == "Alaska":
+        return gdf[gdf["bcr"].isin(alaska_bcr)]
+
+    return gdf
+
+def build_region_layer(region_name: str):
+
+    region_gdf = get_region_gdf(region_name)
+
+    geojson_data = json.loads(
+        region_gdf.to_json(drop_id=True)
+    )
+
+    # for feature in geojson_data["features"]:
+
+    #     props = feature["properties"]
+
+    #     feature["properties"]["tooltip"] = (
+    #         "<div style='font-size:13px;'>"
+    #         f"<b>Country:</b> {props.get('country', 'Unknown')}<br>"
+    #         f"<b>BCR:</b> {props.get('bcr', 'Unknown')}"
+    #         "</div>"
+    #     )
+
+    layer = GeoJSON(
+        data=geojson_data,
+        style={
+            "color": "black",
+            "weight": 1.25,
+            "fillColor": "white",
+            "fillOpacity": 0,
+            "opacity": 0.7,
+        },
+        hover_style={
+            "color": "#00FFFF",
+            "weight": 3,
+            "fillColor": "#00FFFF",
+            "fillOpacity": 0.20,
+        },
+        name=f"Subregion Boundaries"
+    )
+
+    return layer
 
 def server_v5(input: Inputs):
     """
@@ -21,78 +127,45 @@ def server_v5(input: Inputs):
     and spatial visualization.
     """
 
-    @reactive.calc
-    def species_info():
-        """Lookup and return taxonomic metadata for the currently selected species."""
-        df = load_species_metadata()
-
-        species_id = input.species()
-
-        if not species_id:
-            return None
-
-        row = df.filter(pl.col("id") == species_id)
-
-        if row.height == 0:
-            return None
-
-        r = row.row(0)
-
-        return {
-            "english": r[2],
-            "french": r[3],
-            "scientific": r[1],
-            "family": r[4],
-        }
-
     @render.ui
-    def bird_info():
-        """Render the HTML profile header featuring the species image and metadata string."""
-        info = species_info()
+    def selected_bird():
+        bird = birds.filter(pl.col("english") == input.species_v5())
 
-        if info is None:
-            return ui.p("No species selected")
-
-        species_id = input.species()
-        img_path = get_species_image(species_id)
-        img_src = (
-            f"/img/{species_id}.jpg"
-            if img_path and img_path.exists()
-            else "https://placehold.co/200x150?text=No+Image"
+        pop_dict = (
+            population_data()
+            .filter(pl.col("region").is_in(["Canada", "Alaska", "Lower48"]))
+            .select(["region", "population_estimate"])
+            .rows_by_key(key="region", named=True, unique=True)
         )
 
-        return ui.div(
-            ui.div(
-                ui.img(
-                    id="species_img",
-                    src=img_src,
-                    style="width:200px; height:150px; object-fit:cover; border:1px solid #ddd;",
-                ),
-                ui.div(
-                    ui.h4(info["english"], style="margin-bottom: 4px;"),
-                    ui.p(
-                        f"{info['french']} · {info['scientific']} · Family {info['family']}",
-                        style="margin: 0;",
-                    ),
-                    style="padding-left: 12px;",
-                ),
-                style="display: flex; align-items: center;",
-            ),
+        canada = pop_dict.get("Canada", {}).get("population_estimate", "No Model Estimates")
+        alaska = pop_dict.get("Alaska", {}).get("population_estimate", "No Model Estimates")
+        lower48 = pop_dict.get("Lower48", {}).get("population_estimate", "No Model Estimates")
+
+        return bird_card(
+            species=bird.item(0, "scientific"),
+            common_name=bird.item(0, "english"),
+            french_name=bird.item(0, "french"),
+            family=bird.item(0, "family"),
+            image_url=f"img/{bird.item(0, "id")}.jpg",
+            canada_pop=canada,
+            alaska_pop=alaska,
+            lower48_pop=lower48
         )
 
     @reactive.effect
     def _update_regions():
         """Update the region dropdown choices dynamically based on species availability."""
-        species_id = input.species()
+        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
 
         if not species_id:
-            ui.update_select("region", choices=[], selected=None)
+            ui.update_select("region_v5", choices=[], selected=None)
             return
 
         regions = available_regions(species_id)
 
         ui.update_select(
-            "region",
+            "region_v5",
             choices=regions,
             selected=regions[0] if regions else None,
         )
@@ -100,8 +173,8 @@ def server_v5(input: Inputs):
     @reactive.effect
     def _update_year_range():
         """Update the slider range and default value based on available temporal data."""
-        species_id = input.species()
-        region = input.region()
+        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
+        region = input.region_v5()
 
         if not species_id or not region:
             return
@@ -112,84 +185,329 @@ def server_v5(input: Inputs):
             return
 
         ui.update_slider(
-            "year",
+            "year_v5",
             min=min(years),
             max=max(years),
             value=max(years),
         )
-
+    
     @reactive.calc
-    def tile_client():
-        """Initialize and return a TileClient for the specific raster file selected."""
-        species_id = input.species()
-        region = input.region()
-        year = input.year()
+    def file_url():
+        """Construct the remote URL string path for the selected raster."""
+        species_id = birds.filter(
+            pl.col("english") == input.species_v5()
+        ).item(0, "id")
+
+        region = input.region_v5()
+        year = input.year_v5()
 
         if not species_id or not region or not year:
             return None
 
-        path = get_tif_path(
-            species_id,
-            region,
-            int(year),
-        )
+        return get_tif_path(species_id, region, int(year))
 
-        if not path.exists():
-            return None
+    @reactive.calc
+    def raster_statistics():
+        """Query min/max data statistics remotely using the TiTiler metadata API."""
+        url = file_url()
+        if not url or not url_exists(url):
+            return {"min": 0.0, "max": 1.0}
+            
+        try:
+            encoded_cog = requests.utils.quote(url, safe="")
+            # Query the statistics endpoint exposed by the tiler
+            stats_url = f"{PRODUCTION_TILER_BASE}/cog/statistics?url={encoded_cog}"
+            res = requests.get(stats_url, timeout=5).json()
+            
+            band_key = list(res.keys())[0] if res else None
+            if band_key:
+                band_stats = res[band_key]
+                return {
+                    "min": float(band_stats.get("min", 0.0)),
+                    "max": float(band_stats.get("max", 1.0))
+                }
+            return {"min": 0.0, "max": 1.0}
+        except Exception as e:
+            print(f"Error fetching TiTiler statistics: {e}")
+            return {"min": 0.0, "max": 1.0}
 
-        return TileClient(str(path))
+    REGION_LAYERS = {
+        "Canada": build_region_layer("Canada"),
+        "Lower48": build_region_layer("Lower48"),
+        "Alaska": build_region_layer("Alaska"),
+    }
 
     @render_widget
     def map_widget():
-        """Generate the interactive map widget with the tile layer and legend."""
-        client = tile_client()
+        """Generate the interactive map widget leveraging the remote cloud tiler engine."""
+        url = file_url()
 
-        if client is None:
-            return ui.p("No data available")
+        if not url:
+            return HTML("<p>Loading / No data available</p>")
 
-        m = Map(
-            center=client.center(),
-            zoom=4,
-            basemap=basemaps.CartoDB.Positron,
-        )
+        if not url_exists(url):
+            return HTML("<p>Raster not found on data server</p>")
 
-        tile_layer = get_leaflet_tile_layer(
-            client, colormap="ylgn", indexes=[input.raster_band()]
-        )
+        encoded_cog = requests.utils.quote(url, safe="")
+        
+        # center on the selected region
+        map_center = REGION_CENTERS.get(input.region_v5(), [60.0, -110.0])
 
-        m.add_layer(tile_layer)
-        legend = HTML(value="""
-            <div style="
-                background: white;
-                padding: 5px 6px;
-                border-radius: 3px;
-                font-size: 10px;
-                line-height: 1.1;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-            ">
-                <div style="margin-bottom: 3px;"><b>Low → High</b></div>
-                <div style="
-                    width: 90px;
-                    height: 8px;
-                    background: linear-gradient(
-                        to right,
-                        #ffffe5,
-                        #d9f0a3,
-                        #addd8e,
-                        #78c679,
-                        #31a354,
-                        #006837
-                    );
-                    border: 1px solid #999;
-                "></div>
+        # Basemaps
+        positron = basemap_to_tiles(basemaps.CartoDB.Positron)
+        positron.base = True
+        positron.name = "Positron (minimal)"
+        
+        osm = basemap_to_tiles(basemaps.OpenStreetMap.Mapnik)
+        osm.base = True
+        osm.name = "Open Street Map (default)"
+        
+        esri = basemap_to_tiles(basemap=basemaps.Esri.WorldImagery)
+        esri.base = True
+        esri.name = "World Imagery (satellite)"
+
+        # Initialize core map interface
+        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4)
+
+        # generate legend utilizing remote data calculations
+        stats = raster_statistics()
+        rmin = stats["min"]
+        rmax = stats["max"]
+
+        legend = WidgetControl(
+            widget=HTML(f"""
+            <div class="map-legend">
+                <div class="map-legend-title">
+                    <b>{rmin:.4f} → {rmax:.4f}</b>
+                </div>
+                <div class="map-legend-gradient"></div>
             </div>
-            """)
-
-        m.add_control(
-            WidgetControl(
-                widget=legend,
-                position="bottomright",
-            )
+            """),
+            position="bottomright"
         )
+
+        # request tiles from the titiler API gateway
+        tile_string = (
+            f"{PRODUCTION_TILER_BASE}"
+            f"/cog/tiles/{{z}}/{{x}}/{{y}}.png"
+            f"?url={encoded_cog}"
+            f"&colormap_name=ylgn"
+            f"&rescale={rmin},{rmax}"
+        )
+        
+        mean_density = TileLayer(
+            url=tile_string,
+            name="Mean Density",
+        )
+
+        m.add(mean_density)
+        m.add(legend)
+
+        region = input.region_v5()
+
+        if region == "Canada":
+            m.add(REGION_LAYERS["Canada"])
+
+        elif region == "Lower48":
+            m.add(REGION_LAYERS["Lower48"])
+
+        elif region == "Alaska":
+            m.add(REGION_LAYERS["Alaska"])
+
+        # controls
+        m.add(FullScreenControl())
+        m.add(LayersControl(collapsed=False, position="topright"))
+        m.add(ScaleControl(position="bottomleft"))
 
         return m
+    
+    @reactive.calc
+    def population_data():
+        return abundances.filter(
+            (pl.col("english") == input.species_v5())
+        )
+
+    @render.data_frame
+    def population_size():
+        df = population_data()
+
+        df = df.select([
+            "year",
+            "region", 
+            "population_estimate", 
+            "population_lower", 
+            "population_upper", 
+            "density_estimate", 
+            "density_lower", 
+            "density_upper"
+        ])
+
+        return render.DataGrid(df, selection_mode="rows")
+
+    @render_altair
+    def population_chart():
+
+        df = population_data()
+
+        points = alt.Chart(df).mark_point(
+            filled=True,
+        ).encode(
+            alt.X("population_estimate:Q")
+                .title("Abundance (M males)")
+                .scale(type="log"),
+            alt.Y("region_name:N")
+                .title(None)
+                .sort(
+                    field="population_estimate",
+                    order="descending",
+                )
+                .axis(labelLimit=0),
+            alt.Color(
+                "country_name:N",
+                legend=alt.Legend(title="Country")
+            ),
+        ).transform_calculate(
+            region_name=f"{region_dict}[datum.region].name_adj",
+            country_name=f"{region_dict}[datum.region].country"
+        )
+
+        nearest = alt.selection_point(
+            nearest=True,
+            on="pointerover",
+            fields=["population_estimate"],
+            empty=False
+        )
+        when_near = alt.when(nearest)
+
+        highlight = points.mark_point(
+            size=50,
+            stroke="#153B40FF",
+        ).encode(
+            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
+        )
+
+        rules = alt.Chart(df).mark_rule(
+            color="#153B40FF",
+        ).encode(
+            x="population_estimate:Q",
+            opacity=alt.when(nearest)
+                .then(alt.value(0.5))
+                .otherwise(alt.value(0)),
+            tooltip=[
+                alt.Tooltip("population_estimate:Q", title="Population Estimate"),
+                alt.Tooltip("population_lower:Q", title="Lower Estimate"),
+                alt.Tooltip("population_upper:Q", title="Upper Estimate"),
+        ]
+        ).add_params(nearest)
+
+        error_bars = points.mark_rule().encode(
+            x="population_lower:Q",
+            x2="population_upper:Q",
+        )
+
+        return (points + error_bars + rules + highlight).properties(
+            title=alt.Title(
+                f"Regional Population Estimates for the {input.species_v5()}",
+                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
+            ),
+            width="container",
+            height=750
+        )
+
+    @render_altair
+    def density_chart():
+
+        df = population_data()
+
+        points = alt.Chart(df).mark_point(
+            filled=True,
+        ).encode(
+            alt.X("density_estimate:Q")
+                .title("Density (males/ha)"),
+            alt.Y("region_name:N")
+                .title(None)
+                .sort(
+                    field="density_estimate",
+                    order="descending",
+                )
+                .axis(labelLimit=0),
+            alt.Color(
+                "country_name:N",
+                legend=alt.Legend(title="Country")
+            ),
+        ).transform_calculate(
+            region_name=f"{region_dict}[datum.region].name_adj",
+            country_name=f"{region_dict}[datum.region].country"
+        )
+
+        nearest = alt.selection_point(
+            nearest=True,
+            on="pointerover",
+            fields=["density_estimate"],
+            empty=False
+        )
+        when_near = alt.when(nearest)
+
+        highlight = points.mark_point(
+            size=50,
+            stroke="#153B40FF",
+        ).encode(
+            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
+        )
+
+        rules = alt.Chart(df).mark_rule(
+            color="#153B40FF",
+        ).encode(
+            x="density_estimate:Q",
+            opacity=alt.when(nearest)
+                .then(alt.value(0.5))
+                .otherwise(alt.value(0)),
+            tooltip=[
+                alt.Tooltip("density_estimate:Q", title="Density Estimate"),
+                alt.Tooltip("density_lower:Q", title="Lower Estimate"),
+                alt.Tooltip("density_upper:Q", title="Upper Estimate"),
+        ]
+        ).add_params(nearest)
+
+        error_bars = points.mark_rule().encode(
+            x="density_lower:Q",
+            x2="density_upper:Q",
+        )
+
+        return (points + error_bars + rules + highlight).properties(
+            title=alt.Title(
+                f"Regional Density Estimates for {input.species_v5()}",
+                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
+            ),
+            width="container",
+            height=750
+        )
+    
+    @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
+    def downloadAll():
+
+        return str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
+
+    @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
+    def downloadFiltered():
+
+        model_results = str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
+        metadata = pl.read_excel(model_results, sheet_name="metadata")
+        species = pl.read_excel(model_results, sheet_name="species").filter(pl.col("english") == input.species_v5())
+        regions = pl.read_excel(model_results, sheet_name="regions")
+        variables = pl.read_excel(model_results, sheet_name="variables")
+        importance = pl.read_excel(model_results, sheet_name="importance").filter(pl.col("english") == input.species_v5())
+        validation = pl.read_excel(model_results, sheet_name="validation").filter(pl.col("english") == input.species_v5())
+        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(pl.col("english") == input.species_v5())
+
+        with io.BytesIO() as buffer:
+            workbook = xlsxwriter.Workbook(buffer, {'in_memory': True})
+            metadata.write_excel(workbook=workbook, worksheet="metadata", autofilter=False, autofit=True)
+            species.write_excel(workbook=workbook, worksheet="species", autofilter=False, autofit=True)
+            regions.write_excel(workbook=workbook, worksheet="regions", autofilter=False, autofit=True)
+            variables.write_excel(workbook=workbook, worksheet="variables", autofilter=False, autofit=False)
+            importance.write_excel(workbook=workbook, worksheet="importance", autofilter=False, autofit=True)
+            validation.write_excel(workbook=workbook, worksheet="validation", autofilter=False, autofit=True)
+            abundances.write_excel(workbook=workbook, worksheet="abundances", autofilter=False, autofit=True)
+            workbook.close()
+            yield buffer.getvalue()

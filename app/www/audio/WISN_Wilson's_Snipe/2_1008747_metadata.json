@@ -1,0 +1,21 @@
+{
+  "bam_common_name": "Wilson's Snipe",
+  "bam_scientific_name": "Gallinago delicata",
+  "xeno_canto_scientific_name": "Gallinago delicata",
+  "taxonomy_corrected": false,
+  "xeno_canto_recording_id": "1008747",
+  "xeno_canto_english_name": "Wilson's Snipe",
+  "recordist": "Teet Sirotkin",
+  "country": "Sweden",
+  "location": "Storsjö, Berg Municipality, Jämtlands län",
+  "date": "2025-06-20",
+  "length": "0:05",
+  "duration_seconds": 5,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "xeno_canto_url": "https://xeno-canto.org/1008747",
+  "audio_url": "https://xeno-canto.org/1008747/download",
+  "local_audio_file": "2_1008747_qA_0-05.mp3",
+  "selection_mode": "under 7s preferred"
+}
