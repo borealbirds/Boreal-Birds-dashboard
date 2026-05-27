@@ -70,27 +70,6 @@ def load_abundance_data() -> pl.DataFrame:
     """
     return pl.read_excel(V5_META_PATH, sheet_name="abundances")
 
-def load_region_data() -> pl.DataFrame:
-    """Load region-level data from the Excel results summary file.
-
-    Returns
-    -------
-    pl.DataFrame
-        A Polars DataFrame containing the 'regions' sheet data.
-    """
-
-    regions = pl.read_excel(
-    V5_META_PATH,
-    sheet_name="regions",
-    columns=["region", "type", "country", "name", "area_km2", "total_surveys", "bootstrap_surveys"]
-    )
-
-    regions = regions.with_columns(
-        (pl.col("name") + " (" + pl.col("region") + ")").alias("name_adj")
-    )
-    
-    return regions
-
 def list_directory(url: str) -> list[str]:
     """
     Parse Apache directory listing and return entries.
@@ -131,76 +110,70 @@ def species_ids() -> list[str]:
 
 def available_regions(species_id: str) -> list[str]:
     """
-    Identify geographic regions for a specific species and 
-    list available regions from remote Apache directory.
-
-    Parameters
-    ----------
-    species_id : str
-        The unique identifier for the species.
-
-    Returns
-    -------
-    list of str
-        Sorted list of region names found within the species' directory.
+    List available regions for a species.
+    Tries the remote Apache server first; falls back to local data/model_v5/.
     """
     species_url = urljoin(BASE_URL, f"{species_id}/")
-
     try:
         entries = list_directory(species_url)
-        return sorted(entries)
+        if entries:
+            return sorted(entries)
+    except Exception as e:
+        print(f"[available_regions] Remote unavailable for {species_id}: {e}")
 
-    except Exception:
-        return []
+    # Local fallback — scan data/model_v5/{species_id}/
+    local_dir = DATA_DIR / "model_v5" / species_id
+    if local_dir.exists():
+        regions = sorted([d.name for d in local_dir.iterdir() if d.is_dir()])
+        if regions:
+            print(f"[available_regions] Using local data for {species_id}: {regions}")
+            return regions
+
+    print(f"[available_regions] No data found for {species_id}")
+    return []
 
 def available_years(species_id: str, region: str) -> list[int]:
     """
-    Parse available model years for a specific species and region by scanning filenames.
-
-    This function looks for .tif files following the naming convention 
-    '{species}_{region}_{year}.tif' and extracts the integer year.
-
-    Parameters
-    ----------
-    species_id : str
-        The unique identifier for the species.
-    region : str
-        The geographic region identifier.
-
-    Returns
-    -------
-    list of int
-        Sorted list of years found for the given parameters.
+    List available model years for a species and region.
+    Tries the remote Apache server first; falls back to local data/model_v5/.
     """
-    region_url = urljoin(
-        BASE_URL,
-        f"{species_id}/{region}/"
-    )
+    region_url = urljoin(BASE_URL, f"{species_id}/{region}/")
 
     try:
         entries = list_directory(region_url)
+        years = []
+        prefix = f"{species_id}_{region}_"
+        for filename in entries:
+            if not filename.endswith(".tif"):
+                continue
+            stem = filename.removesuffix(".tif")
+            if not stem.startswith(prefix):
+                continue
+            try:
+                years.append(int(stem.removeprefix(prefix)))
+            except ValueError:
+                continue
+        if years:
+            return sorted(years)
+    except Exception as e:
+        print(f"[available_years] Remote unavailable for {species_id}/{region}: {e}")
 
-    except Exception:
-        return []
+    # Local fallback — scan data/model_v5/{species_id}/{region}/
+    local_dir = DATA_DIR / "model_v5" / species_id / region
+    if local_dir.exists():
+        years = []
+        prefix = f"{species_id}_{region}_"
+        for tif in local_dir.glob("*.tif"):
+            stem = tif.stem
+            if not stem.startswith(prefix):
+                continue
+            try:
+                years.append(int(stem.removeprefix(prefix)))
+            except ValueError:
+                continue
+        if years:
+            print(f"[available_years] Using local data for {species_id}/{region}: {sorted(years)}")
+            return sorted(years)
 
-    years = []
-
-    prefix = f"{species_id}_{region}_"
-
-    for filename in entries:
-        if not filename.endswith(".tif"):
-            continue
-
-        stem = filename.removesuffix(".tif")
-
-        if not stem.startswith(prefix):
-            continue
-
-        try:
-            year = int(stem.removeprefix(prefix))
-            years.append(year)
-
-        except ValueError:
-            continue
-
-    return sorted(years)
+    print(f"[available_years] No years found for {species_id}/{region}")
+    return []

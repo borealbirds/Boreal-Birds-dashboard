@@ -28,10 +28,13 @@ app_ui = ui.page_navbar(
     ui.head_content(ui.include_css(str(www_dir / "styles.css"))),
     ui.nav_spacer(),
     welcome_tab(),
-    model_v5_tab(),
-    model_v4_tab(),
-    methods_tab(),
+    ui.nav_menu(
+        "Models",
+        model_v5_tab(),
+        model_v4_tab(),
+    ),
     model_access_tab(),
+    methods_tab(),
     ui.nav_control(
         ui.a(
             "Contact",
@@ -40,13 +43,13 @@ app_ui = ui.page_navbar(
             class_="contact-link"
         ),
     ),
-    selected="Current Model", # for during development phases
+    selected="Current Model",
     id="tabs",
     title=ui.tags.a(
         ui.tags.img(
             src="img/BAM-Logo-WhiteText.svg",
             alt="Boreal Avian Modelling Centre Dashboard",
-            height="60"
+            height="48"
         ),
         href="#",
     ),
