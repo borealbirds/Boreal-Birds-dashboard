@@ -6,12 +6,14 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from functools import lru_cache
 from urllib.parse import urljoin
+import yaml
 
 app_dir = Path(__file__).parent.parent
 
 REMOTE_DATA_FOLDER = "dashboard/"
 BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
 DATA_DIR = app_dir / "data"
+CONTENT_DIR = Path(__file__).parent / "content"
 V5_META_PATH = DATA_DIR / "model_v5" / "12_BAMV5-results.xlsx"
 BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
 
@@ -222,3 +224,17 @@ def available_years(species_id: str, region: str) -> list[int]:
 
     print(f"[available_years] No years found for {species_id}/{region}")
     return []
+
+def read_md(filename):
+    """
+    Read the contents of a markdown file from the content directory.
+    """
+    path = CONTENT_DIR / filename
+    return path.read_text(encoding="utf-8")
+
+def read_yaml(filename):
+    """
+    Read the contents of a YAML file from the content directory and parse it.
+    """
+    path = CONTENT_DIR / filename
+    return yaml.safe_load(path.read_text(encoding="utf-8"))

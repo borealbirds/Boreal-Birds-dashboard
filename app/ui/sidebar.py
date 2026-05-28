@@ -7,17 +7,19 @@ def sidebar(model_version: str):
     species_choices = sorted(load_species_metadata().get_column("english").to_list())
 
     return ui.sidebar(
+        ui.tags.img(src="img/ALFL.jpg", alt=" Image",class_="bird-image-sidebar"),
         ui.input_select(
             f"species_{model_version}",
             "Species",
             choices=species_choices,
-            size=7
+            size=4
+#             size=7
         ),
         ui.input_select(
             f"region_{model_version}",
             "Region",
             choices=[],
-            size=3
+            #size=3
         ),
         ui.input_slider(
             f"year_{model_version}",

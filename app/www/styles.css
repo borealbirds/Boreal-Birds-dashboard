@@ -34,6 +34,7 @@ body {
 .navbar {
   background-color: var(--primary);
   padding: 0.4rem 1.25rem;
+  padding-right: 3rem;
   box-shadow: var(--shadow-soft);
 }
 
@@ -52,6 +53,43 @@ body {
 
 .navbar .nav-link.active,
 .navbar .nav-link[aria-current="page"] { color: var(--light-yellow); }
+
+/* Hide dropdown by default */
+.navbar-nav .dropdown-menu {
+    display: none;
+    background-color: var(--primary);
+    color: var(--text-light) !important;
+}
+
+/* Show only on hover */
+.navbar-nav .dropdown:hover > .dropdown-menu {
+    display: block;
+}
+
+/* Prevent sticky click behavior */
+.navbar-nav .dropdown-toggle::after {
+    pointer-events: none;
+}
+
+/* Dropdown items */
+.dropdown-menu > li > a {
+    color: var(--text-light);
+    padding: 0.7rem 1.2rem;
+    transition: background 0.15s ease;
+    font-size: 0.9rem;
+}
+
+/* Dropdown hover */
+.dropdown-menu > li > a:hover {
+    background: var(--medium-blue);
+    color: var(--text-light) !important;
+}
+
+/* Active dropdown page */
+.dropdown-menu > li > a.active {
+    background: var(--blue-green);
+    color: var(--text-light) !important;
+}
 
 /* ── Sidebar ──────────────────────────────────────────────────────── */
 .sidebar {
@@ -239,10 +277,54 @@ body {
   margin: 0 !important;
 }
 
-.toggle-wrapper input[type="radio"]:checked + span,
-.toggle-wrapper .form-check-input:checked + .form-check-label {
-  background-color: var(--primary) !important;
-  color: var(--text-light) !important;
+.toggle-wrapper input[type="radio"]:checked + span {
+  background-color: var(--primary);
+  color: var(--text-light);
+}
+
+/* ── Map full height ──────────────────────────────────────────────── */
+.leaflet-container {
+  height: 100% !important;
+}
+
+/* hide leaflet attribution bar */
+.leaflet-bottom.leaflet-right .leaflet-control-attribution {
+  display: none;
+}
+
+/* bird information card — legacy, kept for compatibility */
+.bird-image {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bird-image-sidebar {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin: auto;
+}
+
+.bird-card {
+  padding: 0.4rem 0.75rem;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+  height: 120px;
+}
+
+.bird-card .card-body {
+  height: 100%;
+}
+
+.bird-card .col-sm-2 {
+  margin-right: 0.75rem;
 }
 
 /* ── Info panel: don't fill remaining space ───────────────────────── */
@@ -426,5 +508,79 @@ body {
 
 .spec-btn:hover { background: var(--primary); color: var(--text-light); }
 
-.spectrogram-panel { width: 100%; }
-.spectrogram-panel.hidden { display: none; }
+.spectrogram-panel.hidden {
+  display: none;
+}
+
+/* Accordion styling */
+
+/* Each panel */
+.accordion-item {
+  border: 1px solid var(--border-light) !important;
+  border-radius: 14px !important;
+  margin-right: 1.5rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.accordion-item:hover {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Header button */
+.accordion-button {
+  background: var(--medium-blue) !important;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  /* padding: 1.2rem 1.2rem; */
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Open state */
+.accordion-button:not(.collapsed) {
+  background: var(--blue-green) !important;
+  color: var(--text-light) !important;
+}
+
+/* Content area */
+.accordion-body {
+  padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+  color: var(--text-dark);
+  line-height: 1.7;
+  font-size: 0.98rem;
+}
+
+/* Replace chevron icon */
+.accordion-button::after {
+  background-image: none !important;
+  content: "+";
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--text-light);
+  transform: none !important;
+  transition: all 0.2s ease;
+}
+
+/* Open icon */
+.accordion-button:not(.collapsed)::after {
+  content: "−";
+  color: var(--text-light);
+}
+
+.methods-accordion,
+.methods-accordion .card,
+.methods-accordion .card-body {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+}
