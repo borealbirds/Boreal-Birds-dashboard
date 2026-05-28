@@ -15,6 +15,7 @@ from pathlib import Path
 import geopandas as gpd
 from functools import lru_cache
 
+from icons import question_circle_fill
 import xlsxwriter
 import io
 
@@ -42,7 +43,6 @@ birds = load_species_metadata()
 abundances = load_abundance_data()
 subregions = load_subregion_boundaries()
 region_dict = load_region_data().rows_by_key(key="region", named=True, unique=True)
-
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
 PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
@@ -129,28 +129,60 @@ def server_v5(input: Inputs):
 
     @render.ui
     def selected_bird():
-        bird = birds.filter(pl.col("english") == input.species_v5())
+        from pathlib import Path
+        bird   = birds.filter(pl.col("english") == input.species_v5())
+        region = input.region_v5() or ""
+        year   = int(input.year_v5())
 
-        pop_dict = (
-            population_data()
-            .filter(pl.col("region").is_in(["Canada", "Alaska", "Lower48"]))
-            .select(["region", "population_estimate"])
-            .rows_by_key(key="region", named=True, unique=True)
+        # Find first available photo in species folder
+        species_id   = bird.item(0, "id")
+        common_name  = bird.item(0, "english")
+        folder_name  = f"{species_id}_{common_name.replace(' ', '_')}"
+        img_dir      = Path(__file__).parent.parent / "www" / "img" / folder_name
+        img_src      = None
+        if img_dir.exists():
+            jpgs = sorted(img_dir.glob("*.jpg"))
+            if jpgs:
+                img_src = f"img/{folder_name}/{jpgs[0].name}"
+
+        # Population estimate for the selected region + year only
+        pop_df = abundances.filter(
+            (pl.col("english") == input.species_v5()) &
+            (pl.col("region")  == region) &
+            (pl.col("year") == str(year))
         )
+        pop_raw   = pop_df.item(0, 'population_estimate') if len(pop_df) > 0 else None
+        if pop_raw is None:
+            pop_value = "—"
+        elif round(pop_raw, 2) == 0.0:
+            pop_value = f"{pop_raw:.3f}"
+        else:
+            pop_value = f"{pop_raw:.2f}"
 
-        canada = pop_dict.get("Canada", {}).get("population_estimate", "No Model Estimates")
-        alaska = pop_dict.get("Alaska", {}).get("population_estimate", "No Model Estimates")
-        lower48 = pop_dict.get("Lower48", {}).get("population_estimate", "No Model Estimates")
-
-        return bird_card(
-            species=bird.item(0, "scientific"),
-            common_name=bird.item(0, "english"),
-            french_name=bird.item(0, "french"),
-            family=bird.item(0, "family"),
-            image_url=f"img/{bird.item(0, "id")}.jpg",
-            canada_pop=canada,
-            alaska_pop=alaska,
-            lower48_pop=lower48
+        return ui.div(
+            ui.tags.img(
+                src=img_src,
+                class_="bird-image-sm",
+                alt=common_name,
+                onerror="this.style.display='none'",
+            ) if img_src else ui.span(),
+            ui.div(
+                ui.span(bird.item(0, "english"), class_="bird-name"),
+                ui.span(bird.item(0, "french"),  class_="bird-french"),
+                class_="bird-names",
+            ),
+            ui.div(
+                ui.span("Population Estimate ", class_="bird-pop-label"),
+                ui.span(region, class_="bird-region-label"),
+                ui.span(f" {pop_value}", class_="bird-pop-value"),
+                ui.tooltip(
+                    question_circle_fill,
+                    "Population estimate (millions) for the selected region and year",
+                    placement="right",
+                ),
+                class_="bird-pop",
+            ),
+            class_="bird-header-content",
         )
 
     @reactive.effect
@@ -199,7 +231,7 @@ def server_v5(input: Inputs):
         ).item(0, "id")
 
         region = input.region_v5()
-        year = input.year_v5()
+        year = int(input.year_v5())
 
         if not species_id or not region or not year:
             return None
@@ -230,7 +262,7 @@ def server_v5(input: Inputs):
         except Exception as e:
             print(f"Error fetching TiTiler statistics: {e}")
             return {"min": 0.0, "max": 1.0}
-
+    
     REGION_LAYERS = {
         "Canada": build_region_layer("Canada"),
         "Lower48": build_region_layer("Lower48"),
@@ -267,7 +299,7 @@ def server_v5(input: Inputs):
         esri.name = "World Imagery (satellite)"
 
         # Initialize core map interface
-        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4)
+        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4, scroll_wheel_zoom=True)
 
         # generate legend utilizing remote data calculations
         stats = raster_statistics()
@@ -294,7 +326,7 @@ def server_v5(input: Inputs):
             f"&colormap_name=ylgn"
             f"&rescale={rmin},{rmax}"
         )
-        
+
         mean_density = TileLayer(
             url=tile_string,
             name="Mean Density",
@@ -320,7 +352,7 @@ def server_v5(input: Inputs):
         m.add(ScaleControl(position="bottomleft"))
 
         return m
-    
+
     @reactive.calc
     def population_data():
         return abundances.filter(
@@ -329,7 +361,17 @@ def server_v5(input: Inputs):
 
     @render.data_frame
     def population_size():
-        df = population_data()
+        region = input.region_v5()
+        year   = int(input.year_v5())
+
+        if not region:
+            return render.DataGrid(pl.DataFrame(), selection_mode="rows")
+
+        df = abundances.filter(
+            (pl.col("english") == input.species_v5()) &
+            (pl.col("region")  == region) &
+            (pl.col("year")    == str(year))
+        )
 
         df = df.select([
             "year",
@@ -341,9 +383,60 @@ def server_v5(input: Inputs):
             "density_lower", 
             "density_upper"
         ])
-
         return render.DataGrid(df, selection_mode="rows")
 
+    # ── INFO TAB ───────────────────────────────────────────────────────
+
+    @render.ui
+    def species_info():
+        bird        = birds.filter(pl.col("english") == input.species_v5())
+        species_id  = bird.item(0, "id")
+        scientific  = bird.item(0, "scientific")
+        french      = bird.item(0, "french")
+        family      = bird.item(0, "family")
+
+        ebird_url = f"https://ebird.org/species/{species_id.lower()}"
+        bow_url   = f"https://birdsoftheworld.org/bow/species/{species_id.lower()}"
+
+        def info_row(label, value, italic=False):
+            return ui.div(
+                ui.span(label, class_="info-label"),
+                ui.span(ui.tags.em(value) if italic else value, class_="info-value"),
+                class_="info-row",
+            )
+
+        return ui.div(
+            info_row("Scientific Name", scientific, italic=True),
+            info_row("French Name",     french),
+            info_row("Family",          family),
+            info_row("Species Code",    species_id),
+            class_="species-info-card",
+        )
+
+    # ── IMAGES TAB ─────────────────────────────────────────────────────
+
+    @render.ui
+    def species_images():
+        return ui.div(
+            ui.navset_tab(
+                ui.nav_panel("All",    ui.p("Images coming soon.", class_="text-muted p-3")),
+                ui.nav_panel("Male",   ui.p("Male images coming soon.", class_="text-muted p-3")),
+                ui.nav_panel("Female", ui.p("Female images coming soon.", class_="text-muted p-3")),
+            ),
+            class_="species-images-container",
+        )
+
+    # ── SONGS TAB ──────────────────────────────────────────────────────
+
+    @render.ui
+    def species_songs():
+        return ui.div(
+            ui.div(ui.span("Song 1", class_="song-label"), class_="song-row"),
+            ui.div(ui.span("Song 2", class_="song-label"), class_="song-row"),
+            class_="songs-container",
+        )
+    
+    # ── Chart details ───────────────────────────────────────────────────────
     @render_altair
     def population_chart():
 
