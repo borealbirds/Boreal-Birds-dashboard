@@ -1,0 +1,35 @@
+- section: Study Area
+  file: methods/study-area.md
+
+- section: Avian Data and Subsampling
+  file: methods/data-and-subsampling.md
+
+- section: Density Calibration, Detectability Offsets
+  file: methods/density-calibration-and-offsets.md
+
+- section: Environmental Covariates
+  file: methods/environmental-covariates.md
+
+- section: Model Building
+  file: methods/model-building.md
+
+- section: Model Validation
+  file: methods/model-validation.md
+
+- section: Bootstrap Averaging and Prediction
+  file: methods/bootstrap-averaging-prediction.md
+
+- section: Density Maps
+  file: methods/density-maps.md
+
+- section: Regional Population Estimates
+  file: methods/regional-population-estimates.md
+
+- section: Land Cover Based Density Estimates
+  file: methods/landcover-density-estimates.md
+
+- section: Data Availability
+  file: methods/data-availability.md
+
+- section: Citing These Results
+  file: methods/citing.md
