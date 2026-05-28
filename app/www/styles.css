@@ -43,6 +43,7 @@ body {
 .navbar {
   background-color: var(--primary);
   padding: 0.4rem 1.25rem;
+  padding-right: 3rem;
   box-shadow: var(--shadow-soft);
 }
 
@@ -74,7 +75,6 @@ body {
     display: none;
     background-color: var(--primary);
     color: var(--text-light) !important;
-    border: none;
 }
 
 /* Show only on hover */
@@ -92,6 +92,7 @@ body {
     color: var(--text-light);
     padding: 0.7rem 1.2rem;
     transition: background 0.15s ease;
+    font-size: 0.9rem;
 }
 
 /* Dropdown hover */

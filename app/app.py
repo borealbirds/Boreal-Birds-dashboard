@@ -35,12 +35,28 @@ app_ui = ui.page_navbar(
     ),
     model_access_tab(),
     methods_tab(),
-    ui.nav_control(
-        ui.a(
-            "Contact",
-            href="https://borealbirds.ca/contact/",
-            target="_blank",
-            class_="contact-link"
+    ui.nav_menu(
+        "Contact Us",
+        ui.nav_control(
+            ui.a(
+                "Our Website",
+                href="https://borealbirds.ca/contact/",
+                target="_blank",
+            ),
+        ),
+        ui.nav_control(
+            ui.a(
+                "Email Us",
+                href="mailto:bamp@ualberta.ca",
+                target="_blank",
+            ),
+        ),
+        ui.nav_control(
+            ui.a(
+                "Report an Issue",
+                href="https://github.com/borealbirds/LandbirdModelsV5/issues",
+                target="_blank",
+            ),
         ),
     ),
     selected="Current Model",
