@@ -50,7 +50,7 @@ PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.conn
 # Hardcoded fallback center metrics for geographic bounding contexts
 REGION_CENTERS = {
     "Alaska": [64, -149],
-    "Canada": [55, -106],
+    "Canada": [58, -103],
     "Lower48": [47.0, -97.0]
 }
 
@@ -106,15 +106,16 @@ def build_region_layer(region_name: str):
         style={
             "color": "black",
             "weight": 1.25,
-            "fillColor": "white",
-            "fillOpacity": 0,
-            "opacity": 0.7,
+            "fillColor": "white", 
+            "fillOpacity": 0, 
+            "opacity": 0.2,
         },
         hover_style={
             "color": "#00FFFF",
             "weight": 3,
-            "fillColor": "#00FFFF",
-            "fillOpacity": 0.20,
+            "fillColor": "white", 
+            "fillOpacity": 0, 
+            "opacity": 1, 
         },
         name=f"Subregion Boundaries"
     )
@@ -199,7 +200,11 @@ def server_v5(input: Inputs):
         ui.update_select(
             "region_v5",
             choices=regions,
-            selected=regions[0] if regions else None,
+            selected=(
+                "Canada" if regions and "Canada" in regions else (
+                    regions[0] if regions else None
+                )
+            ),
         )
 
     @reactive.effect
