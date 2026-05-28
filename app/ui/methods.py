@@ -1,22 +1,18 @@
-import yaml
-from pathlib import Path
 from shiny import ui
 
-contents_dir = Path(__file__).parent.parent / "content"
+from shared import read_md, read_yaml
 
-methods_sections = yaml.safe_load(
-    Path(str(contents_dir / "methods.yaml")).read_text()
-)
+methods_sections = read_yaml("methods/methods-sections.yaml")
 
 methods_accordion = ui.accordion(
     *[
         ui.accordion_panel(
             section["section"],
-            ui.p(section["content"])
+            ui.markdown(read_md(section["file"]))
         )
         for section in methods_sections
     ],
-    open=False
+    open=None # opens the first section by default
 )
 
 def methods_tab():
@@ -24,12 +20,13 @@ def methods_tab():
         "Methods",
         ui.layout_columns(
             ui.card(
-                ui.card_header("Our Methods"),
-                ui.p("Reliable information on species' population sizes, trends, habitat associations, and distributions is important for conservation and land-use planning, as well as status assessment and recovery planning for species at risk. However, the development of such estimates at a national scale is challenged by a variety of factors, including sparse data coverage in remote regions (Stralberg et al. 2015), differential habitat selection across large geographies (Crosby et al. 2019), and variation in survey protocols (Sólymos et al. 2013)."),
-                ui.p("With these factors in mind, we developed a generalized analytical approach to model species density in relation to environmental covariates, using the Boreal Avian Modelling Project database of point-count surveys (through 2018) and widely available spatial predictors (Cumming et al. 2010, Barker et al. 2015). We developed separate models for each geographic region (bird conservation regions intersected by jurisdiction boundaries) based on covariates such as tree species biomass (local and landscape scale), forest age, topography, land use, and climate. We used machine learning to allow for variable interactions and non-linear responses while avoiding time-consuming species-by-species parameterization. We applied cross-validation to avoid overfitting and bootstrap resampling to estimate uncertainty associated with our density estimates."),
-                ui.p("Please note, in late March 2025, we discovered a systematic error in the offsets used in these models, and have since updated the products to correct that error. For more information, please see the QPAD-offsets-correction repository or email bamp@ualberta.ca."),
+                ui.card_header("Our Methods - An Overview"),
+                ui.markdown(read_md("methods/methods-intro.md")),
             ),
-            ui.card(methods_accordion),
+            ui.card(
+                methods_accordion,
+                class_="methods-accordion",
+            ),
             col_widths=(5, 7),
         ),
     )

@@ -6,6 +6,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from functools import lru_cache
 from urllib.parse import urljoin
+import yaml
 
 app_dir = Path(__file__).parent.parent
 
@@ -230,3 +231,10 @@ def read_md(filename):
     """
     path = CONTENT_DIR / filename
     return path.read_text(encoding="utf-8")
+
+def read_yaml(filename):
+    """
+    Read the contents of a YAML file from the content directory and parse it.
+    """
+    path = CONTENT_DIR / filename
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
