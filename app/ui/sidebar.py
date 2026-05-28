@@ -13,6 +13,7 @@ def sidebar(model_version: str):
             "Species",
             choices=species_choices,
             size=4
+#             size=7
         ),
         ui.input_select(
             f"region_{model_version}",

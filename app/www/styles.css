@@ -2,35 +2,26 @@
 :root {
   --bg-primary: #FFFFFF;
   --bg-secondary: #F4F7F6FF;
-
-  --primary: #153B40FF; /* rgb(21, 59, 64) */
-  --secondary: #1E5055FF; /* rgb(30, 80, 85) */
-  --dark-blue: #245668FF; /* first colour  */
-  --medium-blue: #0F7279FF; /* second colour  */
-  --light-blue: #0D8F81FF; /* third colour  */
-  --blue-green: #39AB7EFF; /* four colour  */
-
-  --medium-green: #6EC574FF; /* fifth colour  */
-  --light-green: #A9DC67FF; /* six colour  */
-  --light-yellow: #EDEF5DFF; /* seventh colour yellow */
-
+  --primary: #153B40FF;
+  --secondary: #1E5055FF;
+  --dark-blue: #245668FF;
+  --medium-blue: #0F7279FF;
+  --light-blue: #0D8F81FF;
+  --blue-green: #39AB7EFF;
+  --medium-green: #6EC574FF;
+  --light-green: #A9DC67FF;
+  --light-yellow: #EDEF5DFF;
   --text-primary: #222222FF;
   --text-light: #FFFFFF;
-
   --border-light: #D8E1dFFF;
-
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
-
   --radius-sm: 10px;
   --radius-md: 18px;
   --radius-lg: 40px;
-
   --transition-fast: all 0.2s ease-in-out;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -55,20 +46,13 @@ body {
   transition: var(--transition-fast);
 }
 
-.navbar .navbar-brand {
-  font-weight: 500;
-  letter-spacing: 1px;
-}
+.navbar .navbar-brand { font-weight: 500; letter-spacing: 1px; }
 
 .navbar .nav-link:hover,
-.navbar .contact-link:hover {
-  color: var(--light-yellow);
-}
+.navbar .contact-link:hover { color: var(--light-yellow); }
 
 .navbar .nav-link.active,
-.navbar .nav-link[aria-current="page"] {
-  color: var(--light-yellow);
-}
+.navbar .nav-link[aria-current="page"] { color: var(--light-yellow); }
 
 /* Hide dropdown by default */
 .navbar-nav .dropdown-menu {
@@ -107,35 +91,25 @@ body {
     color: var(--text-light) !important;
 }
 
+/* ── Sidebar ──────────────────────────────────────────────────────── */
 .sidebar {
   background-color: var(--bg-secondary);
   padding: 1rem 0.5rem 0.5rem 0.5rem !important;
 }
 
-/* remove gap above collapse arrow and first label */
-.sidebar > .sidebar-content {
-  padding-top: 0 !important;
-}
+.sidebar > .sidebar-content { padding-top: 0 !important; }
 
-.sidebar-content.bslib-gap-spacing {
-  padding-top: 0.75rem !important;
-}
+.sidebar-content.bslib-gap-spacing { padding-top: 0.5rem !important; }
 
 .sidebar-content.bslib-gap-spacing > .form-group:first-child {
   margin-top: 0.75rem !important;
 }
 
-/* tighten form element spacing in sidebar */
-.sidebar .shiny-input-container {
-  margin-bottom: 0.4rem !important;
-}
+.sidebar .shiny-input-container { margin-bottom: 0.25rem !important; }
 
-.sidebar label {
-  margin-bottom: 0.15rem;
-  font-size: 0.85rem;
-}
+.sidebar label { margin-bottom: 0.15rem; font-size: 0.85rem; }
 
-/* form elements */
+/* ── Form elements ────────────────────────────────────────────────── */
 .form-control,
 .form-select {
   border: 1px solid var(--border-light);
@@ -150,7 +124,7 @@ body {
   outline: none;
 }
 
-/* general card styling */
+/* ── Cards ────────────────────────────────────────────────────────── */
 .card {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-light);
@@ -168,13 +142,9 @@ body {
   text-transform: uppercase;
 }
 
-.welcome-card, 
-.model-access-card  {
-  width: 75%;
-  margin: 0 auto;
-}
+.welcome-card, .model-access-card { width: 75%; margin: 0 auto; }
 
-/* ── Compact bird header row ──────────────────────────────────────── */
+/* ── Bird header row ──────────────────────────────────────────────── */
 .bird-header-row {
   display: flex;
   align-items: center;
@@ -186,6 +156,23 @@ body {
   box-shadow: var(--shadow-soft);
   min-height: 64px;
   margin-bottom: 0.4rem;
+  width: 100% !important;
+}
+
+.bird-header-row,
+.bird-header-row.html-fill-item {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 64px !important;
+  max-height: 80px !important;
+  align-self: start !important;
+}
+
+.bird-header-row .shiny-html-output {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-height: unset;
 }
 
 .bird-header-content {
@@ -203,22 +190,11 @@ body {
   flex-shrink: 0;
 }
 
-.bird-names {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
+.bird-names { display: flex; flex-direction: column; line-height: 1.2; }
 
-.bird-name {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
+.bird-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
 
-.bird-french {
-  font-size: 0.75rem;
-  color: #666;
-}
+.bird-french { font-size: 0.75rem; color: #666; }
 
 .bird-pop {
   display: flex;
@@ -228,20 +204,11 @@ body {
   font-size: 0.8rem;
 }
 
-.bird-pop-label {
-  color: #666;
-  font-weight: 400;
-}
+.bird-pop-label { color: #666; font-weight: 400; }
 
-.bird-region-label {
-  font-weight: 700;
-  color: var(--primary);
-}
+.bird-region-label { font-weight: 700; color: var(--primary); }
 
-.bird-pop-value {
-  font-weight: 600;
-  color: var(--text-primary);
-}
+.bird-pop-value { font-weight: 600; color: var(--text-primary); }
 
 /* ── MAP / INFO toggle ────────────────────────────────────────────── */
 .toggle-wrapper {
@@ -250,6 +217,8 @@ body {
   display: flex;
   align-items: center;
   align-self: center;
+  width: max-content !important;
+  min-width: max-content !important;
 }
 
 .toggle-wrapper .shiny-input-container {
@@ -265,29 +234,47 @@ body {
 }
 
 .toggle-wrapper .shiny-options-group {
-  display: flex;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   gap: 0.25rem;
   margin: 0;
+  width: max-content;
 }
 
-.toggle-wrapper label.control-label {
-  display: none;
+.toggle-wrapper .shiny-options-group .form-check,
+.toggle-wrapper .shiny-options-group .radio-inline {
+  display: flex !important;
+  flex-direction: row !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  align-items: center !important;
 }
 
-.toggle-wrapper input[type="radio"] {
-  display: none;
+.toggle-wrapper label.control-label { display: none; }
+
+.toggle-wrapper input[type="radio"],
+.toggle-wrapper .form-check-input {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  pointer-events: none !important;
 }
 
-.toggle-wrapper input[type="radio"] + span {
+.toggle-wrapper input[type="radio"] + span,
+.toggle-wrapper .form-check-label {
   cursor: pointer;
-  padding: 0.25rem 1rem;
+  padding: 0.2rem 0.6rem;
   border-radius: var(--radius-lg);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--text-primary);
   transition: var(--transition-fast);
   user-select: none;
   white-space: nowrap;
+  display: inline-block;
+  margin: 0 !important;
 }
 
 .toggle-wrapper input[type="radio"]:checked + span {
@@ -340,28 +327,23 @@ body {
   margin-right: 0.75rem;
 }
 
-/* NAV UNDERLINE (navset_card_underline) */
-.nav-underline .nav-link {
-  color: var(--text-light);
-  background: transparent;
-  transition: var(--transition-fast);
-  font-weight: 500;
+/* ── Info panel: don't fill remaining space ───────────────────────── */
+[data-display-if*="view_toggle === 'info'"] {
+  flex: 0 0 auto !important;
+  height: auto !important;
 }
 
-.nav-underline .nav-link:hover {
-  color: var(--light-yellow);
+[data-display-if*="view_toggle === 'info'"] .card,
+[data-display-if*="view_toggle === 'info'"] .bslib-card {
+  height: auto !important;
+  flex: 0 0 auto !important;
 }
 
-.nav-underline .nav-link.active {
-  color: var(--light-yellow);
-}
+/* ── Map ──────────────────────────────────────────────────────────── */
+.leaflet-container { height: 100% !important; }
 
-.nav-underline .nav-link:focus {
-  color: var(--light-yellow);
-  box-shadow: none;
-}
+.leaflet-bottom.leaflet-right .leaflet-control-attribution { display: none; }
 
-/* map */
 .map-legend {
   background: white;
   padding: 5px 6px;
@@ -371,31 +353,50 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
-.map-legend-title {
-  margin-bottom: 3px;
-}
+.map-legend-title { margin-bottom: 3px; }
 
 .map-legend-gradient {
   width: 90px;
   height: 8px;
-  background: linear-gradient(
-    to right,
-    #ffffe5,
-    #d9f0a3,
-    #addd8e,
-    #78c679,
-    #31a354,
-    #006837
-  );
+  background: linear-gradient(to right, #ffffe5, #d9f0a3, #addd8e, #78c679, #31a354, #006837);
   border: 1px solid #999;
 }
 
+/* ── Nav underline ────────────────────────────────────────────────── */
+.nav-underline .nav-link {
+  color: var(--text-light);
+  background: transparent;
+  transition: var(--transition-fast);
+  font-weight: 500;
+}
+
+.nav-underline .nav-link:hover,
+.nav-underline .nav-link.active,
+.nav-underline .nav-link:focus { color: var(--light-yellow); box-shadow: none; }
+
+/* ── Legacy bird card ─────────────────────────────────────────────── */
+.bird-image { width: 90px; height: 90px; object-fit: cover; border-radius: 50%; flex-shrink: 0; }
+
+.bird-card {
+  padding: 0.4rem 0.75rem;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+  height: 120px;
+}
+
+.bird-card .card-body { height: 100%; }
+.bird-card .col-sm-2 { margin-right: 0.75rem; }
+
+/* ── Welcome / Model access ───────────────────────────────────────── */
 .footer {
   text-align: center;
   padding: 0.5rem;
   border-top: 1px solid var(--border-light);
   font-size: 0.8rem;
 }
+
 /* ── Species Info tab ─────────────────────────────────────────────── */
 .species-info-card {
   padding: 1.25rem;
@@ -422,10 +423,7 @@ body {
   flex-shrink: 0;
 }
 
-.info-value {
-  font-size: 0.9rem;
-  color: var(--text-primary);
-}
+.info-value { font-size: 0.9rem; color: var(--text-primary); }
 
 .info-link {
   display: inline-block;
@@ -437,15 +435,10 @@ body {
   font-weight: 500;
 }
 
-.info-link:hover {
-  color: var(--primary);
-  text-decoration: underline;
-}
+.info-link:hover { color: var(--primary); text-decoration: underline; }
 
 /* ── Species Images tab ───────────────────────────────────────────── */
-.species-images-container {
-  padding: 0.75rem;
-}
+.species-images-container { padding: 0.75rem; }
 
 .photo-grid {
   display: grid;
@@ -463,17 +456,9 @@ body {
   transition: var(--transition-fast);
 }
 
-.photo-cell:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
+.photo-cell:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
 
-.species-photo {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  display: block;
-}
+.species-photo { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
 
 .sex-badge {
   position: absolute;
@@ -492,12 +477,7 @@ body {
 .sex-unknown { background: #999; color: white; }
 
 /* ── Species Songs tab ────────────────────────────────────────────── */
-.songs-container {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+.songs-container { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
 
 .song-row {
   display: flex;
@@ -510,18 +490,9 @@ body {
   flex-wrap: wrap;
 }
 
-.song-label {
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: var(--primary);
-  min-width: 50px;
-}
+.song-label { font-weight: 700; font-size: 0.85rem; color: var(--primary); min-width: 50px; }
 
-.audio-player {
-  flex: 1;
-  min-width: 200px;
-  height: 36px;
-}
+.audio-player { flex: 1; min-width: 200px; height: 36px; }
 
 .spec-btn {
   font-size: 0.78rem;
@@ -535,14 +506,7 @@ body {
   font-weight: 500;
 }
 
-.spec-btn:hover {
-  background: var(--primary);
-  color: var(--text-light);
-}
-
-.spectrogram-panel {
-  width: 100%;
-}
+.spec-btn:hover { background: var(--primary); color: var(--text-light); }
 
 .spectrogram-panel.hidden {
   display: none;
