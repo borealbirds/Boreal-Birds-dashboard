@@ -24,23 +24,25 @@ def model_v5_tab():
             sidebar("v5"),
 
             # ── Compact bird header + MAP/INFO toggle ──────────────────
-            # ui.card(
                 ui.layout_columns(
                     ui.output_ui("selected_bird"),
                     ui.div(
                         ui.input_radio_buttons(
                             "view_toggle",
                             None,
-                            choices={"map": "Map", "info": "Info"},
+                            choices={
+                                "map": "Map", 
+                                "info": "Info"
+                            },
                             selected="map",
                             inline=True,
                         ),
                         class_="toggle-wrapper",
                     ),
-                    col_widths=(8, -1 , 3),
+                    col_widths=(9, 3),
+                    max_height="80px",
                     class_="bird-header-row",
                 ),
-            # ),
 
             # ── MAP view ───────────────────────────────────────────────
             ui.panel_conditional(
