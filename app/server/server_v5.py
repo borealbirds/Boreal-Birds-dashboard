@@ -1,11 +1,12 @@
 from shiny import Inputs, reactive, ui, render
 from shinywidgets import render_widget, output_widget, render_altair
-from ipywidgets import HTML
+from ipywidgets import HTML, Layout, Button
 from ipyleaflet import (
     Map, basemaps, TileLayer, GeoData,
     basemap_to_tiles, LayersControl, ScaleControl,
     FullScreenControl, WidgetControl, GeoJSON
 )
+from shapely.geometry import shape
 from datetime import date
 import json
 import altair as alt
@@ -50,7 +51,7 @@ PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.conn
 # Hardcoded fallback center metrics for geographic bounding contexts
 REGION_CENTERS = {
     "Alaska": [64, -149],
-    "Canada": [55, -106],
+    "Canada": [58, -103],
     "Lower48": [47.0, -97.0]
 }
 
@@ -90,36 +91,91 @@ def build_region_layer(region_name: str):
         region_gdf.to_json(drop_id=True)
     )
 
-    # for feature in geojson_data["features"]:
+    # precompute zoom/centering for each feature
+    for feature in geojson_data["features"]:
 
-    #     props = feature["properties"]
+        geom = shape(feature["geometry"])
+        minx, miny, maxx, maxy = geom.bounds
 
-    #     feature["properties"]["tooltip"] = (
-    #         "<div style='font-size:13px;'>"
-    #         f"<b>Country:</b> {props.get('country', 'Unknown')}<br>"
-    #         f"<b>BCR:</b> {props.get('bcr', 'Unknown')}"
-    #         "</div>"
-    #     )
+        # center of each bcr
+        cx, cy = geom.centroid.x, geom.centroid.y
+
+        feature["properties"]["_center"] = [cy, cx]
+        feature["properties"]["_bounds"] = [[miny, minx], [maxy, maxx]]
+
+        spanx = maxx - minx
+        spany = maxy - miny
+        feature["properties"]["_spanx"] = spanx
+        feature["properties"]["_spany"] = spany
 
     layer = GeoJSON(
         data=geojson_data,
         style={
             "color": "black",
             "weight": 1.25,
-            "fillColor": "white",
-            "fillOpacity": 0,
-            "opacity": 0.7,
+            "fillColor": "white", 
+            "fillOpacity": 0, 
+            "opacity": 0.2,
         },
         hover_style={
             "color": "#00FFFF",
             "weight": 3,
-            "fillColor": "#00FFFF",
-            "fillOpacity": 0.20,
+            "fillColor": "white", 
+            "fillOpacity": 0, 
+            "opacity": 1, 
         },
-        name=f"Subregion Boundaries"
+        name="Subregion Boundaries"
     )
 
-    return layer
+    # floating info card
+    hover_card = HTML(
+        value="""
+        <div style="
+            padding:8px 10px;
+            background:white;
+            border-radius:6px;
+            box-shadow:0 1px 4px rgba(0,0,0,0.25);
+            font-size:13px;
+            min-width:140px;
+        ">
+            Hover over a subregion
+        </div>
+        """,
+        layout=Layout(margin="0px")
+    )
+
+    hover_control = WidgetControl(
+        widget=hover_card,
+        position="bottomleft"
+    )
+
+    return layer, hover_card, hover_control
+
+def zoom_from_span(span_x, span_y):
+    if not span_x or not span_y:
+        return 4
+    # map height / map width (roughly)
+    aspect = 4 / 9
+    # normalize vertical span into width-equivalent span
+    span_y_normalized = span_y / aspect
+    span = max(span_x, span_y_normalized)
+
+    if span > 30:
+        zoom = 4.2
+    elif span > 25:
+        zoom = 4.5
+    elif span > 23:
+        zoom = 4.7
+    elif span > 16:
+        zoom = 5.2
+    elif span > 10:
+        zoom = 5.5
+    elif span > 8:
+        zoom = 6
+    else:
+        zoom = 6.5
+    print("\n\nspan ", span, " zoom ", zoom)
+    return zoom
 
 def server_v5(input: Inputs):
     """
@@ -199,7 +255,11 @@ def server_v5(input: Inputs):
         ui.update_select(
             "region_v5",
             choices=regions,
-            selected=regions[0] if regions else None,
+            selected=(
+                "Canada" if regions and "Canada" in regions else (
+                    regions[0] if regions else None
+                )
+            ),
         )
 
     @reactive.effect
@@ -337,18 +397,70 @@ def server_v5(input: Inputs):
 
         region = input.region_v5()
 
-        if region == "Canada":
-            m.add(REGION_LAYERS["Canada"])
+        if region in REGION_LAYERS:
+            region_layer, hover_card, hover_control = REGION_LAYERS[region]
 
-        elif region == "Lower48":
-            m.add(REGION_LAYERS["Lower48"])
+            default_center = REGION_CENTERS.get(region, [60, -110])
+            default_zoom = 4
 
-        elif region == "Alaska":
-            m.add(REGION_LAYERS["Alaska"])
+            # hover
+            def update_hover(event=None, feature=None, **kwargs):
+
+                props = feature.get("properties", {})
+                bcr = props.get("bcr", "Unknown")
+
+                hover_card.value = f"""
+                <div style="
+                    padding:8px 10px;
+                    background:white;
+                    border-radius:6px;
+                    box-shadow:0 1px 4px rgba(0,0,0,0.25);
+                    font-size:13px;
+                    min-width:160px;
+                ">
+                    <div>
+                        {region_dict[bcr]['name_adj']}
+                    </div>
+                </div>
+                """
+
+            # click on region to zoom
+            def zoom_to_bcr(event=None, feature=None, **kwargs):
+                props = feature.get("properties", {})
+                center = props.get("_center")
+                spanx, spany = props.get("_spanx"), props.get("_spany")
+
+                if center and spanx and spany:
+                    m.center = center
+                    m.zoom = zoom_from_span(spanx, spany)
+
+            region_layer.on_hover(update_hover)
+            region_layer.on_click(zoom_to_bcr)
+
+            # reset zoom button
+            reset_btn = Button(
+                description="Reset Zoom",
+                layout=Layout(width="120px")
+            )
+
+            def reset_zoom(btn):
+                m.center = default_center
+                m.zoom = default_zoom
+
+            reset_btn.on_click(reset_zoom)
+            reset_control = WidgetControl(
+                widget=reset_btn,
+                position="bottomleft"
+            )
+
+            # add to map
+            m.add(region_layer)
+            m.add(hover_control)
 
         # controls
         m.add(FullScreenControl())
         m.add(LayersControl(collapsed=False, position="topright"))
+        m.add(reset_control)
         m.add(ScaleControl(position="bottomleft"))
 
         return m
