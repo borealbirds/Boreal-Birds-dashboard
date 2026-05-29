@@ -2,9 +2,8 @@ from shiny import ui
 
 def vignette_panel(src, title):
     return ui.nav_panel(
-        src.split("/")[-1],
+        title,
         ui.tags.iframe(
-            title,
             src=src,
             style="""
                 width:100%;
