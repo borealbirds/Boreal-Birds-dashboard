@@ -86,6 +86,7 @@ def model_v5_tab():
                         class_="results_tooltip",
                     ),
                 ),
+                class_="fill-remaining-space",
             ),
 
             # ── INFO view ──────────────────────────────────────────────
