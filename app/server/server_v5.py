@@ -1,6 +1,6 @@
 from shiny import Inputs, reactive, ui, render
 from shinywidgets import render_widget, output_widget, render_altair
-from ipywidgets import HTML
+from ipywidgets import HTML, Layout
 from ipyleaflet import (
     Map, basemaps, TileLayer, GeoData,
     basemap_to_tiles, LayersControl, ScaleControl,
@@ -90,17 +90,6 @@ def build_region_layer(region_name: str):
         region_gdf.to_json(drop_id=True)
     )
 
-    # for feature in geojson_data["features"]:
-
-    #     props = feature["properties"]
-
-    #     feature["properties"]["tooltip"] = (
-    #         "<div style='font-size:13px;'>"
-    #         f"<b>Country:</b> {props.get('country', 'Unknown')}<br>"
-    #         f"<b>BCR:</b> {props.get('bcr', 'Unknown')}"
-    #         "</div>"
-    #     )
-
     layer = GeoJSON(
         data=geojson_data,
         style={
@@ -120,7 +109,49 @@ def build_region_layer(region_name: str):
         name=f"Subregion Boundaries"
     )
 
-    return layer
+    # floating info card
+    hover_card = HTML(
+        value="""
+        <div style="
+            padding:8px 10px;
+            background:white;
+            border-radius:6px;
+            box-shadow:0 1px 4px rgba(0,0,0,0.25);
+            font-size:13px;
+            min-width:140px;
+        ">
+            Hover over a subregion
+        </div>
+        """,
+        layout=Layout(margin="0px")
+    )
+
+    hover_control = WidgetControl(
+        widget=hover_card,
+        position="bottomleft"
+    )
+
+    def update_hover(event=None, feature=None, **kwargs):
+
+        props = feature.get("properties", {})
+        bcr = props.get("bcr", "Unknown")
+
+        hover_card.value = f"""
+        <div style="
+            padding:8px 10px;
+            background:white;
+            border-radius:6px;
+            box-shadow:0 1px 4px rgba(0,0,0,0.25);
+            font-size:13px;
+            min-width:160px;
+        ">
+            <div>{region_dict[bcr]['name_adj']}</div>
+        </div>
+        """
+
+    layer.on_hover(update_hover)
+
+    return layer, hover_control
 
 def server_v5(input: Inputs):
     """
@@ -342,14 +373,10 @@ def server_v5(input: Inputs):
 
         region = input.region_v5()
 
-        if region == "Canada":
-            m.add(REGION_LAYERS["Canada"])
-
-        elif region == "Lower48":
-            m.add(REGION_LAYERS["Lower48"])
-
-        elif region == "Alaska":
-            m.add(REGION_LAYERS["Alaska"])
+        if region in REGION_LAYERS:
+            region_layer, hover_control = REGION_LAYERS[region]
+            m.add(region_layer)
+            m.add(hover_control)
 
         # controls
         m.add(FullScreenControl())
