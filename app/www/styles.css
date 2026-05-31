@@ -723,3 +723,48 @@ body {
 }
 
 .info-link:hover { color: var(--primary); text-decoration: underline; }
+/* ── Dynamic Fill Remaining Vertical Space for Model Results ───────── */
+
+/* Target the main content area inside the sidebar layout */
+.bslib-sidebar-layout .main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Force the targeted conditional panel container to grow */
+.fill-remaining-space {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Prevents flex containers from overflowing */
+}
+
+/* Force Shiny's card framework to fill the parent wrapper */
+.fill-remaining-space .bslib-card, 
+.fill-remaining-space .card {
+  flex: 1 1 auto !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100% !important;
+}
+
+/* Direct the content window within the tab card structure to stretch */
+.fill-remaining-space .card-body,
+.fill-remaining-space .tab-content,
+.fill-remaining-space .tab-pane {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+/* Ensure widgets (like Leaflet maps) scale correctly within the layout */
+.fill-remaining-space .shinywidgets-output,
+.fill-remaining-space .htmlwidget {
+  flex: 1 1 auto;
+  height: 100% !important;
+  width: 100% !important;
+}
