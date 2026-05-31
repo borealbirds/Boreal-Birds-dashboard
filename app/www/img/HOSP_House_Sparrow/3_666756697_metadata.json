@@ -1,0 +1,16 @@
+{
+  "common_name": "House Sparrow",
+  "scientific_name": "Passer domesticus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666756697,
+  "attribution": "(c) Ed Hass, some rights reserved (CC BY-NC-ND)",
+  "license": "cc-by-nc-nd",
+  "obs_url": "https://www.inaturalist.org/observations/365204489",
+  "obs_date": "2026-05-25",
+  "recorded_by": "edhass",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666756697/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_666756697.jpg"
+}

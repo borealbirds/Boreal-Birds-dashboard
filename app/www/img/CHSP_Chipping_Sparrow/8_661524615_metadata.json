@@ -1,0 +1,16 @@
+{
+  "common_name": "Chipping Sparrow",
+  "scientific_name": "Spizella passerina",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 661524615,
+  "attribution": "(c) birdbrainbrian, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/362446372",
+  "obs_date": "2026-05-16",
+  "recorded_by": "birdbrainbrian",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/661524615/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "8_661524615.jpg"
+}

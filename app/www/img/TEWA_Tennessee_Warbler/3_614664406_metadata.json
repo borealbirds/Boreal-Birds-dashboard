@@ -1,0 +1,16 @@
+{
+  "common_name": "Tennessee Warbler",
+  "scientific_name": "Oreothlypis peregrina",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 614664406,
+  "attribution": "(c) Abhishek N. Prasad, some rights reserved (CC BY-NC-ND)",
+  "license": "cc-by-nc-nd",
+  "obs_url": "https://www.inaturalist.org/observations/338044312",
+  "obs_date": "2025-11-26",
+  "recorded_by": "polylepis",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/614664406/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_614664406.jpg"
+}

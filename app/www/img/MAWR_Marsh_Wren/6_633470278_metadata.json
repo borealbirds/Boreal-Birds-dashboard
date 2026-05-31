@@ -1,0 +1,16 @@
+{
+  "common_name": "Marsh Wren",
+  "scientific_name": "Cistothorus palustris",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 633470278,
+  "attribution": "(c) Aelie Howell, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/347428807",
+  "obs_date": "2026-04-04",
+  "recorded_by": "aelieh",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/633470278/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "6_633470278.jpg"
+}

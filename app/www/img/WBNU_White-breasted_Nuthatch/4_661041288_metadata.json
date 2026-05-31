@@ -1,0 +1,16 @@
+{
+  "common_name": "White-breasted Nuthatch",
+  "scientific_name": "Sitta carolinensis",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 661041288,
+  "attribution": "(c) cink85, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/362189519",
+  "obs_date": "2026-05-15",
+  "recorded_by": "cink85",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/661041288/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_661041288.jpg"
+}

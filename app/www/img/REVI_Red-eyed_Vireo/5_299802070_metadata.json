@@ -1,0 +1,16 @@
+{
+  "common_name": "Red-eyed Vireo",
+  "scientific_name": "Vireo olivaceus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 299802070,
+  "attribution": "(c) Oliver J, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/172682918",
+  "obs_date": "2023-07-13",
+  "recorded_by": "snakeeater",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/299802070/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "5_299802070.jpg"
+}

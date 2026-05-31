@@ -1,0 +1,16 @@
+{
+  "common_name": "Blue Jay",
+  "scientific_name": "Cyanocitta cristata",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 613421845,
+  "attribution": "(c) Zephyr C, all rights reserved",
+  "license": null,
+  "obs_url": "https://www.inaturalist.org/observations/337438244",
+  "obs_date": "2026-02-05",
+  "recorded_by": "chowderfest89",
+  "download_url": "https://static.inaturalist.org/photos/613421845/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_613421845.jpg"
+}

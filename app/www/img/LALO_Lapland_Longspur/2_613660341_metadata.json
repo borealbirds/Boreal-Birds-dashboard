@@ -1,0 +1,16 @@
+{
+  "common_name": "Lapland Longspur",
+  "scientific_name": "Calcarius lapponicus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 613660341,
+  "attribution": "(c) baskingsnark, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/337555803",
+  "obs_date": "2026-02-06",
+  "recorded_by": "baskingsnark",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/613660341/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "2_613660341.jpg"
+}

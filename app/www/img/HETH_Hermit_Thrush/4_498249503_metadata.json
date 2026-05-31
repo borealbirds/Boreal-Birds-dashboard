@@ -1,0 +1,16 @@
+{
+  "common_name": "Hermit Thrush",
+  "scientific_name": "Catharus guttatus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 498249503,
+  "attribution": "(c) tprario, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/277485343",
+  "obs_date": "2025-05-01",
+  "recorded_by": "tprario",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/498249503/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_498249503.jpg"
+}

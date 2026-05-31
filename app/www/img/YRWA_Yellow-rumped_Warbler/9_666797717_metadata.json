@@ -1,0 +1,16 @@
+{
+  "common_name": "Yellow-rumped Warbler",
+  "scientific_name": "Setophaga coronata",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666797717,
+  "attribution": "no rights reserved",
+  "license": "cc0",
+  "obs_url": "https://www.inaturalist.org/observations/365228511",
+  "obs_date": "2026-05-23",
+  "recorded_by": "soo_moths",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666797717/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "9_666797717.jpg"
+}

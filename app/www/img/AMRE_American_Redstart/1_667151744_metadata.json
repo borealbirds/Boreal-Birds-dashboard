@@ -1,0 +1,16 @@
+{
+  "common_name": "American Redstart",
+  "scientific_name": "Setophaga ruticilla",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 667151744,
+  "attribution": "(c) joymanishen, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/365409734",
+  "obs_date": "2026-05-26",
+  "recorded_by": "joymanishen",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/667151744/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_667151744.jpg"
+}

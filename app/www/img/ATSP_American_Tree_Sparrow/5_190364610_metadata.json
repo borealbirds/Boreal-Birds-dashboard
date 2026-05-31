@@ -1,0 +1,16 @@
+{
+  "common_name": "American Tree Sparrow",
+  "scientific_name": "Spizella arborea",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 190364610,
+  "attribution": "(c) Fotojunkie8’s, some rights reserved (CC BY)",
+  "license": "cc-by",
+  "obs_url": "https://www.inaturalist.org/observations/110799119",
+  "obs_date": "2022-04-08",
+  "recorded_by": "fotojunkie8",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/190364610/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_190364610.jpg"
+}

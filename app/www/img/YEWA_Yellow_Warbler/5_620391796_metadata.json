@@ -1,0 +1,16 @@
+{
+  "common_name": "Yellow Warbler",
+  "scientific_name": "Setophaga petechia",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 620391796,
+  "attribution": "(c) manuelledue, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/340866695",
+  "obs_date": "2026-01-23",
+  "recorded_by": "manuelledue",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/620391796/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_620391796.jpg"
+}

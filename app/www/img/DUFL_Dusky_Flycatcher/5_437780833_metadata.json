@@ -1,0 +1,16 @@
+{
+  "common_name": "Dusky Flycatcher",
+  "scientific_name": "Empidonax oberholseri",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 437780833,
+  "attribution": "(c) Jeff McIntyre, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/245341042",
+  "obs_date": "2024-09-19",
+  "recorded_by": "jeffmci9",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/437780833/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "5_437780833.jpg"
+}

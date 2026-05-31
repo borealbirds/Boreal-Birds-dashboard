@@ -1,0 +1,16 @@
+{
+  "common_name": "Yellow-headed Blackbird",
+  "scientific_name": "Xanthocephalus xanthocephalus",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 665996174,
+  "attribution": "(c) Leigh Nelson, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364807990",
+  "obs_date": "2026-05-24",
+  "recorded_by": "leighmn",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/665996174/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "9_665996174.jpg"
+}

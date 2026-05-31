@@ -1,0 +1,16 @@
+{
+  "common_name": "Townsend's Solitaire",
+  "scientific_name": "Myadestes townsendi",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 160130494,
+  "attribution": "(c) rowz, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/96391633",
+  "obs_date": "2021-09-21",
+  "recorded_by": "rowz",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/160130494/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "8_160130494.jpg"
+}

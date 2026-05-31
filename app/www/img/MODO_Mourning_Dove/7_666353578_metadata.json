@@ -1,0 +1,16 @@
+{
+  "common_name": "Mourning Dove",
+  "scientific_name": "Zenaida macroura",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666353578,
+  "attribution": "(c) Walter Allmandinger, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364993527",
+  "obs_date": "2026-05-23",
+  "recorded_by": "wallmandinger",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666353578/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "7_666353578.jpg"
+}

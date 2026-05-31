@@ -34,7 +34,6 @@ body {
 .navbar {
   background-color: var(--primary);
   padding: 0.4rem 1.25rem;
-  padding-right: 3rem;
   box-shadow: var(--shadow-soft);
 }
 
@@ -53,43 +52,6 @@ body {
 
 .navbar .nav-link.active,
 .navbar .nav-link[aria-current="page"] { color: var(--light-yellow); }
-
-/* Hide dropdown by default */
-.navbar-nav .dropdown-menu {
-    display: none;
-    background-color: var(--primary);
-    color: var(--text-light) !important;
-}
-
-/* Show only on hover */
-.navbar-nav .dropdown:hover > .dropdown-menu {
-    display: block;
-}
-
-/* Prevent sticky click behavior */
-.navbar-nav .dropdown-toggle::after {
-    pointer-events: none;
-}
-
-/* Dropdown items */
-.dropdown-menu > li > a {
-    color: var(--text-light);
-    padding: 0.7rem 1.2rem;
-    transition: background 0.15s ease;
-    font-size: 0.9rem;
-}
-
-/* Dropdown hover */
-.dropdown-menu > li > a:hover {
-    background: var(--medium-blue);
-    color: var(--text-light) !important;
-}
-
-/* Active dropdown page */
-.dropdown-menu > li > a.active {
-    background: var(--blue-green);
-    color: var(--text-light) !important;
-}
 
 /* ── Sidebar ──────────────────────────────────────────────────────── */
 .sidebar {
@@ -277,54 +239,10 @@ body {
   margin: 0 !important;
 }
 
-.toggle-wrapper input[type="radio"]:checked + span {
-  background-color: var(--primary);
-  color: var(--text-light);
-}
-
-/* ── Map full height ──────────────────────────────────────────────── */
-.leaflet-container {
-  height: 100% !important;
-}
-
-/* hide leaflet attribution bar */
-.leaflet-bottom.leaflet-right .leaflet-control-attribution {
-  display: none;
-}
-
-/* bird information card — legacy, kept for compatibility */
-.bird-image {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.bird-image-sidebar {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin: auto;
-}
-
-.bird-card {
-  padding: 0.4rem 0.75rem;
-  background-color: var(--bg-primary);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-soft);
-  height: 120px;
-}
-
-.bird-card .card-body {
-  height: 100%;
-}
-
-.bird-card .col-sm-2 {
-  margin-right: 0.75rem;
+.toggle-wrapper input[type="radio"]:checked + span,
+.toggle-wrapper .form-check-input:checked + .form-check-label {
+  background-color: var(--primary) !important;
+  color: var(--text-light) !important;
 }
 
 /* ── Info panel: don't fill remaining space ───────────────────────── */
@@ -461,20 +379,20 @@ body {
 .species-photo { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
 
 .sex-badge {
+  display: none;
   position: absolute;
   bottom: 0.3rem;
   right: 0.3rem;
-  font-size: 0.65rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  padding: 0.15rem 0.4rem;
-  border-radius: 999px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.95);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6);
+  background: none;
+  padding: 0;
+  line-height: 1;
 }
 
-.sex-male   { background: #3498DB; color: white; }
-.sex-female { background: #E07B9A; color: white; }
-.sex-unknown { background: #999; color: white; }
+.show-sex-tags .sex-badge { display: block; }
 
 /* ── Species Songs tab ────────────────────────────────────────────── */
 .songs-container { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
@@ -508,79 +426,300 @@ body {
 
 .spec-btn:hover { background: var(--primary); color: var(--text-light); }
 
-.spectrogram-panel.hidden {
-  display: none;
-}
+.spectrogram-panel { width: 100%; }
+.spectrogram-panel.hidden { display: none; }
 
-/* Accordion styling */
-
-/* Each panel */
-.accordion-item {
-  border: 1px solid var(--border-light) !important;
-  border-radius: 14px !important;
-  margin-right: 1.5rem;
-  margin-bottom: 1rem;
-  overflow: hidden;
+/* ── Songs: WaveSurfer layout ─────────────────────────────────────── */
+.song-block {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
   background: var(--bg-secondary);
-  transition: all 0.2s ease;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
 }
 
-/* Hover effect */
-.accordion-item:hover {
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+.song-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-/* Header button */
-.accordion-button {
-  background: var(--medium-blue) !important;
-  color: var(--text-light);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  /* padding: 1.2rem 1.2rem; */
-  border: none !important;
-  box-shadow: none !important;
+.play-btn {
+  padding: 0.25rem 0.9rem;
+  border-radius: var(--radius-lg);
+  border: none;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: var(--transition-fast);
+  font-family: inherit;
 }
 
-/* Open state */
-.accordion-button:not(.collapsed) {
-  background: var(--blue-green) !important;
-  color: var(--text-light) !important;
+.play-btn:hover { background: var(--secondary); }
+
+.waveform-container {
+  width: 100%;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
-/* Content area */
-.accordion-body {
-  padding: 1.25rem 1.5rem 1.5rem 1.5rem;
-  color: var(--text-dark);
-  line-height: 1.7;
-  font-size: 0.98rem;
+.spectrogram-container {
+  width: 100%;
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
 }
 
-/* Replace chevron icon */
-.accordion-button::after {
-  background-image: none !important;
-  content: "+";
+/* ── Sidebar bird image ───────────────────────────────────────────── */
+.bird-image-sidebar {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* ── Sex badge: hidden by default, shown when container has class ─── */
+.sex-badge { display: none; }
+.show-sex-tags .sex-badge { display: inline-block; }
+
+/* ── Tag toggle checkbox bar ──────────────────────────────────────── */
+
+/* ── Images: floating checkbox aligned with tabs ─────────────────── */
+.images-tab-wrapper {
+  position: relative;
+}
+
+.tag-toggle-floating {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.5rem;
+  z-index: 20;
+  font-size: 0.75rem;
+  color: var(--secondary);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.tag-toggle-floating input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+/* ── Lightbox overlay ─────────────────────────────────────────────── */
+.lb-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.lb-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 85vw;
+  max-height: 90vh;
+}
+
+.lb-main-img {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+
+.lb-caption {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  max-width: 60vw;
+}
+
+.lb-counter {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  margin-top: 0.2rem;
+}
+
+.lb-arrow {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 3.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+.lb-arrow:hover { opacity: 1; }
+
+.lb-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: white;
   font-size: 1.5rem;
-  font-weight: 300;
-  color: var(--text-light);
-  transform: none !important;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  opacity: 0.7;
+  line-height: 1;
+  z-index: 10000;
 }
 
-/* Open icon */
-.accordion-button:not(.collapsed)::after {
-  content: "−";
-  color: var(--text-light);
+.lb-close:hover { opacity: 1; }
+
+.species-photo { cursor: pointer; }
+
+/* ── Sidebar profile image: circular ─────────────────────────────── */
+.bird-image-sidebar {
+  width: 104px !important;
+  height: 104px !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block !important;
+  margin: 0.25rem auto 0.5rem auto !important;
+  max-height: unset !important;
 }
 
-.methods-accordion,
-.methods-accordion .card,
-.methods-accordion .card-body {
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-    border-radius: 0 !important;
+/* ── Lightbox metadata panel ──────────────────────────────────────── */
+.lb-meta {
+  margin-top: 0.6rem;
+  text-align: center;
+  line-height: 1.5;
 }
+
+.lb-species-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.lb-common {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.95);
+}
+
+.lb-scientific {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.65);
+  font-style: italic;
+}
+
+.lb-sex-label {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  padding: 0.05rem 0.35rem;
+}
+
+.lb-attr-row {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.lb-link {
+  color: rgba(110,197,116,0.8);
+  text-decoration: none;
+  font-size: 0.72rem;
+}
+
+.lb-link:hover { color: rgba(110,197,116,1); text-decoration: underline; }
+
+/* ── Song: loading placeholder ────────────────────────────────────── */
+.ws-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  font-size: 0.75rem;
+  color: var(--secondary);
+  opacity: 0.6;
+  font-style: italic;
+  gap: 0.4rem;
+}
+
+.ws-loading::before {
+  content: "◌";
+  animation: spin 1.2s linear infinite;
+  display: inline-block;
+}
+
+.ws-loading-spec { height: 80px; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Spectrogram: collapsed (default) and expanded ────────────────── */
+.spectrogram-container {
+  height: 80px;
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+
+.spectrogram-container.spec-expanded {
+  height: 200px;
+}
+
+/* ── Expand button ────────────────────────────────────────────────── */
+.spec-expand-btn {
+  display: block;
+  margin: 0.25rem 0 0 0;
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  color: var(--secondary);
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.6;
+  font-family: inherit;
+}
+
+.spec-expand-btn:hover { opacity: 1; }
+
+/* ── Species info: links row ──────────────────────────────────────── */
+.info-row-links {
+  border-bottom: none;
+  padding-top: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.info-row-links .info-value,
+.info-row-links > div {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.info-link {
+  font-size: 0.8rem;
+  color: var(--medium-blue);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.info-link:hover { color: var(--primary); text-decoration: underline; }

@@ -1,0 +1,16 @@
+{
+  "common_name": "Magnolia Warbler",
+  "scientific_name": "Setophaga magnolia",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666163393,
+  "attribution": "(c) Nash Turley, some rights reserved (CC BY)",
+  "license": "cc-by",
+  "obs_url": "https://www.inaturalist.org/observations/364896909",
+  "obs_date": "2026-05-24",
+  "recorded_by": "nashuagoats",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666163393/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "10_666163393.jpg"
+}

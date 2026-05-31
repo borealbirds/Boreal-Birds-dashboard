@@ -1,0 +1,16 @@
+{
+  "common_name": "American Pipit",
+  "scientific_name": "Anthus rubescens",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 531847538,
+  "attribution": "(c) dlaw1219, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/295432960",
+  "obs_date": "2025-02-21",
+  "recorded_by": "dlaw1219",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/531847538/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "2_531847538.jpg"
+}

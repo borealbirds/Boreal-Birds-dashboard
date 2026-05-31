@@ -1,0 +1,16 @@
+{
+  "common_name": "Boreal Chickadee",
+  "scientific_name": "Poecile hudsonicus",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 653158009,
+  "attribution": "(c) Kevin MacPherson, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/358072982",
+  "obs_date": "2026-05-03",
+  "recorded_by": "kevin_macpherson",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/653158009/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "9_653158009.jpg"
+}

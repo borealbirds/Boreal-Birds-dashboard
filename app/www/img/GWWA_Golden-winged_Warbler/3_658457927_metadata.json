@@ -1,0 +1,16 @@
+{
+  "common_name": "Golden-winged Warbler",
+  "scientific_name": "Vermivora chrysoptera",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 658457927,
+  "attribution": "(c) Jon Cefus, some rights reserved (CC BY-NC-SA)",
+  "license": "cc-by-nc-sa",
+  "obs_url": "https://www.inaturalist.org/observations/360828908",
+  "obs_date": "2026-05-11",
+  "recorded_by": "joncefus",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/658457927/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_658457927.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Dark-eyed Junco",
+  "scientific_name": "Junco hyemalis",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 665889197,
+  "attribution": "(c) Neil Gilham, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364761846",
+  "obs_date": "2026-05-11",
+  "recorded_by": "brownsbay",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/665889197/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_665889197.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "American Three-toed Woodpecker",
+  "scientific_name": "Picoides dorsalis",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 617015507,
+  "attribution": "(c) rangermavrat, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/339209263",
+  "obs_date": "2026-02-18",
+  "recorded_by": "rangermavrat",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/617015507/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_617015507.jpg"
+}

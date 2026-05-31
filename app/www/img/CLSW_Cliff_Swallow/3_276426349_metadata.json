@@ -1,0 +1,16 @@
+{
+  "common_name": "Cliff Swallow",
+  "scientific_name": "Petrochelidon pyrrhonota",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 276426349,
+  "attribution": "(c) Melanie Thomas, some rights reserved (CC BY-NC-ND)",
+  "license": "cc-by-nc-nd",
+  "obs_url": "https://www.inaturalist.org/observations/159979889",
+  "obs_date": "2023-04-30",
+  "recorded_by": "kobimom",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/276426349/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_276426349.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Willow Ptarmigan",
+  "scientific_name": "Lagopus lagopus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 663742059,
+  "attribution": "(c) Garth V. Riley, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/363606932",
+  "obs_date": "2026-05-20",
+  "recorded_by": "griley",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/663742059/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_663742059.jpg"
+}

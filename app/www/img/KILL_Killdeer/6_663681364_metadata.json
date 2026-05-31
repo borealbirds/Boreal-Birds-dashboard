@@ -1,0 +1,16 @@
+{
+  "common_name": "Killdeer",
+  "scientific_name": "Charadrius vociferus",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 663681364,
+  "attribution": "(c) Irina Mitine, some rights reserved (CC BY)",
+  "license": "cc-by",
+  "obs_url": "https://www.inaturalist.org/observations/363573452",
+  "obs_date": "2026-05-20",
+  "recorded_by": "irinamitine",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/663681364/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "6_663681364.jpg"
+}

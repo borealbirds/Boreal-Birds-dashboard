@@ -1,0 +1,16 @@
+{
+  "common_name": "Eastern Phoebe",
+  "scientific_name": "Sayornis phoebe",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 661194153,
+  "attribution": "(c) stomlins701, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/362266318",
+  "obs_date": "2026-05-16",
+  "recorded_by": "stomlins701",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/661194153/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_661194153.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Common Grackle",
+  "scientific_name": "Quiscalus quiscula",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 664523614,
+  "attribution": "(c) Aryn Riley, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364025123",
+  "obs_date": "2026-05-22",
+  "recorded_by": "aryn16949",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/664523614/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_664523614.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Rock Pigeon",
+  "scientific_name": "Columba livia",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 662615257,
+  "attribution": "(c) Аляутдинов Даниэль, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/363014347",
+  "obs_date": "2026-05-19",
+  "recorded_by": "renat94236",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/662615257/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "8_662615257.jpg"
+}

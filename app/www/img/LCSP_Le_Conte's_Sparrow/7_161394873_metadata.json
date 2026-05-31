@@ -1,0 +1,16 @@
+{
+  "common_name": "Le Conte's Sparrow",
+  "scientific_name": "Ammodramus leconteii",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 161394873,
+  "attribution": "(c) Peter Taylor, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/97093528",
+  "obs_date": "2006-06-14",
+  "recorded_by": "pinawapt",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/161394873/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "7_161394873.jpg"
+}

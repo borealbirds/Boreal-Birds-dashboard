@@ -1,0 +1,16 @@
+{
+  "common_name": "Spotted Sandpiper",
+  "scientific_name": "Actitis macularius",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 239763223,
+  "attribution": "(c) Alexander, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/140101271",
+  "obs_date": "2022-10-26",
+  "recorded_by": "lostworldmountain",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/239763223/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "4_239763223.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Blackpoll Warbler",
+  "scientific_name": "Setophaga striata",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 663422598,
+  "attribution": "(c) Delaney McKinney, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/363446173",
+  "obs_date": "2026-05-19",
+  "recorded_by": "dalunaloo27x",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/663422598/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "2_663422598.jpg"
+}

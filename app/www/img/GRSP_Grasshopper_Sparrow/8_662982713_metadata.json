@@ -1,0 +1,16 @@
+{
+  "common_name": "Grasshopper Sparrow",
+  "scientific_name": "Ammodramus savannarum",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 662982713,
+  "attribution": "(c) Wesley McGee, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/363210904",
+  "obs_date": "2026-05-02",
+  "recorded_by": "wesleymcgee1207",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/662982713/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "8_662982713.jpg"
+}

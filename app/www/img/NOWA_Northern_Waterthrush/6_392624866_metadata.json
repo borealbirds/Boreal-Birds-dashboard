@@ -1,0 +1,16 @@
+{
+  "common_name": "Northern Waterthrush",
+  "scientific_name": "Parkesia noveboracensis",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 392624866,
+  "attribution": "(c) Adam Kalab, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/221699221",
+  "obs_date": "2024-06-01",
+  "recorded_by": "adam_kalab",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/392624866/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "6_392624866.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Veery",
+  "scientific_name": "Catharus fuscescens",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 141138335,
+  "attribution": "(c) monica_p, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/85748501",
+  "obs_date": "2021-07-04",
+  "recorded_by": "monica_p",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/141138335/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "9_141138335.jpg"
+}

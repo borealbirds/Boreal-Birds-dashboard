@@ -7,7 +7,7 @@ def sidebar(model_version: str):
     species_choices = sorted(load_species_metadata().get_column("english").to_list())
 
     return ui.sidebar(
-        ui.tags.img(src="img/ALFL.jpg", alt=" Image",class_="bird-image-sidebar"),
+        ui.output_ui(f"sidebar_bird_image_{model_version}"),
         ui.input_select(
             f"species_{model_version}",
             "Species",

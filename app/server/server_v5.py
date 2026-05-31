@@ -177,31 +177,23 @@ def zoom_from_span(span_x, span_y):
     print("\n\nspan ", span, " zoom ", zoom)
     return zoom
 
-def server_v5(input: Inputs):
+def server_v5(input: Inputs, session=None):
     """
     Main server logic for the Model V5 tab, managing reactive data flow 
     and spatial visualization.
     """
 
+    @reactive.effect
+    def _set_map_default():
+        """Force MAP view on session init."""
+        ui.update_radio_buttons("view_toggle", selected="map")
+
     @render.ui
     def selected_bird():
-        from pathlib import Path
         bird   = birds.filter(pl.col("english") == input.species_v5())
         region = input.region_v5() or ""
         year   = int(input.year_v5())
 
-        # Find first available photo in species folder
-        species_id   = bird.item(0, "id")
-        common_name  = bird.item(0, "english")
-        folder_name  = f"{species_id}_{common_name.replace(' ', '_')}"
-        img_dir      = Path(__file__).parent.parent / "www" / "img" / folder_name
-        img_src      = None
-        if img_dir.exists():
-            jpgs = sorted(img_dir.glob("*.jpg"))
-            if jpgs:
-                img_src = f"img/{folder_name}/{jpgs[0].name}"
-
-        # Population estimate for the selected region + year only
         pop_df = abundances.filter(
             (pl.col("english") == input.species_v5()) &
             (pl.col("region")  == region) &
@@ -216,12 +208,6 @@ def server_v5(input: Inputs):
             pop_value = f"{pop_raw:.2f}"
 
         return ui.div(
-            ui.tags.img(
-                src=img_src,
-                class_="bird-image-sm",
-                alt=common_name,
-                onerror="this.style.display='none'",
-            ) if img_src else ui.span(),
             ui.div(
                 ui.span(bird.item(0, "english"), class_="bird-name"),
                 ui.span(bird.item(0, "french"),  class_="bird-french"),
@@ -240,6 +226,25 @@ def server_v5(input: Inputs):
             ),
             class_="bird-header-content",
         )
+
+    @render.ui
+    def sidebar_bird_image_v5():
+        from pathlib import Path
+        bird        = birds.filter(pl.col("english") == input.species_v5())
+        species_id  = bird.item(0, "id")
+        common_name = bird.item(0, "english")
+        folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
+        img_dir     = Path(__file__).parent.parent / "www" / "img" / folder_name
+        if img_dir.exists():
+            jpgs = sorted(img_dir.glob("*.jpg"))
+            if jpgs:
+                return ui.tags.img(
+                    src=f"img/{folder_name}/{jpgs[0].name}",
+                    class_="bird-image-sidebar",
+                    alt=common_name,
+                    onerror="this.style.display='none'",
+                )
+        return ui.span()
 
     @reactive.effect
     def _update_regions():
@@ -522,6 +527,15 @@ def server_v5(input: Inputs):
             info_row("French Name",     french),
             info_row("Family",          family),
             info_row("Species Code",    species_id),
+            ui.div(
+                ui.span("More Information", class_="info-label"),
+                ui.div(
+                    ui.tags.a("eBird ↗",       href=f"https://ebird.org/search?q={scientific.replace(' ', '+')}", target="_blank", class_="info-link"),
+                    ui.tags.a("Xeno-Canto ↗",  href=f"https://xeno-canto.org/species/{scientific.replace(' ', '-')}", target="_blank", class_="info-link"),
+                    ui.tags.a("Wikipedia ↗",   href=f"https://en.wikipedia.org/wiki/{scientific.replace(' ', '_')}", target="_blank", class_="info-link"),
+                ),
+                class_="info-row info-row-links",
+            ),
             class_="species-info-card",
         )
 
@@ -529,22 +543,310 @@ def server_v5(input: Inputs):
 
     @render.ui
     def species_images():
+        import json
+        from pathlib import Path
+
+        bird            = birds.filter(pl.col("english") == input.species_v5())
+        species_id      = bird.item(0, "id")
+        common_name     = bird.item(0, "english")
+        french_name     = bird.item(0, "french")
+        try:
+            scientific_name = bird.item(0, "scientific")
+        except Exception:
+            scientific_name = ""
+        folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
+        img_dir     = Path(__file__).parent.parent / "www" / "img" / folder_name
+
+        if not img_dir.exists():
+            return ui.p("No images available for this species.", class_="text-muted p-3")
+
+        photos = []
+        for jpg in sorted(img_dir.glob("*.jpg")):
+            meta_path = img_dir / f"{jpg.stem}_metadata.json"
+            sex, attribution = "unknown", ""
+            if meta_path.exists():
+                try:
+                    meta        = json.loads(meta_path.read_text())
+                    sex         = meta.get("sex", "unknown")
+                    attribution = meta.get("attribution", "")
+                except Exception:
+                    pass
+            obs_url = ""
+            license = ""
+            if meta_path.exists():
+                try:
+                    m2       = json.loads(meta_path.read_text())
+                    obs_url  = m2.get("obs_url", "")
+                    license  = m2.get("license", "")
+                except Exception:
+                    pass
+            photos.append({"file": jpg.name, "sex": sex, "attribution": attribution,
+                           "obs_url": obs_url, "license": license})
+
+        if not photos:
+            return ui.p("No images found.", class_="text-muted p-3")
+
+        SEX_SYMBOL = {"male": "♂", "female": "♀", "unknown": "?"}
+
+        def photo_grid(items, with_badges=False):
+            if not items:
+                return ui.p("No photos in this category.", class_="text-muted p-2")
+            return ui.div(
+                *[
+                    ui.div(
+                        ui.tags.img(
+                            src=f"img/{folder_name}/{p['file']}",
+                            class_="species-photo",
+                            loading="lazy",
+                            onclick="openSpeciesLightbox(this)",
+                            data_sex=p["sex"],
+                            data_attribution=p.get("attribution",""),
+                            data_obs_url=p.get("obs_url",""),
+                            data_license=p.get("license",""),
+                            data_common=common_name,
+                            data_french=french_name,
+                            data_scientific=scientific_name,
+                        ),
+                        ui.span(
+                            SEX_SYMBOL.get(p["sex"], "?"),
+                            class_=f"sex-badge sex-{p['sex']}",
+                        ) if with_badges else ui.span(),
+                        class_="photo-cell",
+                    )
+                    for p in items
+                ],
+                class_="photo-grid",
+            )
+
+        male_photos   = [p for p in photos if p["sex"] == "male"]
+        female_photos = [p for p in photos if p["sex"] == "female"]
+
+        lightbox_js = ui.HTML("""
+<script>
+if (!document.getElementById('species-lightbox')) {
+    document.body.insertAdjacentHTML('beforeend', `
+        <div id="species-lightbox" class="lb-overlay" onclick="if(event.target===this)closeLb()">
+            <button class="lb-close" onclick="closeLb()">✕</button>
+            <button class="lb-arrow lb-prev" onclick="lbNav(-1)">&#8249;</button>
+            <div class="lb-content">
+                <img id="lb-img" class="lb-main-img">
+                <div id="lb-counter" class="lb-counter"></div>
+                <div id="lb-meta" class="lb-meta"></div>
+            </div>
+            <button class="lb-arrow lb-next" onclick="lbNav(1)">&#8250;</button>
+        </div>
+    `);
+    document.addEventListener('keydown', e => {
+        const lb = document.getElementById('species-lightbox');
+        if (lb && lb.style.display !== 'none') {
+            if (e.key === 'ArrowLeft')  lbNav(-1);
+            if (e.key === 'ArrowRight') lbNav(1);
+            if (e.key === 'Escape')     closeLb();
+        }
+    });
+}
+
+window.openSpeciesLightbox = function(el) {
+    const grid = el.closest('.photo-grid');
+    const imgs = Array.from(grid.querySelectorAll('.species-photo'));
+    window._lbPhotos = imgs.map(i => ({
+        src:         i.src,
+        sex:         i.dataset.sex || '',
+        attribution: i.dataset.attribution || '',
+        obsUrl:      i.dataset.obsUrl || '',
+        license:     i.dataset.license || '',
+        common:      i.dataset.common || '',
+        french:      i.dataset.french || '',
+        scientific:  i.dataset.scientific || '',
+    }));
+    window._lbIdx = imgs.indexOf(el);
+    updateLb();
+    document.getElementById('species-lightbox').style.display = 'flex';
+};
+
+window.lbNav = function(dir) {
+    window._lbIdx = (window._lbIdx + dir + window._lbPhotos.length) % window._lbPhotos.length;
+    updateLb();
+};
+
+window.closeLb = function() {
+    document.getElementById('species-lightbox').style.display = 'none';
+};
+
+function updateLb() {
+    const p   = window._lbPhotos[window._lbIdx];
+    const SEX = { male: '♂ Male', female: '♀ Female', unknown: '' };
+    document.getElementById('lb-img').src     = p.src;
+    document.getElementById('lb-counter').textContent =
+        (window._lbIdx + 1) + ' – ' + window._lbPhotos.length;
+
+    const sexTag  = SEX[p.sex] || '';
+    const license = p.license  ? ' · ' + p.license : '';
+    const link    = p.obsUrl   ? '<a href="' + p.obsUrl + '" target="_blank" class="lb-link">iNaturalist ↗</a>' : '';
+    document.getElementById('lb-meta').innerHTML =
+        '<div class="lb-species-row">' +
+            (p.common     ? '<span class="lb-common">'     + p.common     + '</span>' : '') +
+            (p.scientific ? '<em  class="lb-scientific">'  + p.scientific + '</em>'   : '') +
+            (sexTag       ? '<span class="lb-sex-label">'  + sexTag       + '</span>' : '') +
+        '</div>' +
+        '<div class="lb-attr-row">' +
+            (p.attribution ? '© ' + p.attribution + license : '') +
+            (link          ? '&nbsp;&nbsp;' + link : '') +
+        '</div>';
+}
+</script>
+""")
+
         return ui.div(
+            lightbox_js,
+            ui.HTML("""
+                <label class="tag-toggle-floating">
+                    <input type="checkbox"
+                        onchange="this.closest('.images-tab-wrapper').classList.toggle('show-sex-tags', this.checked)">
+                    ♂♀ labels
+                </label>
+            """),
             ui.navset_tab(
-                ui.nav_panel("All",    ui.p("Images coming soon.", class_="text-muted p-3")),
-                ui.nav_panel("Male",   ui.p("Male images coming soon.", class_="text-muted p-3")),
-                ui.nav_panel("Female", ui.p("Female images coming soon.", class_="text-muted p-3")),
+                ui.nav_panel(f"All ({len(photos)})",          photo_grid(photos, with_badges=True)),
+                ui.nav_panel(f"Male ({len(male_photos)})",    photo_grid(male_photos)),
+                ui.nav_panel(f"Female ({len(female_photos)})", photo_grid(female_photos)),
             ),
-            class_="species-images-container",
+            class_="images-tab-wrapper species-images-container",
         )
 
     # ── SONGS TAB ──────────────────────────────────────────────────────
 
     @render.ui
     def species_songs():
+        import json
+        from pathlib import Path
+
+        bird        = birds.filter(pl.col("english") == input.species_v5())
+        species_id  = bird.item(0, "id")
+        common_name = bird.item(0, "english")
+        folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
+        audio_dir   = Path(__file__).parent.parent / "www" / "audio" / folder_name
+
+        if not audio_dir.exists():
+            return ui.p("No songs available for this species.", class_="text-muted p-3")
+
+        audio_files = sorted(audio_dir.glob("*.mp3"))[:5]
+        if not audio_files:
+            return ui.p("No audio files found.", class_="text-muted p-3")
+
+        songs = [
+            {
+                "wsId":  f"ws-{species_id}-{i}",
+                "specId": f"spec-{species_id}-{i}",
+                "btnId":  f"btn-{species_id}-{i}",
+                "src":    f"/audio/{folder_name}/{f.name}",
+                "label":  f"Song {i}",
+            }
+            for i, f in enumerate(audio_files, 1)
+        ]
+
+        song_blocks = [
+            ui.div(
+                ui.div(
+                    ui.span(s["label"], class_="song-label"),
+                    ui.tags.button("▶  Play", id=s["btnId"], class_="play-btn"),
+                    class_="song-controls",
+                ),
+                ui.div(
+                    ui.HTML('<div class="ws-loading">Loading waveform…</div>'),
+                    id=s["wsId"],
+                    class_="waveform-container",
+                ),
+                ui.div(
+                    ui.HTML('<div class="ws-loading ws-loading-spec">Computing spectrogram…</div>'),
+                    id=s["specId"],
+                    class_="spectrogram-container",
+                ),
+                ui.tags.button(
+                    "⤢  Expand spectrogram",
+                    id=f"expand-{s['specId']}",
+                    class_="spec-expand-btn",
+                    onclick=f"toggleSpec('{s['specId']}', this)",
+                ),
+                class_="song-block",
+            )
+            for s in songs
+        ]
+
+        songs_json = json.dumps(songs)
+
+        init_script = f"""
+<script>
+(async function() {{
+    try {{
+        await new Promise(r => setTimeout(r, 200));
+        const {{ default: WaveSurfer }}  = await import('https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js');
+        const {{ default: Spectrogram }} = await import('https://unpkg.com/wavesurfer.js@7/dist/plugins/spectrogram.esm.js');
+
+        window.toggleSpec = function(specId, btn) {{
+            const el = document.getElementById(specId);
+            const expanded = el.classList.toggle('spec-expanded');
+            btn.textContent = expanded ? '⤡  Collapse spectrogram' : '⤢  Expand spectrogram';
+        }};
+
+        const songs = {songs_json};
+        for (const song of songs) {{
+            const wsEl   = document.getElementById(song.wsId);
+            const specEl = document.getElementById(song.specId);
+            const btn    = document.getElementById(song.btnId);
+            if (!wsEl || !specEl) continue;
+            if (wsEl._ws) {{ try {{ wsEl._ws.destroy(); }} catch(e) {{}} }}
+
+            const ws = WaveSurfer.create({{
+                container:     wsEl,
+                waveColor:     'rgba(59,82,139,0.8)',
+                progressColor: '#153B40',
+                cursorColor:   '#ff4444',
+                cursorWidth:   2,
+                height:        56,
+                normalize:     true,
+                plugins: [
+                    Spectrogram.create({{
+                        container:    specEl,
+                        labels:       true,
+                        height:       200,
+                        frequencyMax: 10000,
+                        fftSamples:   1024,
+                    }})
+                ],
+            }});
+            ws.load(song.src);
+            wsEl._ws = ws;
+
+            // Remove loading placeholders once ready
+            ws.on('decode', () => {{
+                wsEl.querySelector('.ws-loading')?.remove();
+                specEl.querySelector('.ws-loading')?.remove();
+            }});
+
+            if (btn) {{
+                btn.addEventListener('click', () => ws.playPause());
+                ws.on('play',   () => btn.textContent = '⏸  Pause');
+                ws.on('pause',  () => btn.textContent = '▶  Play');
+                ws.on('finish', () => btn.textContent = '▶  Play');
+            }}
+
+            specEl.style.position = 'relative';
+            const cursor = document.createElement('div');
+            cursor.style.cssText = 'position:absolute;top:0;left:0;width:2px;height:100%;background:rgba(255,68,68,0.85);pointer-events:none;z-index:10;';
+            specEl.appendChild(cursor);
+            ws.on('timeupdate', t => {{
+                const dur = ws.getDuration();
+                if (dur) cursor.style.left = (t/dur*100)+'%';
+            }});
+        }}
+    }} catch(e) {{ console.error('WaveSurfer init error:', e); }}
+}})();
+</script>"""
+
         return ui.div(
-            ui.div(ui.span("Song 1", class_="song-label"), class_="song-row"),
-            ui.div(ui.span("Song 2", class_="song-label"), class_="song-row"),
+            *song_blocks,
+            ui.HTML(init_script),
             class_="songs-container",
         )
     

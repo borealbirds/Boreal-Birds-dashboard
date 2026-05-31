@@ -1,0 +1,16 @@
+{
+  "common_name": "American Crow",
+  "scientific_name": "Corvus brachyrhynchos",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 186488870,
+  "attribution": "(c) Crowasaur, all rights reserved",
+  "license": null,
+  "obs_url": "https://www.inaturalist.org/observations/110540726",
+  "obs_date": "2022-04-05",
+  "recorded_by": "crowasaur",
+  "download_url": "https://static.inaturalist.org/photos/186488870/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "3_186488870.jpg"
+}

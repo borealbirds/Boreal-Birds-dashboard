@@ -1,0 +1,16 @@
+{
+  "common_name": "Wood Thrush",
+  "scientific_name": "Hylocichla mustelina",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 517231298,
+  "attribution": "(c) Derek Dunnett, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/287654263",
+  "obs_date": "2025-06-07",
+  "recorded_by": "dunnder",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/517231298/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_517231298.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Black-capped Chickadee",
+  "scientific_name": "Poecile atricapillus",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 648826129,
+  "attribution": "(c) bluecrab2, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/355786665",
+  "obs_date": "2026-04-27",
+  "recorded_by": "bluecrab2",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/648826129/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "10_648826129.jpg"
+}
