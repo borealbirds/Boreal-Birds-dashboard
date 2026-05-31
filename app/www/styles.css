@@ -592,8 +592,8 @@ body {
 
 /* ── Sidebar profile image: circular ─────────────────────────────── */
 .bird-image-sidebar {
-  width: 104px !important;
-  height: 104px !important;
+  width: 130px !important;
+  height: 130px !important;
   object-fit: cover !important;
   border-radius: 50% !important;
   display: block !important;
