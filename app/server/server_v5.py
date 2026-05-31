@@ -229,7 +229,6 @@ def server_v5(input: Inputs, session=None):
 
     @render.ui
     def sidebar_bird_image_v5():
-        from pathlib import Path
         bird        = birds.filter(pl.col("english") == input.species_v5())
         species_id  = bird.item(0, "id")
         common_name = bird.item(0, "english")
@@ -543,9 +542,6 @@ def server_v5(input: Inputs, session=None):
 
     @render.ui
     def species_images():
-        import json
-        from pathlib import Path
-
         bird            = birds.filter(pl.col("english") == input.species_v5())
         species_id      = bird.item(0, "id")
         common_name     = bird.item(0, "english")
@@ -718,9 +714,6 @@ function updateLb() {
 
     @render.ui
     def species_songs():
-        import json
-        from pathlib import Path
-
         bird        = birds.filter(pl.col("english") == input.species_v5())
         species_id  = bird.item(0, "id")
         common_name = bird.item(0, "english")
