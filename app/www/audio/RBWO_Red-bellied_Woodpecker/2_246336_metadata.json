@@ -1,0 +1,18 @@
+{
+  "common_name": "Red-bellied Woodpecker",
+  "scientific_name": "Melanerpes carolinus",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "246336",
+  "xeno_canto_url": "https://xeno-canto.org/246336",
+  "xeno_canto_english_name": "Red-bellied Woodpecker",
+  "recordist": "Iain",
+  "country": "Canada",
+  "location": "Trent Lakes (near  Harcourt), Peterborough County, Ontario",
+  "date": "2015-05-27",
+  "length": "0:07",
+  "duration_seconds": 7,
+  "quality": "B",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "local_audio_file": "2_246336_qB_0-07.mp3"
+}

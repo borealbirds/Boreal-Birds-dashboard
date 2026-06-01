@@ -1,0 +1,16 @@
+{
+  "common_name": "Veery",
+  "scientific_name": "fuscescens",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 658443939,
+  "attribution": "(c) adammercer, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/360822152",
+  "obs_date": "2026-05-12",
+  "recorded_by": "adammercer",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/658443939/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "8_658443939.jpg"
+}
