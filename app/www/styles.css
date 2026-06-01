@@ -34,6 +34,7 @@ body {
 .navbar {
   background-color: var(--primary);
   padding: 0.4rem 1.25rem;
+  padding-right: 3rem;
   box-shadow: var(--shadow-soft);
 }
 
@@ -52,6 +53,43 @@ body {
 
 .navbar .nav-link.active,
 .navbar .nav-link[aria-current="page"] { color: var(--light-yellow); }
+
+/* Hide dropdown by default */
+.navbar-nav .dropdown-menu {
+    display: none;
+    background-color: var(--primary);
+    color: var(--text-light) !important;
+}
+
+/* Show only on hover */
+.navbar-nav .dropdown:hover > .dropdown-menu {
+    display: block;
+}
+
+/* Prevent sticky click behavior */
+.navbar-nav .dropdown-toggle::after {
+    pointer-events: none;
+}
+
+/* Dropdown items */
+.dropdown-menu > li > a {
+    color: var(--text-light);
+    padding: 0.7rem 1.2rem;
+    transition: background 0.15s ease;
+    font-size: 0.9rem;
+}
+
+/* Dropdown hover */
+.dropdown-menu > li > a:hover {
+    background: var(--medium-blue);
+    color: var(--text-light) !important;
+}
+
+/* Active dropdown page */
+.dropdown-menu > li > a.active {
+    background: var(--blue-green);
+    color: var(--text-light) !important;
+}
 
 /* ── Sidebar ──────────────────────────────────────────────────────── */
 .sidebar {
