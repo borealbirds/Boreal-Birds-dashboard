@@ -1,0 +1,18 @@
+{
+  "common_name": "Wild Turkey",
+  "scientific_name": "Meleagris gallopavo",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "806078",
+  "xeno_canto_url": "https://xeno-canto.org/806078",
+  "xeno_canto_english_name": "Wild Turkey",
+  "recordist": "David Tattersley",
+  "country": "Canada",
+  "location": "Windsor, Essex County, Ontario",
+  "date": "2023-05-17",
+  "length": "0:07",
+  "duration_seconds": 7,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "local_audio_file": "1_806078_qA_0-07.mp3"
+}

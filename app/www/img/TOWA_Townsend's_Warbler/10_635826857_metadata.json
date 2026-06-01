@@ -1,0 +1,16 @@
+{
+  "common_name": "Townsend's Warbler",
+  "scientific_name": "Setophaga townsendi",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 635826857,
+  "attribution": "(c) Juan Manuel Carmona, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/348617184",
+  "obs_date": "2026-04-09",
+  "recorded_by": "sopasbar",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/635826857/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "10_635826857.jpg"
+}

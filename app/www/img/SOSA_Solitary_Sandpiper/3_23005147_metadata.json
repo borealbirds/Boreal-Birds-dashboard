@@ -1,0 +1,16 @@
+{
+  "common_name": "Solitary Sandpiper",
+  "scientific_name": "Tringa solitaria",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 23005147,
+  "attribution": "(c) Michael, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/15355256",
+  "obs_date": "2016-09-11",
+  "recorded_by": "mw52berg",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/23005147/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_23005147.jpg"
+}

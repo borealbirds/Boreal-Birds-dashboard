@@ -1,0 +1,18 @@
+{
+  "common_name": "Canada Jay",
+  "scientific_name": "Perisoreus canadensis",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "343892",
+  "xeno_canto_url": "https://xeno-canto.org/343892",
+  "xeno_canto_english_name": "Canada Jay",
+  "recordist": "Luis A Villamil",
+  "country": "Canada",
+  "location": "Wood Buffalo (near  Fort McMurray), Division No. 16, Alberta",
+  "date": "2016-06-08",
+  "length": "0:14",
+  "duration_seconds": 14,
+  "quality": "C",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "local_audio_file": "1_343892_qC_0-14.mp3"
+}

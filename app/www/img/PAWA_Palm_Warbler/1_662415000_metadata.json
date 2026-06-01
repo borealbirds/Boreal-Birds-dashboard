@@ -1,0 +1,16 @@
+{
+  "common_name": "Palm Warbler",
+  "scientific_name": "Setophaga palmarum",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 662415000,
+  "attribution": "(c) Peter Taylor, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/362913106",
+  "obs_date": "2026-05-18",
+  "recorded_by": "pinawapt",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/662415000/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_662415000.jpg"
+}

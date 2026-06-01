@@ -1,0 +1,16 @@
+{
+  "common_name": "American Crow",
+  "scientific_name": "Corvus brachyrhynchos",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 565757380,
+  "attribution": "(c) crow, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/313294134",
+  "obs_date": "2025-09-11",
+  "recorded_by": "crow_b",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/565757380/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "8_565757380.jpg"
+}

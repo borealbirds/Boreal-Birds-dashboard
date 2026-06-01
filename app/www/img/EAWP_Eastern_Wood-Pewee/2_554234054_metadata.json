@@ -1,0 +1,16 @@
+{
+  "common_name": "Eastern Wood-Pewee",
+  "scientific_name": "Contopus virens",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 554234054,
+  "attribution": "(c) karimae14, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/307283796",
+  "obs_date": "2025-08-18",
+  "recorded_by": "karimae14",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/554234054/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "2_554234054.jpg"
+}

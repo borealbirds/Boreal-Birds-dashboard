@@ -1,0 +1,16 @@
+{
+  "common_name": "Purple Finch",
+  "scientific_name": "Carpodacus purpureus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666889310,
+  "attribution": "(c) David Lapins, all rights reserved",
+  "license": null,
+  "obs_url": "https://www.inaturalist.org/observations/365276859",
+  "obs_date": "2026-05-24",
+  "recorded_by": "davidlapins",
+  "download_url": "https://static.inaturalist.org/photos/666889310/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_666889310.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Wilson's Warbler",
+  "scientific_name": "Cardellina pusilla",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 654431934,
+  "attribution": "no rights reserved",
+  "license": "cc0",
+  "obs_url": "https://www.inaturalist.org/observations/358724710",
+  "obs_date": "2026-05-05",
+  "recorded_by": "aparrot1",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/654431934/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_654431934.jpg"
+}

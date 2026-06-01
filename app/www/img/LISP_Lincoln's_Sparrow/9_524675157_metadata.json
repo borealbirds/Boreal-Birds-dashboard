@@ -1,0 +1,16 @@
+{
+  "common_name": "Lincoln's Sparrow",
+  "scientific_name": "Melospiza lincolnii",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 524675157,
+  "attribution": "(c) Adam Kalab, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/291614286",
+  "obs_date": "2025-06-05",
+  "recorded_by": "adam_kalab",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/524675157/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "9_524675157.jpg"
+}

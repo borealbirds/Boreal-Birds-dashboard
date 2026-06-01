@@ -1,0 +1,16 @@
+{
+  "common_name": "Blue-winged Warbler",
+  "scientific_name": "cyanoptera",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 668129851,
+  "attribution": "(c) Addy, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/365926551",
+  "obs_date": "2026-05-27",
+  "recorded_by": "addylong",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/668129851/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_668129851.jpg"
+}

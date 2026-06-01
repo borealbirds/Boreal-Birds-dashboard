@@ -1,0 +1,16 @@
+{
+  "common_name": "Wilson's Warbler",
+  "scientific_name": "Cardellina pusilla",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 662189672,
+  "attribution": "(c) Don Rideout, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/362796908",
+  "obs_date": "2026-05-18",
+  "recorded_by": "lagoondon",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/662189672/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_662189672.jpg"
+}

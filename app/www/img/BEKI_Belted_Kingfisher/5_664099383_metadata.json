@@ -1,0 +1,16 @@
+{
+  "common_name": "Belted Kingfisher",
+  "scientific_name": "Megaceryle alcyon",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 664099383,
+  "attribution": "(c) Duane Bertels, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/363796901",
+  "obs_date": "2026-05-21",
+  "recorded_by": "duane3",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/664099383/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_664099383.jpg"
+}

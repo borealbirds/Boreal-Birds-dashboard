@@ -1,0 +1,18 @@
+{
+  "common_name": "Red-bellied Woodpecker",
+  "scientific_name": "Melanerpes carolinus",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "167880",
+  "xeno_canto_url": "https://xeno-canto.org/167880",
+  "xeno_canto_english_name": "Red-bellied Woodpecker",
+  "recordist": "Ted Floyd",
+  "country": "United States",
+  "location": "Lamar, Colorado",
+  "date": "2014-02-22",
+  "length": "0:03",
+  "duration_seconds": 3,
+  "quality": "B",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+  "local_audio_file": "1_167880_qB_0-03.mp3"
+}

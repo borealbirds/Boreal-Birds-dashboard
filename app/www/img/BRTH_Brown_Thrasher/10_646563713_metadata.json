@@ -1,0 +1,16 @@
+{
+  "common_name": "Brown Thrasher",
+  "scientific_name": "Toxostoma rufum",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 646563713,
+  "attribution": "(c) feathers4t, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/354420923",
+  "obs_date": "2026-04-26",
+  "recorded_by": "feathers4t",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/646563713/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "10_646563713.jpg"
+}

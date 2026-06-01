@@ -1,0 +1,16 @@
+{
+  "common_name": "Greater Yellowlegs",
+  "scientific_name": "Tringa melanoleuca",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 497604383,
+  "attribution": "(c) Ethan Hockridge, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/277117962",
+  "obs_date": "2025-04-30",
+  "recorded_by": "redtailed_hock",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/497604383/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "6_497604383.jpg"
+}

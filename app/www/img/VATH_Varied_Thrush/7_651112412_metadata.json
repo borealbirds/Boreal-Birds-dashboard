@@ -1,0 +1,16 @@
+{
+  "common_name": "Varied Thrush",
+  "scientific_name": "Ixoreus naevius",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 651112412,
+  "attribution": "(c) logan-berner, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/357018012",
+  "obs_date": "2026-04-30",
+  "recorded_by": "logan-berner",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/651112412/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "7_651112412.jpg"
+}

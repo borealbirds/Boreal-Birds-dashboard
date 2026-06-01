@@ -1,0 +1,16 @@
+{
+  "common_name": "Savannah Sparrow",
+  "scientific_name": "Passerculus sandwichensis",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 410009604,
+  "attribution": "(c) Kayla Brown, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/230888450",
+  "obs_date": "2024-07-15",
+  "recorded_by": "boreal_brown",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/410009604/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "3_410009604.jpg"
+}

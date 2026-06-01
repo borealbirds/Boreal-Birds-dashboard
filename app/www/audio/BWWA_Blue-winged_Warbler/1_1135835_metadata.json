@@ -1,0 +1,18 @@
+{
+  "common_name": "Blue-winged Warbler",
+  "scientific_name": "Vermivora cyanoptera",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "1135835",
+  "xeno_canto_url": "https://xeno-canto.org/1135835",
+  "xeno_canto_english_name": "Blue-winged Warbler",
+  "recordist": "Jeff Stewart",
+  "country": "Canada",
+  "location": "Cavan-Monaghan (near  Millbrook), Peterborough County, Ontario",
+  "date": "2025-05-19",
+  "length": "0:06",
+  "duration_seconds": 6,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "local_audio_file": "1_1135835_qA_0-06.mp3"
+}

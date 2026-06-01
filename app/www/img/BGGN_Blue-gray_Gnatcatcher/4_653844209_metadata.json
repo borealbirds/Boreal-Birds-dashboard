@@ -1,0 +1,16 @@
+{
+  "common_name": "Blue-gray Gnatcatcher",
+  "scientific_name": "Polioptila caerulea",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 653844209,
+  "attribution": "no rights reserved",
+  "license": "cc0",
+  "obs_url": "https://www.inaturalist.org/observations/358420727",
+  "obs_date": "2026-05-04",
+  "recorded_by": "martyndrabik",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/653844209/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_653844209.jpg"
+}

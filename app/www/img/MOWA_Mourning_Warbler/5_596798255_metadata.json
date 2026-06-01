@@ -1,0 +1,16 @@
+{
+  "common_name": "Mourning Warbler",
+  "scientific_name": "Geothlypis philadelphia",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 596798255,
+  "attribution": "(c) Manuel A. Pérez R., some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/329257447",
+  "obs_date": "2025-11-01",
+  "recorded_by": "manuelprez",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/596798255/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_596798255.jpg"
+}

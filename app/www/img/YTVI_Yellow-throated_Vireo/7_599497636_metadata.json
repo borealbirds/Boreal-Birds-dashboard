@@ -1,0 +1,16 @@
+{
+  "common_name": "Yellow-throated Vireo",
+  "scientific_name": "Vireo flavifrons",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 599497636,
+  "attribution": "(c) Nina, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/284419412",
+  "obs_date": "2025-05-26",
+  "recorded_by": "ninastavlund",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/599497636/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "7_599497636.jpg"
+}

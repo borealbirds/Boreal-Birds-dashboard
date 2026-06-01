@@ -1,0 +1,16 @@
+{
+  "common_name": "Red-breasted Nuthatch",
+  "scientific_name": "Sitta canadensis",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 657158556,
+  "attribution": "(c) Jean-François Rousseau, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/360146244",
+  "obs_date": "2026-05-09",
+  "recorded_by": "rouj",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/657158556/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_657158556.jpg"
+}

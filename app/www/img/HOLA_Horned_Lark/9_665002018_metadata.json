@@ -1,0 +1,16 @@
+{
+  "common_name": "Horned Lark",
+  "scientific_name": "Eremophila alpestris",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 665002018,
+  "attribution": "(c) Oldqingwa, some rights reserved (CC BY-NC-ND)",
+  "license": "cc-by-nc-nd",
+  "obs_url": "https://www.inaturalist.org/observations/364278323",
+  "obs_date": "2026-05-06",
+  "recorded_by": "oldqingwa",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/665002018/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "9_665002018.jpg"
+}

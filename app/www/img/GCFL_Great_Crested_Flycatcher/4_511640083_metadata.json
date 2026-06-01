@@ -1,0 +1,16 @@
+{
+  "common_name": "Great Crested Flycatcher",
+  "scientific_name": "Myiarchus crinitus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 511640083,
+  "attribution": "(c) François Plourde - Renard frak, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/284681159",
+  "obs_date": "2025-05-27",
+  "recorded_by": "renard_frak",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/511640083/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_511640083.jpg"
+}

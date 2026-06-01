@@ -1,0 +1,16 @@
+{
+  "common_name": "Evening Grosbeak",
+  "scientific_name": "Coccothraustes vespertinus",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 665681116,
+  "attribution": "(c) Ava Jessome, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364637900",
+  "obs_date": "2026-05-24",
+  "recorded_by": "avajessome6",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/665681116/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "8_665681116.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Clay-colored Sparrow",
+  "scientific_name": "Spizella pallida",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666220600,
+  "attribution": "(c) Michael Butler, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364923543",
+  "obs_date": "2026-05-17",
+  "recorded_by": "michael_butler",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666220600/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "6_666220600.jpg"
+}

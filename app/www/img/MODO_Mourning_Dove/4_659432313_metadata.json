@@ -1,0 +1,16 @@
+{
+  "common_name": "Mourning Dove",
+  "scientific_name": "Zenaida macroura",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 659432313,
+  "attribution": "(c) Ben Quisenberry, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/361177152",
+  "obs_date": "2026-05-12",
+  "recorded_by": "qbees",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/659432313/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_659432313.jpg"
+}

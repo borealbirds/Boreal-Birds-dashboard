@@ -1,0 +1,16 @@
+{
+  "common_name": "Winter Wren",
+  "scientific_name": "Troglodytes hiemalis",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 438921455,
+  "attribution": "(c) kristen_a, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/245919553",
+  "obs_date": "2024-10-06",
+  "recorded_by": "kristen_a",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/438921455/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "1_438921455.jpg"
+}

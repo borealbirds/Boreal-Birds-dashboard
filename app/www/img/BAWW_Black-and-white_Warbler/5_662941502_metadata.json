@@ -1,0 +1,16 @@
+{
+  "common_name": "Black-and-white Warbler",
+  "scientific_name": "Mniotilta varia",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 662941502,
+  "attribution": "(c) Christian Chappellaz, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/363190350",
+  "obs_date": "2026-05-19",
+  "recorded_by": "christian_cc",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/662941502/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_662941502.jpg"
+}

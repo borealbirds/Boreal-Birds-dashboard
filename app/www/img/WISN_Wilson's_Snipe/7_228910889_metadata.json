@@ -1,0 +1,16 @@
+{
+  "common_name": "Wilson's Snipe",
+  "scientific_name": "Gallinago delicata",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 228910889,
+  "attribution": "(c) Sam Darmstadt, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/134308976",
+  "obs_date": "2022-09-09",
+  "recorded_by": "sam-darmstadt",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/228910889/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "7_228910889.jpg"
+}

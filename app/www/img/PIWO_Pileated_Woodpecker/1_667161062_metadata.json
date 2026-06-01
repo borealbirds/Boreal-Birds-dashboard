@@ -1,0 +1,16 @@
+{
+  "common_name": "Pileated Woodpecker",
+  "scientific_name": "Dryocopus pileatus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 667161062,
+  "attribution": "(c) Lance M Bell, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/365414873",
+  "obs_date": "2026-05-26",
+  "recorded_by": "lanceb1957",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/667161062/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_667161062.jpg"
+}

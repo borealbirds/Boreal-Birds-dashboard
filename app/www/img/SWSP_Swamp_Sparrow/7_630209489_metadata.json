@@ -1,0 +1,16 @@
+{
+  "common_name": "Swamp Sparrow",
+  "scientific_name": "Melospiza georgiana",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 630209489,
+  "attribution": "(c) Bryce, some rights reserved (CC BY-NC-ND)",
+  "license": "cc-by-nc-nd",
+  "obs_url": "https://www.inaturalist.org/observations/345783327",
+  "obs_date": "2026-03-28",
+  "recorded_by": "brycetheplant",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/630209489/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "7_630209489.jpg"
+}

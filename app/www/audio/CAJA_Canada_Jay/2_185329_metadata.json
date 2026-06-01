@@ -1,0 +1,18 @@
+{
+  "common_name": "Canada Jay",
+  "scientific_name": "Perisoreus canadensis",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "185329",
+  "xeno_canto_url": "https://xeno-canto.org/185329",
+  "xeno_canto_english_name": "Canada Jay",
+  "recordist": "Jorge de Leon Cardozo and Susan Hochgraf",
+  "country": "United States",
+  "location": "Spring Pond Bog, Franklin County, New York",
+  "date": "2014-06-29",
+  "length": "0:18",
+  "duration_seconds": 18,
+  "quality": "B",
+  "type": "call, song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "local_audio_file": "2_185329_qB_0-18.mp3"
+}
