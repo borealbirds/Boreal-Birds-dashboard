@@ -68,12 +68,15 @@ def model_v5_tab():
                     ui.nav_panel(
                         "Download",
                         ui.layout_columns(
-                            ui.markdown("**Download model results per species.** In addition to population and density estimates, " \
-                            "download includes model metadata, and information about the species, regions, " \
-                            "variables, importance, and validation. <br> " \
-                            "To download the results for all species, please see the **Model Access** tab."),
-                            ui.download_button("downloadAll", "Download All"),
-                            ui.download_button("downloadFiltered", "Download Species Model Results"),
+                            ui.markdown("""
+                            **Download model results.** In addition to population and density estimates,
+                            download includes model metadata, and information about the species, regions,
+                            variables, importance, and validation.
+
+                            For additional model products, please see the **Model Access** tab.
+                            """),
+                            ui.download_button("downloadAll", "Download All Species Results"),
+                            ui.download_button("downloadFiltered", "Download Selected Species Results"),
                             ui.card(ui.output_data_frame("population_size"), full_screen=True),
                             col_widths=(6, 3, 3, 12)
                         ),

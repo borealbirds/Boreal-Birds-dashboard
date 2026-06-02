@@ -219,15 +219,6 @@ body {
   flex-shrink: 0;
 }
 
-.bird-image-sidebar {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin: auto;
-}
-
 .bird-card {
   padding: 0.4rem 0.75rem;
   background-color: var(--bg-primary);
@@ -548,16 +539,6 @@ body {
   overflow: hidden;
 }
 
-/* ── Sidebar bird image ───────────────────────────────────────────── */
-.bird-image-sidebar {
-  width: 100%;
-  max-height: 180px;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
 /* ── Sex badge: hidden by default, shown when container has class ─── */
 .sex-badge { display: none; }
 .show-sex-tags .sex-badge { display: inline-block; }
@@ -665,8 +646,8 @@ body {
 
 /* ── Sidebar profile image: circular ─────────────────────────────── */
 .bird-image-sidebar {
-  width: 130px !important;
-  height: 130px !important;
+  width: 180px !important;
+  height: 180px !important;
   object-fit: cover !important;
   border-radius: 50% !important;
   display: block !important;
@@ -913,4 +894,9 @@ body {
     box-shadow: none !important;
     background: transparent !important;
     border-radius: 0 !important;
+}
+
+.vega-tooltip,
+#vg-tooltip-element {
+    z-index: 999999 !important;
 }

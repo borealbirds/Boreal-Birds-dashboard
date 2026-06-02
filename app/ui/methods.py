@@ -27,6 +27,13 @@ def methods_tab():
                 methods_accordion,
                 class_="methods-accordion",
             ),
-            col_widths=(5, 7),
+            col_widths={
+                "xs": (12, 12),
+                "sm": (12, 12),
+                "md": (12, 12),
+                "lg": (12, 12),
+                "xl": (5, 7),
+                "xxl": (5, 7),
+            }
         ),
     )
