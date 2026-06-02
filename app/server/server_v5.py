@@ -854,7 +854,7 @@ function updateLb() {
         ).encode(
             alt.X("population_estimate:Q")
                 .title("Abundance (M males)")
-                .scale(type="log"),
+                .scale(type="symlog"),
             alt.Y("region_name:N")
                 .title(None)
                 .sort(
