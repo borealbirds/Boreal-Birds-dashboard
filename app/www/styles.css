@@ -895,3 +895,8 @@ body {
     background: transparent !important;
     border-radius: 0 !important;
 }
+
+.vega-tooltip,
+#vg-tooltip-element {
+    z-index: 999999 !important;
+}
