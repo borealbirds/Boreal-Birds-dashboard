@@ -809,7 +809,6 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  height: 100% !important;
 }
 
 /* Direct the content window within the tab card structure to stretch */
