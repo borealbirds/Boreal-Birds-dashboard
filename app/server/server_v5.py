@@ -489,7 +489,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
         df = abundances.filter(
             (pl.col("english") == input.species_v5()) &
-            (pl.col("region")  == region) &
+            # (pl.col("region")  == region) &
             (pl.col("year")    == str(year))
         )
 
@@ -503,7 +503,24 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             "density_lower", 
             "density_upper"
         ])
-        return render.DataGrid(df, selection_mode="rows")
+
+        df = df.with_columns(
+            (pl.col("region") == region).alias("selected_region")
+        ).sort("population_estimate", "selected_region", descending=[True, True])
+
+        region_row_number = df.select(pl.arg_where(pl.col("region") == region)).to_series().to_list()
+
+        selected_style = [
+            {
+                "rows": region_row_number,
+                "style": {
+                    "background-color": "#A9DC67FF",
+                    "height": "50px",
+                },
+            }
+        ]
+
+        return render.DataGrid(df.select(pl.exclude("selected_region")), selection_mode="rows", styles=selected_style)
 
     # ── INFO TAB ───────────────────────────────────────────────────────
 
@@ -1002,7 +1019,9 @@ function updateLb() {
         variables = pl.read_excel(model_results, sheet_name="variables")
         importance = pl.read_excel(model_results, sheet_name="importance").filter(pl.col("english") == input.species_v5())
         validation = pl.read_excel(model_results, sheet_name="validation").filter(pl.col("english") == input.species_v5())
-        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(pl.col("english") == input.species_v5())
+        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(
+            (pl.col("english") == input.species_v5()) & (pl.col("year") == str(input.year_v5()))
+        )
 
         with io.BytesIO() as buffer:
             workbook = xlsxwriter.Workbook(buffer, {'in_memory': True})
@@ -1015,3 +1034,12 @@ function updateLb() {
             abundances.write_excel(workbook=workbook, worksheet="abundances", autofilter=False, autofit=True)
             workbook.close()
             yield buffer.getvalue()
+
+    @render.ui
+    def download_filtered_btn():
+        species = input.species_v5()
+
+        return ui.download_button(
+            "downloadFiltered",
+            f"Download {species} Results"
+        )
