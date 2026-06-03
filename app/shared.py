@@ -16,6 +16,8 @@ DATA_DIR = app_dir / "data"
 CONTENT_DIR = Path(__file__).parent / "content"
 V5_META_PATH = DATA_DIR / "model_v5" / "12_BAMV5-results.xlsx"
 BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
+COVARIATE_MTDATA = DATA_DIR / "model_v5" / "covariate_metadata_modelevaluation - covariates_label.csv"
+MARGINAL_FX_DIR = DATA_DIR / "model_v5" / "marginaleffects"
 
 def get_tif_path(species_id: str, region: str, year: int) -> str:
     """
@@ -28,6 +30,12 @@ def get_tif_path(species_id: str, region: str, year: int) -> str:
         BASE_URL,
         f"{species_id}/{region}/{filename}"
     )
+
+def get_cov_fx_path(species_id: str, region: str) -> str:
+    """
+    Construct the HTTP URL to a specific covariate_marginal_fx file.
+    """
+    pass
 
 @lru_cache(maxsize=1)
 def load_subregion_boundaries() -> gpd.GeoDataFrame:
