@@ -6,12 +6,14 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from functools import lru_cache
 from urllib.parse import urljoin
+import yaml
 
 app_dir = Path(__file__).parent.parent
 
 REMOTE_DATA_FOLDER = "dashboard/"
 BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
 DATA_DIR = app_dir / "data"
+CONTENT_DIR = Path(__file__).parent / "content"
 V5_META_PATH = DATA_DIR / "model_v5" / "12_BAMV5-results.xlsx"
 BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
 
@@ -145,13 +147,23 @@ def available_regions(species_id: str) -> list[str]:
         Sorted list of region names found within the species' directory.
     """
     species_url = urljoin(BASE_URL, f"{species_id}/")
-
     try:
         entries = list_directory(species_url)
-        return sorted(entries)
+        if entries:
+            return sorted(entries)
+    except Exception as e:
+        print(f"[available_regions] Remote unavailable for {species_id}: {e}")
 
-    except Exception:
-        return []
+    # Local fallback — scan data/model_v5/{species_id}/
+    local_dir = DATA_DIR / "model_v5" / species_id
+    if local_dir.exists():
+        regions = sorted([d.name for d in local_dir.iterdir() if d.is_dir()])
+        if regions:
+            print(f"[available_regions] Using local data for {species_id}: {regions}")
+            return regions
+
+    print(f"[available_regions] No data found for {species_id}")
+    return []
 
 def available_years(species_id: str, region: str) -> list[int]:
     """
@@ -172,35 +184,57 @@ def available_years(species_id: str, region: str) -> list[int]:
     list of int
         Sorted list of years found for the given parameters.
     """
-    region_url = urljoin(
-        BASE_URL,
-        f"{species_id}/{region}/"
-    )
+    region_url = urljoin(BASE_URL, f"{species_id}/{region}/")
 
     try:
         entries = list_directory(region_url)
+        years = []
+        prefix = f"{species_id}_{region}_"
+        for filename in entries:
+            if not filename.endswith(".tif"):
+                continue
+            stem = filename.removesuffix(".tif")
+            if not stem.startswith(prefix):
+                continue
+            try:
+                years.append(int(stem.removeprefix(prefix)))
+            except ValueError:
+                continue
+        if years:
+            return sorted(years)
+    except Exception as e:
+        print(f"[available_years] Remote unavailable for {species_id}/{region}: {e}")
 
-    except Exception:
-        return []
+    # Local fallback — scan data/model_v5/{species_id}/{region}/
+    local_dir = DATA_DIR / "model_v5" / species_id / region
+    if local_dir.exists():
+        years = []
+        prefix = f"{species_id}_{region}_"
+        for tif in local_dir.glob("*.tif"):
+            stem = tif.stem
+            if not stem.startswith(prefix):
+                continue
+            try:
+                years.append(int(stem.removeprefix(prefix)))
+            except ValueError:
+                continue
+        if years:
+            print(f"[available_years] Using local data for {species_id}/{region}: {sorted(years)}")
+            return sorted(years)
 
-    years = []
+    print(f"[available_years] No years found for {species_id}/{region}")
+    return []
 
-    prefix = f"{species_id}_{region}_"
+def read_md(filename):
+    """
+    Read the contents of a markdown file from the content directory.
+    """
+    path = CONTENT_DIR / filename
+    return path.read_text(encoding="utf-8")
 
-    for filename in entries:
-        if not filename.endswith(".tif"):
-            continue
-
-        stem = filename.removesuffix(".tif")
-
-        if not stem.startswith(prefix):
-            continue
-
-        try:
-            year = int(stem.removeprefix(prefix))
-            years.append(year)
-
-        except ValueError:
-            continue
-
-    return sorted(years)
+def read_yaml(filename):
+    """
+    Read the contents of a YAML file from the content directory and parse it.
+    """
+    path = CONTENT_DIR / filename
+    return yaml.safe_load(path.read_text(encoding="utf-8"))

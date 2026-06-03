@@ -1,0 +1,16 @@
+{
+  "common_name": "Ovenbird",
+  "scientific_name": "Seiurus aurocapilla",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 649875092,
+  "attribution": "(c) Dan Jackson, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/356363067",
+  "obs_date": "2026-04-28",
+  "recorded_by": "dejackson2256",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/649875092/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_649875092.jpg"
+}

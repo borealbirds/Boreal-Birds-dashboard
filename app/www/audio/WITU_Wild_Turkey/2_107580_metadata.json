@@ -1,0 +1,18 @@
+{
+  "common_name": "Wild Turkey",
+  "scientific_name": "Meleagris gallopavo",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "107580",
+  "xeno_canto_url": "https://xeno-canto.org/107580",
+  "xeno_canto_english_name": "Wild Turkey",
+  "recordist": "Mike Nelson",
+  "country": "United States",
+  "location": "Cades Cove, Great Smoky Mountains National Park, Tennessee",
+  "date": "2012-06-20",
+  "length": "0:02",
+  "duration_seconds": 2,
+  "quality": "B",
+  "type": "song, gobble!",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/2.5/",
+  "local_audio_file": "2_107580_qB_0-02.mp3"
+}

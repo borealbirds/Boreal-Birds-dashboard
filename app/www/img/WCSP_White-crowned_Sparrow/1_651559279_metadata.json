@@ -1,0 +1,16 @@
+{
+  "common_name": "White-crowned Sparrow",
+  "scientific_name": "Zonotrichia leucophrys",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 651559279,
+  "attribution": "(c) Jo-Anne Ardern, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/357247594",
+  "obs_date": "2026-05-01",
+  "recorded_by": "jo_anne48395",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/651559279/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_651559279.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Blackburnian Warbler",
+  "scientific_name": "Setophaga fusca",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 598107316,
+  "attribution": "(c) katiuska19, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/329905436",
+  "obs_date": "2025-12-07",
+  "recorded_by": "katiuska19",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/598107316/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_598107316.jpg"
+}

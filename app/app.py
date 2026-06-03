@@ -1,62 +1,59 @@
 from pathlib import Path
 
-from ui.welcome import welcome_tab
+from shiny import App, Inputs, Outputs, Session, ui
+
+from components import audio, email, footer, report_issue, website
+from server.server_v5 import server_v5
+from ui.methods import methods_tab
 from ui.model_v4 import model_v4_tab
 from ui.model_v5 import model_v5_tab
-from ui.methods import methods_tab
-from ui.model_access import model_access_tab
-from ui.sidebar import sidebar
-
-from server.server_v5 import server_v5
-
-import polars as pl
-from shiny import App, Inputs, reactive, render, ui
+from ui.model_access import citing_tab, vignettes_tab, tools_tab
+from ui.welcome import welcome_tab
 
 www_dir = Path(__file__).parent / "www"
 
-FOOTER = ui.div(
-    ui.HTML(
-        '&copy; 2026 '
-        '<a href="https://borealbirds.ca/" target="_blank">Boreal Avian Modelling Project </a>'
-        'under a '
-        '<a href="https://creativecommons.org/licenses/by-sa/4.0/", target="_blank"> CC BY-SA 4.0 license </a>'
-    ),
-    class_="footer"
-)
-
 app_ui = ui.page_navbar(
-    ui.head_content(ui.include_css(str(www_dir / "styles.css"))),
+    ui.head_content(
+        ui.include_css(str(www_dir / "styles.css")),
+        audio(),
+    ),
     ui.nav_spacer(),
     welcome_tab(),
-    model_v5_tab(),
-    model_v4_tab(),
-    methods_tab(),
-    model_access_tab(),
-    ui.nav_control(
-        ui.a(
-            "Contact",
-            href="https://borealbirds.ca/contact/",
-            target="_blank",
-            class_="contact-link"
-        ),
+    ui.nav_menu(
+        "Models",
+        model_v5_tab(),
+        model_v4_tab(),
     ),
-    selected="Current Model", # for during development phases
+    ui.nav_menu(
+        "Model Access",
+        tools_tab(),
+        vignettes_tab(),
+        citing_tab(),
+    ),
+    methods_tab(),
+    ui.nav_menu(
+        "Contact Us",
+        website(),
+        email(),
+        report_issue(),
+    ),
+    selected="Current Model",
     id="tabs",
     title=ui.tags.a(
         ui.tags.img(
             src="img/BAM-Logo-WhiteText.svg",
             alt="Boreal Avian Modelling Centre Dashboard",
-            height="60"
+            height="48"
         ),
-        href="#",
     ),
     fillable=True,
-    footer=FOOTER
+    footer=footer()
 )
 
-def server(input: Inputs):
 
-    # Register Model V5 outputs
-    server_v5(input)
+def server(input: Inputs, output: Outputs, session: Session):
+    """Registers model outputs."""
+    server_v5(input, output, session)
+
 
 app = App(app_ui, server, static_assets=www_dir)

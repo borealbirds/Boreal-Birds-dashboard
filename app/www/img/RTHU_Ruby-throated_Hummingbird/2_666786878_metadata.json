@@ -1,0 +1,16 @@
+{
+  "common_name": "Ruby-throated Hummingbird",
+  "scientific_name": "Archilochus colubris",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666786878,
+  "attribution": "(c) Francis Bourret, all rights reserved",
+  "license": null,
+  "obs_url": "https://www.inaturalist.org/observations/365222957",
+  "obs_date": "2026-05-25",
+  "recorded_by": "f_bourret",
+  "download_url": "https://static.inaturalist.org/photos/666786878/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "2_666786878.jpg"
+}

@@ -1,30 +1,66 @@
 from shiny import ui
-
+from shinywidgets import output_widget
 from ui.sidebar import sidebar
+from icons import question_circle_fill
 
 def model_v4_tab():
-    """Model V4 Results"""
+    """
+    Historical Model tab — same layout shell as Current Model.
+    Server wiring for v4 to be implemented in a future sprint.
+    """
     return ui.nav_panel(
         "Historical Model",
         ui.layout_sidebar(
             sidebar("v4"),
-            ui.card(
-                ui.p("Bird Info Card"),
+
+            # ── Bird header placeholder ────────────────────────────────
+            ui.div(
+                ui.div(
+                    ui.span("Select a species", class_="bird-name"),
+                    ui.span("Sélectionner une espèce", class_="bird-french"),
+                    class_="bird-names",
+                ),
+                ui.div(
+                    ui.input_radio_buttons(
+                        "view_toggle_v4",
+                        None,
+                        choices={"map": "Map", "info": "Info"},
+                        selected="map",
+                        inline=True,
+                    ),
+                    class_="toggle-wrapper",
+                ),
+                class_="bird-header-row",
             ),
-            ui.navset_card_underline(
-                ui.nav_panel(
-                    "Map",
-                    ui.p("map_placeholder")
+
+            # ── MAP view ───────────────────────────────────────────────
+            ui.panel_conditional(
+                "input.view_toggle_v4 === 'map'",
+                ui.navset_card_underline(
+                    ui.nav_spacer(),
+                    ui.nav_panel("Map",         ui.p("Historical map — coming soon.")),
+                    ui.nav_panel("Land Cover",  ui.p("Land cover — coming soon.")),
+                    ui.nav_panel("Population",  ui.p("Population — coming soon.")),
+                    ui.nav_panel("Density",     ui.p("Density — coming soon.")),
+                    ui.nav_panel("Download",    ui.p("Download — coming soon.")),
+                    title=ui.tooltip(
+                        ui.span("Model Results ", question_circle_fill),
+                        "Population size (M males) is based on summing up predictive maps by regions.",
+                        placement="right",
+                        id="results_tooltip_v4",
+                    ),
                 ),
-                ui.nav_panel(
-                    "Land Cover",
-                    ui.p("land_cover_placeholder")
+            ),
+
+            # ── INFO view ──────────────────────────────────────────────
+            ui.panel_conditional(
+                "input.view_toggle_v4 === 'info'",
+                ui.navset_card_underline(
+                    ui.nav_panel("Info",   ui.p("Species info — coming soon.")),
+                    ui.nav_panel("Images", ui.p("Images — coming soon.")),
+                    ui.nav_panel("Songs",  ui.p("Songs — coming soon.")),
+                    title="Species Info",
                 ),
-                ui.nav_panel(
-                    "Population Size",
-                    ui.p("population_size_placeholder")
-                ),
-                title="Model Results",
             ),
         )
     )

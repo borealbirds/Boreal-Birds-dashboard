@@ -1,0 +1,18 @@
+{
+  "common_name": "Blue-winged Warbler",
+  "scientific_name": "Vermivora cyanoptera",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "650433",
+  "xeno_canto_url": "https://xeno-canto.org/650433",
+  "xeno_canto_english_name": "Blue-winged Warbler",
+  "recordist": "William Whitehead",
+  "country": "United States",
+  "location": "Tuxedo (near  Tuxedo Park), Orange County, New York",
+  "date": "2021-05-21",
+  "length": "0:02",
+  "duration_seconds": 2,
+  "quality": "B",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "local_audio_file": "2_650433_qB_0-02.mp3"
+}

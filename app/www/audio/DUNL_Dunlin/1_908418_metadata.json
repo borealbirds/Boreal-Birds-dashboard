@@ -1,0 +1,18 @@
+{
+  "common_name": "Dunlin",
+  "scientific_name": "Calidris alpina",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "908418",
+  "xeno_canto_url": "https://xeno-canto.org/908418",
+  "xeno_canto_english_name": "Dunlin",
+  "recordist": "Lars Edenius",
+  "country": "Sweden",
+  "location": "Klimpfj\u00e4ll, Lappland",
+  "date": "2024-05-28",
+  "length": "0:05",
+  "duration_seconds": 5,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "local_audio_file": "1_908418_qA_0-05.mp3"
+}

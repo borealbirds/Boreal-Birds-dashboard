@@ -1,0 +1,16 @@
+{
+  "common_name": "Eastern Kingbird",
+  "scientific_name": "Tyrannus tyrannus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666024714,
+  "attribution": "(c) Amalia Estrada, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364821883",
+  "obs_date": "2026-05-24",
+  "recorded_by": "feliscatus18",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666024714/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_666024714.jpg"
+}

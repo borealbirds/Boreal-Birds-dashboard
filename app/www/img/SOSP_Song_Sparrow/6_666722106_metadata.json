@@ -1,0 +1,16 @@
+{
+  "common_name": "Song Sparrow",
+  "scientific_name": "Melospiza melodia",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666722106,
+  "attribution": "(c) Emerson, some rights reserved (CC BY)",
+  "license": "cc-by",
+  "obs_url": "https://www.inaturalist.org/observations/365193515",
+  "obs_date": "2026-05-24",
+  "recorded_by": "biotic_factor",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666722106/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "6_666722106.jpg"
+}

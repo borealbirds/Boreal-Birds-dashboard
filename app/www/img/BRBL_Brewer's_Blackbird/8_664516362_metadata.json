@@ -1,0 +1,16 @@
+{
+  "common_name": "Brewer's Blackbird",
+  "scientific_name": "Euphagus cyanocephalus",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 664516362,
+  "attribution": "(c) scottmessick9, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364021159",
+  "obs_date": "2026-05-21",
+  "recorded_by": "scottmessick9",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/664516362/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "8_664516362.jpg"
+}

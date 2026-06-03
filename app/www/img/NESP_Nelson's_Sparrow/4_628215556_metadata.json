@@ -1,0 +1,16 @@
+{
+  "common_name": "Nelson's Sparrow",
+  "scientific_name": "Ammodramus nelsoni",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 628215556,
+  "attribution": "no rights reserved",
+  "license": "cc0",
+  "obs_url": "https://www.inaturalist.org/observations/344766495",
+  "obs_date": "2017-07-13",
+  "recorded_by": "msieges",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/628215556/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "4_628215556.jpg"
+}

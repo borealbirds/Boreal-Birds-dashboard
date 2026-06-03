@@ -1,0 +1,16 @@
+{
+  "common_name": "White-winged Crossbill",
+  "scientific_name": "Loxia leucoptera",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 621474271,
+  "attribution": "(c) Josh Balec, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/341390378",
+  "obs_date": "2026-03-05",
+  "recorded_by": "joshbalec",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/621474271/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_621474271.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Veery",
+  "scientific_name": "fuscescens",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 660605053,
+  "attribution": "(c) Peter Vos, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/361959623",
+  "obs_date": "2026-05-15",
+  "recorded_by": "bushboy",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/660605053/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "2_660605053.jpg"
+}

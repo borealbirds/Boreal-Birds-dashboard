@@ -1,0 +1,18 @@
+{
+  "common_name": "Rock Sandpiper",
+  "scientific_name": "Calidris ptilocnemis",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "406192",
+  "xeno_canto_url": "https://xeno-canto.org/406192",
+  "xeno_canto_english_name": "Rock Sandpiper",
+  "recordist": "Patrik \u00c5berg",
+  "country": "United States",
+  "location": "Nome, Nome Census Area, Alaska",
+  "date": "2017-06-07",
+  "length": "0:08",
+  "duration_seconds": 8,
+  "quality": "A",
+  "type": "song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "local_audio_file": "1_406192_qA_0-08.mp3"
+}

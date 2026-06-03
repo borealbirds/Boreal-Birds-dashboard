@@ -1,0 +1,16 @@
+{
+  "common_name": "Black-throated Blue Warbler",
+  "scientific_name": "Setophaga caerulescens",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666385886,
+  "attribution": "(c) Daniel Belle-Isle, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/365009331",
+  "obs_date": "2026-05-24",
+  "recorded_by": "dabellei",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666385886/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_666385886.jpg"
+}

@@ -1,36 +1,42 @@
-from shiny import Inputs, reactive, ui, render
-from shinywidgets import render_widget, output_widget, render_altair
-from ipywidgets import HTML
-from ipyleaflet import (
-    Map, basemaps, TileLayer, GeoData,
-    basemap_to_tiles, LayersControl, ScaleControl,
-    FullScreenControl, WidgetControl, GeoJSON
-)
-from datetime import date
-import json
-import altair as alt
-import requests
-import polars as pl
-from pathlib import Path
-import geopandas as gpd
-from functools import lru_cache
-
-import xlsxwriter
 import io
+import json
+import warnings
+from datetime import date
+from functools import lru_cache
+from pathlib import Path
 
+import requests
+import altair as alt
+import polars as pl
+import xlsxwriter
+from shapely.geometry import shape
+
+from ipywidgets import Button, HTML, Layout
+from ipyleaflet import (
+    basemap_to_tiles,
+    basemaps,
+    FullScreenControl,
+    GeoJSON,
+    LayersControl,
+    Map,
+    ScaleControl,
+    TileLayer,
+    WidgetControl,
+)
+
+from shiny import Inputs, Outputs, Session, reactive, render, ui
+from shinywidgets import render_altair, render_widget
+
+from icons import question_circle_fill
 from shared import (
-    get_tif_path,
     available_regions,
     available_years,
-    load_species_metadata,
+    get_tif_path,
     load_abundance_data,
+    load_region_data,
+    load_species_metadata,
     load_subregion_boundaries,
-    load_region_data
 )
-from modules.bird import bird_card
-
-import warnings
-import numpy as np
 
 warnings.filterwarnings(
     "ignore",
@@ -43,14 +49,13 @@ abundances = load_abundance_data()
 subregions = load_subregion_boundaries()
 region_dict = load_region_data().rows_by_key(key="region", named=True, unique=True)
 
-
 # Live Posit Connect Cloud dynamic map tiler base domain address
 PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
 
 # Hardcoded fallback center metrics for geographic bounding contexts
 REGION_CENTERS = {
     "Alaska": [64, -149],
-    "Canada": [55, -106],
+    "Canada": [58, -103],
     "Lower48": [47.0, -97.0]
 }
 
@@ -90,68 +95,159 @@ def build_region_layer(region_name: str):
         region_gdf.to_json(drop_id=True)
     )
 
-    # for feature in geojson_data["features"]:
+    # precompute zoom/centering for each feature
+    for feature in geojson_data["features"]:
 
-    #     props = feature["properties"]
+        geom = shape(feature["geometry"])
+        minx, miny, maxx, maxy = geom.bounds
 
-    #     feature["properties"]["tooltip"] = (
-    #         "<div style='font-size:13px;'>"
-    #         f"<b>Country:</b> {props.get('country', 'Unknown')}<br>"
-    #         f"<b>BCR:</b> {props.get('bcr', 'Unknown')}"
-    #         "</div>"
-    #     )
+        # center of each bcr
+        cx, cy = geom.centroid.x, geom.centroid.y
+
+        feature["properties"]["_center"] = [cy, cx]
+        feature["properties"]["_bounds"] = [[miny, minx], [maxy, maxx]]
+
+        spanx = maxx - minx
+        spany = maxy - miny
+        feature["properties"]["_spanx"] = spanx
+        feature["properties"]["_spany"] = spany
 
     layer = GeoJSON(
         data=geojson_data,
         style={
             "color": "black",
             "weight": 1.25,
-            "fillColor": "white",
-            "fillOpacity": 0,
-            "opacity": 0.7,
+            "fillColor": "white", 
+            "fillOpacity": 0, 
+            "opacity": 0.2,
         },
         hover_style={
             "color": "#00FFFF",
             "weight": 3,
-            "fillColor": "#00FFFF",
-            "fillOpacity": 0.20,
+            "fillColor": "white", 
+            "fillOpacity": 0, 
+            "opacity": 1, 
         },
-        name=f"Subregion Boundaries"
+        name="Subregion Boundaries"
     )
 
-    return layer
+    # floating info card
+    hover_card = HTML(
+        value="""
+        <div style="
+            padding:8px 10px;
+            background:white;
+            border-radius:6px;
+            box-shadow:0 1px 4px rgba(0,0,0,0.25);
+            font-size:13px;
+            min-width:140px;
+        ">
+            Hover over a subregion
+        </div>
+        """,
+        layout=Layout(margin="0px")
+    )
 
-def server_v5(input: Inputs):
+    hover_control = WidgetControl(
+        widget=hover_card,
+        position="bottomleft"
+    )
+
+    return layer, hover_card, hover_control
+
+def zoom_from_span(span_x, span_y):
+    if not span_x or not span_y:
+        return 4
+    # map height / map width (roughly)
+    aspect = 4 / 9
+    # normalize vertical span into width-equivalent span
+    span_y_normalized = span_y / aspect
+    span = max(span_x, span_y_normalized)
+
+    if span > 30:
+        zoom = 4.2
+    elif span > 25:
+        zoom = 4.5
+    elif span > 23:
+        zoom = 4.7
+    elif span > 16:
+        zoom = 5.2
+    elif span > 10:
+        zoom = 5.5
+    elif span > 8:
+        zoom = 6
+    else:
+        zoom = 6.5
+    print("\n\nspan ", span, " zoom ", zoom)
+    return zoom
+
+def server_v5(input: Inputs, output: Outputs, session: Session):
     """
     Main server logic for the Model V5 tab, managing reactive data flow 
     and spatial visualization.
     """
 
+    @reactive.effect
+    def _set_map_default():
+        """Force MAP view on session init."""
+        ui.update_radio_buttons("view_toggle", selected="map")
+
     @render.ui
     def selected_bird():
-        bird = birds.filter(pl.col("english") == input.species_v5())
+        bird   = birds.filter(pl.col("english") == input.species_v5())
+        region = input.region_v5() or ""
+        year   = int(input.year_v5())
 
-        pop_dict = (
-            population_data()
-            .filter(pl.col("region").is_in(["Canada", "Alaska", "Lower48"]))
-            .select(["region", "population_estimate"])
-            .rows_by_key(key="region", named=True, unique=True)
+        pop_df = abundances.filter(
+            (pl.col("english") == input.species_v5()) &
+            (pl.col("region")  == region) &
+            (pl.col("year") == str(year))
+        )
+        pop_raw   = pop_df.item(0, 'population_estimate') if len(pop_df) > 0 else None
+        if pop_raw is None:
+            pop_value = "—"
+        elif round(pop_raw, 2) == 0.0:
+            pop_value = f"{pop_raw:.3f}"
+        else:
+            pop_value = f"{pop_raw:.2f}"
+
+        return ui.div(
+            ui.div(
+                ui.span(bird.item(0, "english"), class_="bird-name"),
+                ui.span(bird.item(0, "french"),  class_="bird-french"),
+                class_="bird-names",
+            ),
+            ui.div(
+                ui.span("Population Estimate ", class_="bird-pop-label"),
+                ui.span(region, class_="bird-region-label"),
+                ui.span(f" {pop_value}", class_="bird-pop-value"),
+                ui.tooltip(
+                    question_circle_fill,
+                    "Population estimate (millions) for the selected region and year",
+                    placement="right",
+                ),
+                class_="bird-pop",
+            ),
+            class_="bird-header-content",
         )
 
-        canada = pop_dict.get("Canada", {}).get("population_estimate", "No Model Estimates")
-        alaska = pop_dict.get("Alaska", {}).get("population_estimate", "No Model Estimates")
-        lower48 = pop_dict.get("Lower48", {}).get("population_estimate", "No Model Estimates")
-
-        return bird_card(
-            species=bird.item(0, "scientific"),
-            common_name=bird.item(0, "english"),
-            french_name=bird.item(0, "french"),
-            family=bird.item(0, "family"),
-            image_url=f"img/{bird.item(0, "id")}.jpg",
-            canada_pop=canada,
-            alaska_pop=alaska,
-            lower48_pop=lower48
-        )
+    @render.ui
+    def sidebar_bird_image_v5():
+        bird        = birds.filter(pl.col("english") == input.species_v5())
+        species_id  = bird.item(0, "id")
+        common_name = bird.item(0, "english")
+        folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
+        img_dir     = Path(__file__).parent.parent / "www" / "img" / folder_name
+        if img_dir.exists():
+            jpgs = sorted(img_dir.glob("*.jpg"))
+            if jpgs:
+                return ui.tags.img(
+                    src=f"img/{folder_name}/{jpgs[0].name}",
+                    class_="bird-image-sidebar",
+                    alt=common_name,
+                    onerror="this.style.display='none'",
+                )
+        return ui.span()
 
     @reactive.effect
     def _update_regions():
@@ -167,7 +263,11 @@ def server_v5(input: Inputs):
         ui.update_select(
             "region_v5",
             choices=regions,
-            selected=regions[0] if regions else None,
+            selected=(
+                "Canada" if regions and "Canada" in regions else (
+                    regions[0] if regions else None
+                )
+            ),
         )
 
     @reactive.effect
@@ -199,7 +299,7 @@ def server_v5(input: Inputs):
         ).item(0, "id")
 
         region = input.region_v5()
-        year = input.year_v5()
+        year = int(input.year_v5())
 
         if not species_id or not region or not year:
             return None
@@ -230,7 +330,7 @@ def server_v5(input: Inputs):
         except Exception as e:
             print(f"Error fetching TiTiler statistics: {e}")
             return {"min": 0.0, "max": 1.0}
-
+    
     REGION_LAYERS = {
         "Canada": build_region_layer("Canada"),
         "Lower48": build_region_layer("Lower48"),
@@ -267,7 +367,7 @@ def server_v5(input: Inputs):
         esri.name = "World Imagery (satellite)"
 
         # Initialize core map interface
-        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4)
+        m = Map(layers=[esri, positron, osm], center=map_center, zoom=4, scroll_wheel_zoom=True)
 
         # generate legend utilizing remote data calculations
         stats = raster_statistics()
@@ -294,7 +394,7 @@ def server_v5(input: Inputs):
             f"&colormap_name=ylgn"
             f"&rescale={rmin},{rmax}"
         )
-        
+
         mean_density = TileLayer(
             url=tile_string,
             name="Mean Density",
@@ -305,22 +405,74 @@ def server_v5(input: Inputs):
 
         region = input.region_v5()
 
-        if region == "Canada":
-            m.add(REGION_LAYERS["Canada"])
+        if region in REGION_LAYERS:
+            region_layer, hover_card, hover_control = REGION_LAYERS[region]
 
-        elif region == "Lower48":
-            m.add(REGION_LAYERS["Lower48"])
+            default_center = REGION_CENTERS.get(region, [60, -110])
+            default_zoom = 4
 
-        elif region == "Alaska":
-            m.add(REGION_LAYERS["Alaska"])
+            # hover
+            def update_hover(event=None, feature=None, **kwargs):
+
+                props = feature.get("properties", {})
+                bcr = props.get("bcr", "Unknown")
+
+                hover_card.value = f"""
+                <div style="
+                    padding:8px 10px;
+                    background:white;
+                    border-radius:6px;
+                    box-shadow:0 1px 4px rgba(0,0,0,0.25);
+                    font-size:13px;
+                    min-width:160px;
+                ">
+                    <div>
+                        {region_dict[bcr]['name_adj']}
+                    </div>
+                </div>
+                """
+
+            # click on region to zoom
+            def zoom_to_bcr(event=None, feature=None, **kwargs):
+                props = feature.get("properties", {})
+                center = props.get("_center")
+                spanx, spany = props.get("_spanx"), props.get("_spany")
+
+                if center and spanx and spany:
+                    m.center = center
+                    m.zoom = zoom_from_span(spanx, spany)
+
+            region_layer.on_hover(update_hover)
+            region_layer.on_click(zoom_to_bcr)
+
+            # reset zoom button
+            reset_btn = Button(
+                description="Reset Zoom",
+                layout=Layout(width="120px")
+            )
+
+            def reset_zoom(btn):
+                m.center = default_center
+                m.zoom = default_zoom
+
+            reset_btn.on_click(reset_zoom)
+            reset_control = WidgetControl(
+                widget=reset_btn,
+                position="bottomleft"
+            )
+
+            # add to map
+            m.add(region_layer)
+            m.add(hover_control)
 
         # controls
         m.add(FullScreenControl())
         m.add(LayersControl(collapsed=False, position="topright"))
+        m.add(reset_control)
         m.add(ScaleControl(position="bottomleft"))
 
         return m
-    
+
     @reactive.calc
     def population_data():
         return abundances.filter(
@@ -329,7 +481,17 @@ def server_v5(input: Inputs):
 
     @render.data_frame
     def population_size():
-        df = population_data()
+        region = input.region_v5()
+        year   = int(input.year_v5())
+
+        if not region:
+            return render.DataGrid(pl.DataFrame(), selection_mode="rows")
+
+        df = abundances.filter(
+            (pl.col("english") == input.species_v5()) &
+            # (pl.col("region")  == region) &
+            (pl.col("year")    == str(year))
+        )
 
         df = df.select([
             "year",
@@ -342,8 +504,367 @@ def server_v5(input: Inputs):
             "density_upper"
         ])
 
-        return render.DataGrid(df, selection_mode="rows")
+        df = df.with_columns(
+            (pl.col("region") == region).alias("selected_region")
+        ).sort("population_estimate", "selected_region", descending=[True, True])
 
+        region_row_number = df.select(pl.arg_where(pl.col("region") == region)).to_series().to_list()
+
+        selected_style = [
+            {
+                "rows": region_row_number,
+                "style": {
+                    "background-color": "#A9DC67FF",
+                    "height": "50px",
+                },
+            }
+        ]
+
+        return render.DataGrid(df.select(pl.exclude("selected_region")), selection_mode="rows", styles=selected_style)
+
+    # ── INFO TAB ───────────────────────────────────────────────────────
+
+    @render.ui
+    def species_info():
+        bird        = birds.filter(pl.col("english") == input.species_v5())
+        species_id  = bird.item(0, "id")
+        scientific  = bird.item(0, "scientific")
+        french      = bird.item(0, "french")
+        family      = bird.item(0, "family")
+
+        ebird_url = f"https://ebird.org/species/{species_id.lower()}"
+        bow_url   = f"https://birdsoftheworld.org/bow/species/{species_id.lower()}"
+
+        def info_row(label, value, italic=False):
+            return ui.div(
+                ui.span(label, class_="info-label"),
+                ui.span(ui.tags.em(value) if italic else value, class_="info-value"),
+                class_="info-row",
+            )
+
+        return ui.div(
+            info_row("Scientific Name", scientific, italic=True),
+            info_row("French Name",     french),
+            info_row("Family",          family),
+            info_row("Species Code",    species_id),
+            ui.div(
+                ui.span("More Information", class_="info-label"),
+                ui.div(
+                    ui.tags.a("eBird ↗",       href=f"https://ebird.org/search?q={scientific.replace(' ', '+')}", target="_blank", class_="info-link"),
+                    ui.tags.a("Xeno-Canto ↗",  href=f"https://xeno-canto.org/species/{scientific.replace(' ', '-')}", target="_blank", class_="info-link"),
+                    ui.tags.a("Wikipedia ↗",   href=f"https://en.wikipedia.org/wiki/{scientific.replace(' ', '_')}", target="_blank", class_="info-link"),
+                ),
+                class_="info-row info-row-links",
+            ),
+            class_="species-info-card",
+        )
+
+    # ── IMAGES TAB ─────────────────────────────────────────────────────
+
+    @render.ui
+    def species_images():
+        bird            = birds.filter(pl.col("english") == input.species_v5())
+        species_id      = bird.item(0, "id")
+        common_name     = bird.item(0, "english")
+        french_name     = bird.item(0, "french")
+        try:
+            scientific_name = bird.item(0, "scientific")
+        except Exception:
+            scientific_name = ""
+        folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
+        img_dir     = Path(__file__).parent.parent / "www" / "img" / folder_name
+
+        if not img_dir.exists():
+            return ui.p("No images available for this species.", class_="text-muted p-3")
+
+        photos = []
+        for jpg in sorted(img_dir.glob("*.jpg")):
+            meta_path = img_dir / f"{jpg.stem}_metadata.json"
+            sex, attribution = "unknown", ""
+            if meta_path.exists():
+                try:
+                    meta        = json.loads(meta_path.read_text())
+                    sex         = meta.get("sex", "unknown")
+                    attribution = meta.get("attribution", "")
+                except Exception:
+                    pass
+            obs_url = ""
+            license = ""
+            if meta_path.exists():
+                try:
+                    m2       = json.loads(meta_path.read_text())
+                    obs_url  = m2.get("obs_url", "")
+                    license  = m2.get("license", "")
+                except Exception:
+                    pass
+            photos.append({"file": jpg.name, "sex": sex, "attribution": attribution,
+                           "obs_url": obs_url, "license": license})
+
+        if not photos:
+            return ui.p("No images found.", class_="text-muted p-3")
+
+        SEX_SYMBOL = {"male": "♂", "female": "♀", "unknown": "?"}
+
+        def photo_grid(items, with_badges=False):
+            if not items:
+                return ui.p("No photos in this category.", class_="text-muted p-2")
+            return ui.div(
+                *[
+                    ui.div(
+                        ui.tags.img(
+                            src=f"img/{folder_name}/{p['file']}",
+                            class_="species-photo",
+                            loading="lazy",
+                            onclick="openSpeciesLightbox(this)",
+                            data_sex=p["sex"],
+                            data_attribution=p.get("attribution",""),
+                            data_obs_url=p.get("obs_url",""),
+                            data_license=p.get("license",""),
+                            data_common=common_name,
+                            data_french=french_name,
+                            data_scientific=scientific_name,
+                        ),
+                        ui.span(
+                            SEX_SYMBOL.get(p["sex"], "?"),
+                            class_=f"sex-badge sex-{p['sex']}",
+                        ) if with_badges else ui.span(),
+                        class_="photo-cell",
+                    )
+                    for p in items
+                ],
+                class_="photo-grid",
+            )
+
+        male_photos   = [p for p in photos if p["sex"] == "male"]
+        female_photos = [p for p in photos if p["sex"] == "female"]
+
+        lightbox_js = ui.HTML("""
+<script>
+if (!document.getElementById('species-lightbox')) {
+    document.body.insertAdjacentHTML('beforeend', `
+        <div id="species-lightbox" class="lb-overlay" onclick="if(event.target===this)closeLb()">
+            <button class="lb-close" onclick="closeLb()">✕</button>
+            <button class="lb-arrow lb-prev" onclick="lbNav(-1)">&#8249;</button>
+            <div class="lb-content">
+                <img id="lb-img" class="lb-main-img">
+                <div id="lb-counter" class="lb-counter"></div>
+                <div id="lb-meta" class="lb-meta"></div>
+            </div>
+            <button class="lb-arrow lb-next" onclick="lbNav(1)">&#8250;</button>
+        </div>
+    `);
+    document.addEventListener('keydown', e => {
+        const lb = document.getElementById('species-lightbox');
+        if (lb && lb.style.display !== 'none') {
+            if (e.key === 'ArrowLeft')  lbNav(-1);
+            if (e.key === 'ArrowRight') lbNav(1);
+            if (e.key === 'Escape')     closeLb();
+        }
+    });
+}
+
+window.openSpeciesLightbox = function(el) {
+    const grid = el.closest('.photo-grid');
+    const imgs = Array.from(grid.querySelectorAll('.species-photo'));
+    window._lbPhotos = imgs.map(i => ({
+        src:         i.src,
+        sex:         i.dataset.sex || '',
+        attribution: i.dataset.attribution || '',
+        obsUrl:      i.dataset.obsUrl || '',
+        license:     i.dataset.license || '',
+        common:      i.dataset.common || '',
+        french:      i.dataset.french || '',
+        scientific:  i.dataset.scientific || '',
+    }));
+    window._lbIdx = imgs.indexOf(el);
+    updateLb();
+    document.getElementById('species-lightbox').style.display = 'flex';
+};
+
+window.lbNav = function(dir) {
+    window._lbIdx = (window._lbIdx + dir + window._lbPhotos.length) % window._lbPhotos.length;
+    updateLb();
+};
+
+window.closeLb = function() {
+    document.getElementById('species-lightbox').style.display = 'none';
+};
+
+function updateLb() {
+    const p   = window._lbPhotos[window._lbIdx];
+    const SEX = { male: '♂ Male', female: '♀ Female', unknown: '' };
+    document.getElementById('lb-img').src     = p.src;
+    document.getElementById('lb-counter').textContent =
+        (window._lbIdx + 1) + ' – ' + window._lbPhotos.length;
+
+    const sexTag  = SEX[p.sex] || '';
+    const license = p.license  ? ' · ' + p.license : '';
+    const link    = p.obsUrl   ? '<a href="' + p.obsUrl + '" target="_blank" class="lb-link">iNaturalist ↗</a>' : '';
+    document.getElementById('lb-meta').innerHTML =
+        '<div class="lb-species-row">' +
+            (p.common     ? '<span class="lb-common">'     + p.common     + '</span>' : '') +
+            (p.scientific ? '<em  class="lb-scientific">'  + p.scientific + '</em>'   : '') +
+            (sexTag       ? '<span class="lb-sex-label">'  + sexTag       + '</span>' : '') +
+        '</div>' +
+        '<div class="lb-attr-row">' +
+            (p.attribution ? '© ' + p.attribution + license : '') +
+            (link          ? '&nbsp;&nbsp;' + link : '') +
+        '</div>';
+}
+</script>
+""")
+
+        return ui.div(
+            lightbox_js,
+            ui.HTML("""
+                <label class="tag-toggle-floating">
+                    <input type="checkbox"
+                        onchange="this.closest('.images-tab-wrapper').classList.toggle('show-sex-tags', this.checked)">
+                    ♂♀ labels
+                </label>
+            """),
+            ui.navset_tab(
+                ui.nav_panel(f"All ({len(photos)})",          photo_grid(photos, with_badges=True)),
+                ui.nav_panel(f"Male ({len(male_photos)})",    photo_grid(male_photos)),
+                ui.nav_panel(f"Female ({len(female_photos)})", photo_grid(female_photos)),
+            ),
+            class_="images-tab-wrapper species-images-container",
+        )
+
+    # ── SONGS TAB ──────────────────────────────────────────────────────
+
+    @render.ui
+    def species_songs():
+        bird        = birds.filter(pl.col("english") == input.species_v5())
+        species_id  = bird.item(0, "id")
+        common_name = bird.item(0, "english")
+        folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
+        audio_dir   = Path(__file__).parent.parent / "www" / "audio" / folder_name
+
+        if not audio_dir.exists():
+            return ui.p("No songs available for this species.", class_="text-muted p-3")
+
+        audio_files = sorted(audio_dir.glob("*.mp3"))[:5]
+        if not audio_files:
+            return ui.p("No audio files found.", class_="text-muted p-3")
+
+        songs = [
+            {
+                "wsId":  f"ws-{species_id}-{i}",
+                "specId": f"spec-{species_id}-{i}",
+                "btnId":  f"btn-{species_id}-{i}",
+                "src":    f"/audio/{folder_name}/{f.name}",
+                "label":  f"Song {i}",
+            }
+            for i, f in enumerate(audio_files, 1)
+        ]
+
+        song_blocks = [
+            ui.div(
+                ui.div(
+                    ui.span(s["label"], class_="song-label"),
+                    ui.tags.button("▶  Play", id=s["btnId"], class_="play-btn"),
+                    class_="song-controls",
+                ),
+                ui.div(
+                    ui.HTML('<div class="ws-loading">Loading waveform…</div>'),
+                    id=s["wsId"],
+                    class_="waveform-container",
+                ),
+                ui.div(
+                    ui.HTML('<div class="ws-loading ws-loading-spec">Computing spectrogram…</div>'),
+                    id=s["specId"],
+                    class_="spectrogram-container",
+                ),
+                ui.tags.button(
+                    "⤢  Expand spectrogram",
+                    id=f"expand-{s['specId']}",
+                    class_="spec-expand-btn",
+                    onclick=f"toggleSpec('{s['specId']}', this)",
+                ),
+                class_="song-block",
+            )
+            for s in songs
+        ]
+
+        songs_json = json.dumps(songs)
+
+        init_script = f"""
+<script>
+(async function() {{
+    try {{
+        await new Promise(r => setTimeout(r, 200));
+        const {{ default: WaveSurfer }}  = await import('https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js');
+        const {{ default: Spectrogram }} = await import('https://unpkg.com/wavesurfer.js@7/dist/plugins/spectrogram.esm.js');
+
+        window.toggleSpec = function(specId, btn) {{
+            const el = document.getElementById(specId);
+            const expanded = el.classList.toggle('spec-expanded');
+            btn.textContent = expanded ? '⤡  Collapse spectrogram' : '⤢  Expand spectrogram';
+        }};
+
+        const songs = {songs_json};
+        for (const song of songs) {{
+            const wsEl   = document.getElementById(song.wsId);
+            const specEl = document.getElementById(song.specId);
+            const btn    = document.getElementById(song.btnId);
+            if (!wsEl || !specEl) continue;
+            if (wsEl._ws) {{ try {{ wsEl._ws.destroy(); }} catch(e) {{}} }}
+
+            const ws = WaveSurfer.create({{
+                container:     wsEl,
+                waveColor:     'rgba(59,82,139,0.8)',
+                progressColor: '#153B40',
+                cursorColor:   '#ff4444',
+                cursorWidth:   2,
+                height:        56,
+                normalize:     true,
+                plugins: [
+                    Spectrogram.create({{
+                        container:    specEl,
+                        labels:       true,
+                        height:       200,
+                        frequencyMax: 10000,
+                        fftSamples:   1024,
+                    }})
+                ],
+            }});
+            ws.load(song.src);
+            wsEl._ws = ws;
+
+            // Remove loading placeholders once ready
+            ws.on('decode', () => {{
+                wsEl.querySelector('.ws-loading')?.remove();
+                specEl.querySelector('.ws-loading')?.remove();
+            }});
+
+            if (btn) {{
+                btn.addEventListener('click', () => ws.playPause());
+                ws.on('play',   () => btn.textContent = '⏸  Pause');
+                ws.on('pause',  () => btn.textContent = '▶  Play');
+                ws.on('finish', () => btn.textContent = '▶  Play');
+            }}
+
+            specEl.style.position = 'relative';
+            const cursor = document.createElement('div');
+            cursor.style.cssText = 'position:absolute;top:0;left:0;width:2px;height:100%;background:rgba(255,68,68,0.85);pointer-events:none;z-index:10;';
+            specEl.appendChild(cursor);
+            ws.on('timeupdate', t => {{
+                const dur = ws.getDuration();
+                if (dur) cursor.style.left = (t/dur*100)+'%';
+            }});
+        }}
+    }} catch(e) {{ console.error('WaveSurfer init error:', e); }}
+}})();
+</script>"""
+
+        return ui.div(
+            *song_blocks,
+            ui.HTML(init_script),
+            class_="songs-container",
+        )
+    
+    # ── Chart details ───────────────────────────────────────────────────────
     @render_altair
     def population_chart():
 
@@ -354,7 +875,7 @@ def server_v5(input: Inputs):
         ).encode(
             alt.X("population_estimate:Q")
                 .title("Abundance (M males)")
-                .scale(type="log"),
+                .scale(type="symlog"),
             alt.Y("region_name:N")
                 .title(None)
                 .sort(
@@ -498,7 +1019,9 @@ def server_v5(input: Inputs):
         variables = pl.read_excel(model_results, sheet_name="variables")
         importance = pl.read_excel(model_results, sheet_name="importance").filter(pl.col("english") == input.species_v5())
         validation = pl.read_excel(model_results, sheet_name="validation").filter(pl.col("english") == input.species_v5())
-        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(pl.col("english") == input.species_v5())
+        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(
+            (pl.col("english") == input.species_v5()) & (pl.col("year") == str(input.year_v5()))
+        )
 
         with io.BytesIO() as buffer:
             workbook = xlsxwriter.Workbook(buffer, {'in_memory': True})
@@ -511,3 +1034,12 @@ def server_v5(input: Inputs):
             abundances.write_excel(workbook=workbook, worksheet="abundances", autofilter=False, autofit=True)
             workbook.close()
             yield buffer.getvalue()
+
+    @render.ui
+    def download_filtered_btn():
+        species = input.species_v5()
+
+        return ui.download_button(
+            "downloadFiltered",
+            f"Download {species} Results"
+        )

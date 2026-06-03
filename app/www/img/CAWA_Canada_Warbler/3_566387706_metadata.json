@@ -1,0 +1,16 @@
+{
+  "common_name": "Canada Warbler",
+  "scientific_name": "Cardellina canadensis",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 566387706,
+  "attribution": "(c) Elliotte Rusty Harold, all rights reserved",
+  "license": null,
+  "obs_url": "https://www.inaturalist.org/observations/313629284",
+  "obs_date": "2025-09-13",
+  "recorded_by": "elharo",
+  "download_url": "https://static.inaturalist.org/photos/566387706/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_566387706.jpg"
+}

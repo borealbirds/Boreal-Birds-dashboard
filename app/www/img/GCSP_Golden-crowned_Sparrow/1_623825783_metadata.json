@@ -1,0 +1,16 @@
+{
+  "common_name": "Golden-crowned Sparrow",
+  "scientific_name": "Zonotrichia atricapilla",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 623825783,
+  "attribution": "(c) Alan Yoshioka, some rights reserved (CC BY-NC-SA)",
+  "license": "cc-by-nc-sa",
+  "obs_url": "https://www.inaturalist.org/observations/342549357",
+  "obs_date": "2026-03-10",
+  "recorded_by": "alanyoshioka",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/623825783/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_623825783.jpg"
+}

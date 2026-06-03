@@ -1,0 +1,16 @@
+{
+  "common_name": "Western Tanager",
+  "scientific_name": "Piranga ludoviciana",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 665422923,
+  "attribution": "(c) parrott-d, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364502562",
+  "obs_date": "2026-05-23",
+  "recorded_by": "parrott-d",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/665422923/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "10_665422923.jpg"
+}

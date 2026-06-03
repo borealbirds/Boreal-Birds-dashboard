@@ -1,0 +1,16 @@
+{
+  "common_name": "Ruffed Grouse",
+  "scientific_name": "Bonasa umbellus",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 641662347,
+  "attribution": "(c) sara-charlotte, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/351609387",
+  "obs_date": "2026-04-19",
+  "recorded_by": "sara-charlotte",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/641662347/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "5_641662347.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Gray Catbird",
+  "scientific_name": "Dumetella carolinensis",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 503239820,
+  "attribution": "(c) Craig K. Hunt, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/280205548",
+  "obs_date": "2025-05-10",
+  "recorded_by": "ckhunt",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/503239820/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "2_503239820.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Savannah Sparrow",
+  "scientific_name": "Passerculus sandwichensis",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 661876078,
+  "attribution": "(c) Donald Morton, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/362629423",
+  "obs_date": "2026-05-06",
+  "recorded_by": "mortond",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/661876078/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "7_661876078.jpg"
+}

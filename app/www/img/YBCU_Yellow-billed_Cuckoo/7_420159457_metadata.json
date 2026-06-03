@@ -1,0 +1,16 @@
+{
+  "common_name": "Yellow-billed Cuckoo",
+  "scientific_name": "Coccyzus americanus",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 420159457,
+  "attribution": "(c) ruggy, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/236185959",
+  "obs_date": "2024-08-16",
+  "recorded_by": "ruggy",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/420159457/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "7_420159457.jpg"
+}

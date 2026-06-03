@@ -1,0 +1,16 @@
+{
+  "common_name": "Sedge Wren",
+  "scientific_name": "Cistothorus platensis",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 615373315,
+  "attribution": "(c) Ariel Cabrera Foix, some rights reserved (CC BY-NC-SA)",
+  "license": "cc-by-nc-sa",
+  "obs_url": "https://www.inaturalist.org/observations/338389527",
+  "obs_date": "2026-01-28",
+  "recorded_by": "aricafoix",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/615373315/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "3_615373315.jpg"
+}

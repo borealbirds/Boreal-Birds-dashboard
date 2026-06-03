@@ -1,0 +1,18 @@
+{
+  "common_name": "Dunlin",
+  "scientific_name": "Calidris alpina",
+  "source": "Xeno-Canto",
+  "xeno_canto_recording_id": "657851",
+  "xeno_canto_url": "https://xeno-canto.org/657851",
+  "xeno_canto_english_name": "Dunlin",
+  "recordist": "Andrew Harrop",
+  "country": "United Kingdom",
+  "location": "Shetland Islands, Scotland",
+  "date": "2021-06-19",
+  "length": "0:03",
+  "duration_seconds": 3,
+  "quality": "B",
+  "type": "flight call, song",
+  "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "local_audio_file": "2_657851_qB_0-03.mp3"
+}

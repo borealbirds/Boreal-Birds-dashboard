@@ -1,0 +1,16 @@
+{
+  "common_name": "Mountain Bluebird",
+  "scientific_name": "Sialia currucoides",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 662082456,
+  "attribution": "(c) Nick Carter, some rights reserved (CC BY-NC-SA)",
+  "license": "cc-by-nc-sa",
+  "obs_url": "https://www.inaturalist.org/observations/362741167",
+  "obs_date": "2026-05-17",
+  "recorded_by": "naturenickpics",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/662082456/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "2_662082456.jpg"
+}

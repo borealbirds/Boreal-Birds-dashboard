@@ -1,0 +1,16 @@
+{
+  "common_name": "Common Raven",
+  "scientific_name": "Corvus corax",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 657245684,
+  "attribution": "(c) David Barros Cardona, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/360194850",
+  "obs_date": "2026-04-30",
+  "recorded_by": "david_barros_cardona",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/657245684/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "10_657245684.jpg"
+}

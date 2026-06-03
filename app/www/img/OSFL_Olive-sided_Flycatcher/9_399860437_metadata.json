@@ -1,0 +1,16 @@
+{
+  "common_name": "Olive-sided Flycatcher",
+  "scientific_name": "Contopus cooperi",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 399860437,
+  "attribution": "(c) Alex Smith, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/225526116",
+  "obs_date": "2024-06-27",
+  "recorded_by": "alexws",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/399860437/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "9_399860437.jpg"
+}

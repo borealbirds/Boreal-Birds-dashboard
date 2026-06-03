@@ -1,0 +1,16 @@
+{
+  "common_name": "Tree Swallow",
+  "scientific_name": "Tachycineta bicolor",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666159939,
+  "attribution": "(c) maxjmclaughlin, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364892975",
+  "obs_date": "2026-05-24",
+  "recorded_by": "maxjmclaughlin",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666159939/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "7_666159939.jpg"
+}

@@ -1,0 +1,16 @@
+{
+  "common_name": "Least Flycatcher",
+  "scientific_name": "Empidonax minimus",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 134130256,
+  "attribution": "(c) Anthony Zammit, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/81766065",
+  "obs_date": "2021-05-17",
+  "recorded_by": "aezammit",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/134130256/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "10_134130256.jpg"
+}

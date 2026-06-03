@@ -1,0 +1,16 @@
+{
+  "common_name": "Yellow-bellied Sapsucker",
+  "scientific_name": "Sphyrapicus varius",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 666203071,
+  "attribution": "(c) walterofthewall, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/364914628",
+  "obs_date": "2026-05-24",
+  "recorded_by": "walterofthewall",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/666203071/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "1_666203071.jpg"
+}

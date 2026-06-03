@@ -1,0 +1,16 @@
+{
+  "common_name": "Fox Sparrow",
+  "scientific_name": "Passerella iliaca",
+  "sex": "male",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 252962547,
+  "attribution": "(c) Tina, all rights reserved",
+  "license": null,
+  "obs_url": "https://www.inaturalist.org/observations/147050689",
+  "obs_date": "2023-01-21",
+  "recorded_by": "la4bonte",
+  "download_url": "https://static.inaturalist.org/photos/252962547/medium.jpeg",
+  "size_kb": 150.0,
+  "local_file": "5_252962547.jpg"
+}

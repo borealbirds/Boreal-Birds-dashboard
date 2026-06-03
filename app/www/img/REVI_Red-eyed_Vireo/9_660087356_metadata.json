@@ -1,0 +1,16 @@
+{
+  "common_name": "Red-eyed Vireo",
+  "scientific_name": "Vireo olivaceus",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 660087356,
+  "attribution": "no rights reserved",
+  "license": "cc0",
+  "obs_url": "https://www.inaturalist.org/observations/361678657",
+  "obs_date": "2026-05-15",
+  "recorded_by": "swpollinators",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/660087356/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "9_660087356.jpg"
+}

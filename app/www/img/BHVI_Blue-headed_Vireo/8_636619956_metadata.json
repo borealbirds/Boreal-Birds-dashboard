@@ -1,0 +1,16 @@
+{
+  "common_name": "Blue-headed Vireo",
+  "scientific_name": "Vireo solitarius",
+  "sex": "female",
+  "life_stage": "adult",
+  "captive": false,
+  "photo_id": 636619956,
+  "attribution": "(c) panosse, some rights reserved (CC BY-NC)",
+  "license": "cc-by-nc",
+  "obs_url": "https://www.inaturalist.org/observations/349024042",
+  "obs_date": "2026-04-11",
+  "recorded_by": "panosse",
+  "download_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/636619956/medium.jpg",
+  "size_kb": 150.0,
+  "local_file": "8_636619956.jpg"
+}
