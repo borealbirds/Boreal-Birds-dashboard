@@ -69,6 +69,17 @@ def load_species_metadata() -> pl.DataFrame:
     """
     return pl.read_excel(V5_META_PATH, sheet_name="species")
 
+def load_covariate_metadata() -> pl.DataFrame:
+    """
+    Load Covariate metadata and full-form names from the csv file.
+
+    Returns
+    -------
+    pl.DataFrame
+        A Polars DataFrame containing the Covariate metadata.
+    """
+    return pl.read_csv(COVARIATE_MTDATA)
+
 def load_abundance_data() -> pl.DataFrame:
     """
     Load species taxonomic and descriptive data from the Excel results summary file.
