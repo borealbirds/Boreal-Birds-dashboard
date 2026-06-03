@@ -1,0 +1,1 @@
+**2026-06-02** BAM V5 model products are temporarily unavailable. Previous model products released August 2025 are being improved and will be released alongside the remaining species list in May 2026. Some species in the August 2025 release were affected by a code bug that mispecified the effects of landcover covariates in the model prediction.

@@ -1,7 +1,8 @@
 from shiny import ui
 from shinywidgets import output_widget
-from ui.sidebar import sidebar
+
 from icons import question_circle_fill
+from ui.sidebar import sidebar
 
 def model_v5_tab():
     """
@@ -69,16 +70,18 @@ def model_v5_tab():
                         "Download",
                         ui.layout_columns(
                             ui.markdown("""
-                            **Download model results.** In addition to population and density estimates,
-                            download includes model metadata, and information about the species, regions,
-                            variables, importance, and validation.
+                            **Downloading model results** includes population and density estimates, 
+                            as well as model metadata, species taxonomy, regions, variables, importance, and validation.
 
                             For additional model products, please see the **Model Access** tab.
                             """),
-                            ui.download_button("downloadAll", "Download All Species Results"),
-                            ui.download_button("downloadFiltered", "Download Selected Species Results"),
+                            ui.card(
+                                ui.download_button("downloadAll", "Download All Results"),
+                                ui.output_ui("download_filtered_btn"),
+                                fill=False,
+                            ),
                             ui.card(ui.output_data_frame("population_size"), full_screen=True),
-                            col_widths=(6, 3, 3, 12)
+                            col_widths=(7, 5, 12),
                         ),
                     ),
                     title=ui.tooltip(

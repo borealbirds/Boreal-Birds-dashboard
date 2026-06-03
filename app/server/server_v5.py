@@ -1,38 +1,42 @@
-from shiny import Inputs, reactive, ui, render
-from shinywidgets import render_widget, output_widget, render_altair
-from ipywidgets import HTML, Layout, Button
-from ipyleaflet import (
-    Map, basemaps, TileLayer, GeoData,
-    basemap_to_tiles, LayersControl, ScaleControl,
-    FullScreenControl, WidgetControl, GeoJSON
-)
-from shapely.geometry import shape
-from datetime import date
+import io
 import json
-import altair as alt
-import requests
-import polars as pl
-from pathlib import Path
-import geopandas as gpd
+import warnings
+from datetime import date
 from functools import lru_cache
+from pathlib import Path
+
+import requests
+import altair as alt
+import polars as pl
+import xlsxwriter
+from shapely.geometry import shape
+
+from ipywidgets import Button, HTML, Layout
+from ipyleaflet import (
+    basemap_to_tiles,
+    basemaps,
+    FullScreenControl,
+    GeoJSON,
+    LayersControl,
+    Map,
+    ScaleControl,
+    TileLayer,
+    WidgetControl,
+)
+
+from shiny import Inputs, Outputs, Session, reactive, render, ui
+from shinywidgets import render_altair, render_widget
 
 from icons import question_circle_fill
-import xlsxwriter
-import io
-
 from shared import (
-    get_tif_path,
     available_regions,
     available_years,
-    load_species_metadata,
+    get_tif_path,
     load_abundance_data,
+    load_region_data,
+    load_species_metadata,
     load_subregion_boundaries,
-    load_region_data
 )
-from modules.bird import bird_card
-
-import warnings
-import numpy as np
 
 warnings.filterwarnings(
     "ignore",
@@ -177,7 +181,7 @@ def zoom_from_span(span_x, span_y):
     print("\n\nspan ", span, " zoom ", zoom)
     return zoom
 
-def server_v5(input: Inputs, session=None):
+def server_v5(input: Inputs, output: Outputs, session: Session):
     """
     Main server logic for the Model V5 tab, managing reactive data flow 
     and spatial visualization.
@@ -485,7 +489,7 @@ def server_v5(input: Inputs, session=None):
 
         df = abundances.filter(
             (pl.col("english") == input.species_v5()) &
-            (pl.col("region")  == region) &
+            # (pl.col("region")  == region) &
             (pl.col("year")    == str(year))
         )
 
@@ -499,7 +503,24 @@ def server_v5(input: Inputs, session=None):
             "density_lower", 
             "density_upper"
         ])
-        return render.DataGrid(df, selection_mode="rows")
+
+        df = df.with_columns(
+            (pl.col("region") == region).alias("selected_region")
+        ).sort("population_estimate", "selected_region", descending=[True, True])
+
+        region_row_number = df.select(pl.arg_where(pl.col("region") == region)).to_series().to_list()
+
+        selected_style = [
+            {
+                "rows": region_row_number,
+                "style": {
+                    "background-color": "#A9DC67FF",
+                    "height": "50px",
+                },
+            }
+        ]
+
+        return render.DataGrid(df.select(pl.exclude("selected_region")), selection_mode="rows", styles=selected_style)
 
     # ── INFO TAB ───────────────────────────────────────────────────────
 
@@ -998,7 +1019,9 @@ function updateLb() {
         variables = pl.read_excel(model_results, sheet_name="variables")
         importance = pl.read_excel(model_results, sheet_name="importance").filter(pl.col("english") == input.species_v5())
         validation = pl.read_excel(model_results, sheet_name="validation").filter(pl.col("english") == input.species_v5())
-        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(pl.col("english") == input.species_v5())
+        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(
+            (pl.col("english") == input.species_v5()) & (pl.col("year") == str(input.year_v5()))
+        )
 
         with io.BytesIO() as buffer:
             workbook = xlsxwriter.Workbook(buffer, {'in_memory': True})
@@ -1011,3 +1034,12 @@ function updateLb() {
             abundances.write_excel(workbook=workbook, worksheet="abundances", autofilter=False, autofit=True)
             workbook.close()
             yield buffer.getvalue()
+
+    @render.ui
+    def download_filtered_btn():
+        species = input.species_v5()
+
+        return ui.download_button(
+            "downloadFiltered",
+            f"Download {species} Results"
+        )

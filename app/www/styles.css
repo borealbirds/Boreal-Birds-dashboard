@@ -57,7 +57,7 @@ body {
 /* Hide dropdown by default */
 .navbar-nav .dropdown-menu {
     display: none;
-    background-color: var(--primary);
+    background-color: var(--secondary);
     color: var(--text-light) !important;
 }
 
@@ -142,7 +142,15 @@ body {
   text-transform: uppercase;
 }
 
-.welcome-card, .model-access-card { width: 75%; margin: 0 auto; }
+.citing-card .card-header,
+.tools-card .card-header {
+  font-size: 1.25rem;
+}
+
+.announcement-card .card-header {
+  background-color: var(--light-green);
+  color: var(--text-primary);
+}
 
 /* ── Bird header row ──────────────────────────────────────────────── */
 .bird-header-row {
@@ -801,7 +809,6 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  height: 100% !important;
 }
 
 /* Direct the content window within the tab card structure to stretch */
