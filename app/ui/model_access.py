@@ -56,10 +56,13 @@ def tools_tab():
     """UI for the tools tab, providing resources for exploring BAM products."""
     return ui.nav_panel(
         "Tools",
-        ui.card(
-            ui.card_header("Explore BAM Products"),
-            ui.markdown(read_md("tools.md")),
-            class_="tools-card"
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("Explore BAM Products"),
+                ui.markdown(read_md("tools.md")),
+                class_="tools-card"
+            ),
+            col_widths=(-1, 10, -1),
         ),
     )
 
@@ -68,9 +71,12 @@ def citing_tab():
     """UI for the citing tab; how to cite BAM model results."""
     return ui.nav_panel(
         "Citing Results",
-        ui.card(
-            ui.card_header("How to Cite BAM Model Results"),
-            ui.markdown(read_md("citing.md")),
-            class_="citing-card"
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("How to Cite BAM Model Results"),
+                ui.markdown(read_md("citing.md")),
+                class_="citing-card"
+            ),
+            col_widths=(-1, 10, -1),
         ),
     )
