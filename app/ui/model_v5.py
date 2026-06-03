@@ -56,7 +56,15 @@ def model_v5_tab():
                     ),
                     ui.nav_panel(
                         "Covariates",
-                        ui.card(output_widget("marginal_fx_chart"), full_screen=True),
+                        ui.layout_columns(
+                            ui.markdown("""
+                            **Explore the Marginal Effects of each covariate on the Population Density Estimate.**
+                            Currently active filters apply.
+                            """),
+                            ui.card(output_widget("marginal_fx_chart"), full_screen=True),
+                            col_widths=(12, 12),
+                            row_heights=["auto", "1fr"],
+                        ),
                     ),
                     ui.nav_panel(
                         "Population",
