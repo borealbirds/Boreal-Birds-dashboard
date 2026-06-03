@@ -8,7 +8,7 @@ def _announcement_card(display: bool = False):
 
     Parameters
     ----------
-    display : bool
+    display : bool, optional
         Whether to display the announcements card. Set to True to show announcements and False to hide.
     
     Returns
