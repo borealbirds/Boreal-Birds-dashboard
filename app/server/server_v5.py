@@ -1004,6 +1004,10 @@ function updateLb() {
             height=750
         )
     
+    @render_altair
+    def marginal_fx_chart():
+        pass
+
     @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
     def downloadAll():
 

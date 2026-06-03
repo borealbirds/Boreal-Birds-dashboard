@@ -55,8 +55,8 @@ def model_v5_tab():
                         output_widget("map_widget"),
                     ),
                     ui.nav_panel(
-                        "Land Cover",
-                        ui.p("land_cover_placeholder"),
+                        "Covariates",
+                        ui.card(output_widget("marginal_fx_chart"), full_screen=True),
                     ),
                     ui.nav_panel(
                         "Population",
