@@ -31,11 +31,13 @@ def get_tif_path(species_id: str, region: str, year: int) -> str:
         f"{species_id}/{region}/{filename}"
     )
 
-def get_cov_fx_path(species_id: str, region: str) -> str:
+def get_cov_fx_data(cov_name: str) -> pl.DataFrame:
     """
-    Construct the HTTP URL to a specific covariate_marginal_fx file.
+    Return the associated marginal effects file for the selected covariate.
     """
-    pass
+    filePath = f"{MARGINAL_FX_DIR}/{cov_name}/marginalsv5.csv"
+    
+    return pl.read_csv(filePath)
 
 @lru_cache(maxsize=1)
 def load_subregion_boundaries() -> gpd.GeoDataFrame:
