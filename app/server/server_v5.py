@@ -32,6 +32,7 @@ from shared import (
     available_regions,
     available_years,
     get_tif_path,
+    get_cov_fx_data,
     load_abundance_data,
     load_region_data,
     load_species_metadata,
@@ -1028,6 +1029,8 @@ function updateLb() {
 
     @render.text
     def marginal_fx_chart():
+        
+        
         if not input.covariate_filter():
             pass
         
