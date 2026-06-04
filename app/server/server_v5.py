@@ -36,6 +36,7 @@ from shared import (
     load_region_data,
     load_species_metadata,
     load_subregion_boundaries,
+    load_covariate_metadata,
 )
 
 warnings.filterwarnings(
@@ -48,6 +49,7 @@ birds = load_species_metadata()
 abundances = load_abundance_data()
 subregions = load_subregion_boundaries()
 region_dict = load_region_data().rows_by_key(key="region", named=True, unique=True)
+covariates = load_covariate_metadata()
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
 PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
