@@ -32,13 +32,22 @@ def get_tif_path(species_id: str, region: str, year: int) -> str:
         f"{species_id}/{region}/{filename}"
     )
 
-def get_cov_fx_data(cov_name: str) -> pl.DataFrame:
+def get_cov_fx_data(covs: list) -> pl.DataFrame:
     """
-    Return the associated marginal effects file for the selected covariate.
+    Return the associated marginal effects file for the selected covariates.
     """
-    filePath = MARGINAL_FX_DIR / cov_name / "marginalsv5.csv"
     
-    return pl.read_csv(filePath)
+    filePath = MARGINAL_FX_DIR / covs[0] / "marginalsv5.csv"
+    
+    df =  pl.read_csv(filePath)
+
+    if len(covs) > 1:
+        for i in range(1,len(covs)):
+            filePath_1 = MARGINAL_FX_DIR / covs[i] / "marginalsv5.csv"
+            df_1 = pl.read_csv(filePath)
+            df = df.vstack(df_1).rechunk()
+    
+    return df
 
 @lru_cache(maxsize=1)
 def load_subregion_boundaries() -> gpd.GeoDataFrame:

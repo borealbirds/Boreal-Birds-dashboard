@@ -1011,6 +1011,7 @@ function updateLb() {
     def marginal_fx_filter():
         
         cov_choices = sorted(covariates.get_column("name").unique().to_list())
+        cov_choices.append("year")
         res_choices = covariates.get_column("prediction_resolution").unique().to_list()
 
         return ui.layout_columns(
@@ -1036,16 +1037,18 @@ function updateLb() {
                 covariates.filter(
                     (pl.col("name") == input.covariate_filter()) &
                     (pl.col("prediction_resolution") == input.resolution_filter())
-                ).item(0, "variable")
-            ).head()
+                ).get_column("variable").to_list()
+            ).filter(pl.col("species") == input.species_v5())
+        
+        viz_df = fx_df.group_by(["bcr", "x"]).agg(pl.col("y").mean().alias("mean_y"))
 
-        points = alt.Chart(fx_df).mark_point(
+        points = alt.Chart(viz_df).mark_point(
             filled=True,
         ).encode(
-            alt.X("x:Q")
-                .title("Abundance (M males)"),
-            alt.Y("y:N")
-                .title(None)
+            alt.X("x:N")
+                .title(f"Covariate: {input.covariate_filter()}"),
+            alt.Y("mean_y:N")
+                .title("Marginal Effect on Density")
                 .axis(labelLimit=0)
         )
 
