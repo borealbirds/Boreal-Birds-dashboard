@@ -1010,11 +1010,20 @@ function updateLb() {
     def marginal_fx_filter():
         
         cov_choices = covariates.get_column("name").unique().to_list()
+        res_choices = covariates.get_column("prediction_resolution").unique().to_list()
 
-        return ui.input_select(
-            id="covariate_filter",
-            label="Select Covariate",
-            choices=cov_choices
+        return ui.layout_columns(
+            ui.input_select(
+                id="covariate_filter",
+                label="Select Covariate",
+                choices=cov_choices
+            ),
+            ui.input_select(
+                id="resolution_filter",
+                label="Select Resolution",
+                choices=res_choices
+            ),
+            col_widths=(12, 12)
         )
 
     @render_altair
