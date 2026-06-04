@@ -58,7 +58,7 @@ def model_v5_tab():
                         "Covariates",
                         ui.layout_columns(
                             ui.markdown("""
-                            **Explore the Marginal Effects of each covariate on the Population Density estimate.**\n
+                            **Explore the Marginal Effects of each covariate on the Population Density estimate.**
                             'Species' filter applies.
                             """),
                             ui.layout_columns(
