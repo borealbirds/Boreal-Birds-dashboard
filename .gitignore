@@ -1,5 +1,5 @@
 sample_data/*
-
+data/model_v5/marginaleffects/*
 .vscode
 .DS_Store
 __pycache__

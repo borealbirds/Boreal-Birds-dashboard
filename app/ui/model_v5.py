@@ -55,16 +55,28 @@ def model_v5_tab():
                         output_widget("map_widget"),
                     ),
                     ui.nav_panel(
-                        "Land Cover",
-                        ui.p("land_cover_placeholder"),
-                    ),
-                    ui.nav_panel(
                         "Population",
                         ui.card(output_widget("population_chart"), full_screen=True),
                     ),
                     ui.nav_panel(
                         "Density",
                         ui.card(output_widget("density_chart"), full_screen=True),
+                    ),
+                    ui.nav_panel(
+                        "Covariates",
+                        ui.layout_columns(
+                            ui.markdown("""
+                            **Explore the Marginal Effects of each covariate on the Population Density estimate.**
+                            'Species' filter applies.
+                            """),
+                            ui.layout_columns(
+                                ui.card(output_widget("marginal_fx_chart"), full_screen=True),
+                                ui.card(ui.output_ui("marginal_fx_filter"), full_screen=True),
+                                col_widths=(9, 3)
+                            ),
+                            col_widths=(12, 12),
+                            row_heights=["auto", "1fr"],
+                        ),
                     ),
                     ui.nav_panel(
                         "Download",

@@ -24,7 +24,7 @@ from ipyleaflet import (
     WidgetControl,
 )
 
-from shiny import Inputs, Outputs, Session, reactive, render, ui
+from shiny import Inputs, Outputs, Session, reactive, render, ui, req
 from shinywidgets import render_altair, render_widget
 
 from icons import question_circle_fill
@@ -32,11 +32,15 @@ from shared import (
     available_regions,
     available_years,
     get_tif_path,
+    get_cov_fx_data,
     load_abundance_data,
     load_region_data,
     load_species_metadata,
     load_subregion_boundaries,
+    load_covariate_metadata,
 )
+
+# alt.data_transformers.enable("vegafusion")
 
 warnings.filterwarnings(
     "ignore",
@@ -48,6 +52,7 @@ birds = load_species_metadata()
 abundances = load_abundance_data()
 subregions = load_subregion_boundaries()
 region_dict = load_region_data().rows_by_key(key="region", named=True, unique=True)
+covariates = load_covariate_metadata()
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
 PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
@@ -1004,6 +1009,64 @@ function updateLb() {
             height=750
         )
     
+    @render.ui
+    def marginal_fx_filter():
+        
+        cov_choices = sorted(covariates.get_column("name").unique().to_list())
+        # cov_choices.append("year")
+        res_choices = covariates.get_column("prediction_resolution").unique().to_list()
+
+
+        return ui.layout_columns(
+            ui.input_select(
+                id="covariate_filter",
+                label="Select Covariate",
+                choices=cov_choices
+            ),
+            ui.input_select(
+                id="resolution_filter",
+                label="Select Resolution",
+                choices=res_choices
+            ),
+            col_widths=(12, 12)
+        )
+
+    @render_altair
+    def marginal_fx_chart():
+        req(input.covariate_filter())
+        req(input.resolution_filter())
+        req(input.species_v5())
+        
+        bird_code = birds.filter(pl.col("english") == input.species_v5()).item(0,"id")
+
+        fx_df = get_cov_fx_data(
+                covariates.filter(
+                    (pl.col("name") == input.covariate_filter()) & (pl.col("prediction_resolution") == input.resolution_filter())
+                ).get_column("variable").to_list()
+            ).filter(pl.col("species") == bird_code)
+        
+        viz_df = fx_df.with_columns(pl.col("x").round(2)).group_by(["bcr", "x"]).agg(pl.col("y").mean().alias("mean_y"))
+
+        points = alt.Chart(viz_df).mark_point().encode(
+            alt.X("x:N")
+                .title(f"Covariate: {input.covariate_filter()}")
+                .bin(maxbins=20),
+            alt.Y("mean_y:Q")
+                .title("Marginal Effect on Density")
+                .axis(labelLimit=0),
+            alt.Color(
+                "bcr:N",
+                legend=alt.Legend(title="BCR")
+            ),
+        )
+
+        # trendline = points.transform_regression(
+        #     'x', 'y'
+        # ).mark_line(size=3)
+
+        return (points)
+
+
     @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
     def downloadAll():
 

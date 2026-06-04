@@ -8,6 +8,7 @@ from functools import lru_cache
 from urllib.parse import urljoin
 import yaml
 
+
 app_dir = Path(__file__).parent.parent
 
 REMOTE_DATA_FOLDER = "dashboard/"
@@ -16,6 +17,8 @@ DATA_DIR = app_dir / "data"
 CONTENT_DIR = Path(__file__).parent / "content"
 V5_META_PATH = DATA_DIR / "model_v5" / "12_BAMV5-results.xlsx"
 BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
+COVARIATE_MTDATA = DATA_DIR / "model_v5" / "covariate_metadata_modelevaluation - covariates_label.csv"
+MARGINAL_FX_DIR = DATA_DIR / "model_v5" / "marginaleffects"
 
 def get_tif_path(species_id: str, region: str, year: int) -> str:
     """
@@ -28,6 +31,23 @@ def get_tif_path(species_id: str, region: str, year: int) -> str:
         BASE_URL,
         f"{species_id}/{region}/{filename}"
     )
+
+def get_cov_fx_data(covs: list) -> pl.DataFrame:
+    """
+    Return the associated marginal effects file for the selected covariates.
+    """
+    
+    filePath = MARGINAL_FX_DIR / covs[0] / "marginalsv5.csv"
+    
+    df =  pl.read_csv(filePath)
+
+    if len(covs) > 1:
+        for i in range(1,len(covs)):
+            filePath_1 = MARGINAL_FX_DIR / covs[i] / "marginalsv5.csv"
+            df_1 = pl.read_csv(filePath_1)
+            df = df.vstack(df_1).rechunk()
+    
+    return df
 
 @lru_cache(maxsize=1)
 def load_subregion_boundaries() -> gpd.GeoDataFrame:
@@ -60,6 +80,17 @@ def load_species_metadata() -> pl.DataFrame:
         A Polars DataFrame containing the 'species' sheet metadata.
     """
     return pl.read_excel(V5_META_PATH, sheet_name="species")
+
+def load_covariate_metadata() -> pl.DataFrame:
+    """
+    Load Covariate metadata and full-form names from the csv file.
+
+    Returns
+    -------
+    pl.DataFrame
+        A Polars DataFrame containing the Covariate metadata.
+    """
+    return pl.read_csv(COVARIATE_MTDATA)
 
 def load_abundance_data() -> pl.DataFrame:
     """
