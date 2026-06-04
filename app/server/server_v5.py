@@ -1026,9 +1026,12 @@ function updateLb() {
             col_widths=(12, 12)
         )
 
-    @render_altair
+    @render.text
     def marginal_fx_chart():
-        pass
+        if not input.covariate_filter():
+            pass
+        
+        return f"{input.covariate_filter()}"
 
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
