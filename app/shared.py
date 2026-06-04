@@ -44,7 +44,7 @@ def get_cov_fx_data(covs: list) -> pl.DataFrame:
     if len(covs) > 1:
         for i in range(1,len(covs)):
             filePath_1 = MARGINAL_FX_DIR / covs[i] / "marginalsv5.csv"
-            df_1 = pl.read_csv(filePath)
+            df_1 = pl.read_csv(filePath_1)
             df = df.vstack(df_1).rechunk()
     
     return df
