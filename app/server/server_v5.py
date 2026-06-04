@@ -1010,7 +1010,7 @@ function updateLb() {
     @render.ui
     def marginal_fx_filter():
         
-        cov_choices = covariates.get_column("name").unique().to_list()
+        cov_choices = sorted(covariates.get_column("name").unique().to_list())
         res_choices = covariates.get_column("prediction_resolution").unique().to_list()
 
         return ui.layout_columns(
@@ -1027,14 +1027,29 @@ function updateLb() {
             col_widths=(12, 12)
         )
 
-    @render.text
+    @render_altair
     def marginal_fx_chart():
-        
-        
         if not input.covariate_filter():
             pass
         
-        return f"{input.covariate_filter()}"
+        fx_df = get_cov_fx_data(
+                covariates.filter(
+                    (pl.col("name") == input.covariate_filter()) &
+                    (pl.col("prediction_resolution") == input.resolution_filter())
+                ).item(0, "variable")
+            ).head()
+
+        points = alt.Chart(fx_df).mark_point(
+            filled=True,
+        ).encode(
+            alt.X("x:Q")
+                .title("Abundance (M males)"),
+            alt.Y("y:N")
+                .title(None)
+                .axis(labelLimit=0)
+        )
+
+        return points
 
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")

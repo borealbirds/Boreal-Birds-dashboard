@@ -70,7 +70,7 @@ def model_v5_tab():
                             'Species' filter applies.
                             """),
                             ui.layout_columns(
-                                ui.card(ui.output_ui("marginal_fx_chart"), full_screen=True),
+                                ui.card(output_widget("marginal_fx_chart"), full_screen=True),
                                 ui.card(ui.output_ui("marginal_fx_filter"), full_screen=True),
                                 col_widths=(9, 3)
                             ),

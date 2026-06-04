@@ -8,6 +8,7 @@ from functools import lru_cache
 from urllib.parse import urljoin
 import yaml
 
+
 app_dir = Path(__file__).parent.parent
 
 REMOTE_DATA_FOLDER = "dashboard/"
@@ -35,7 +36,7 @@ def get_cov_fx_data(cov_name: str) -> pl.DataFrame:
     """
     Return the associated marginal effects file for the selected covariate.
     """
-    filePath = f"{MARGINAL_FX_DIR}/{cov_name}/marginalsv5.csv"
+    filePath = MARGINAL_FX_DIR / cov_name / "marginalsv5.csv"
     
     return pl.read_csv(filePath)
 
