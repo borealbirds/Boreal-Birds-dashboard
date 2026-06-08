@@ -15,6 +15,7 @@ www_dir = Path(__file__).parent / "www"
 app_ui = ui.page_navbar(
     ui.head_content(
         ui.include_css(str(www_dir / "styles.css")),
+        ui.tags.link(rel="icon", href="img/favicon.png", type="image/x-icon"),
         audio(),
     ),
     ui.nav_spacer(),
