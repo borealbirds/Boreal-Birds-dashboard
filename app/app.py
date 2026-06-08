@@ -2,7 +2,7 @@ from pathlib import Path
 
 from shiny import App, Inputs, Outputs, Session, ui
 
-from components import audio, email, footer, report_issue, website
+from components import audio, footer, website, website_contact
 from server.server_v5 import server_v5
 from ui.methods import methods_tab
 from ui.model_v4 import model_v4_tab
@@ -35,8 +35,7 @@ app_ui = ui.page_navbar(
     ui.nav_menu(
         "Contact Us",
         website(),
-        email(),
-        report_issue(),
+        website_contact(),
     ),
     selected="Current Model",
     id="tabs",

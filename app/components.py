@@ -2,15 +2,25 @@ from shiny import ui
 
 
 def website():
-    """Link to the BAM website's contact page."""
+    """Link to the BAM website."""
     return ui.nav_control(
             ui.a(
                 "Our Website",
-                href="https://borealbirds.ca/contact/",
+                href="https://borealbirds.ca/",
                 target="_blank",
             ),
         )
 
+
+def website_contact():
+    """Link to the BAM website contact page."""
+    return ui.nav_control(
+        ui.a(
+            "Email Us",
+            href="https://borealbirds.ca/contact/",
+            target="_blank",
+            ),
+        )
 
 def email():
     """Open an external email to the BAM team."""
