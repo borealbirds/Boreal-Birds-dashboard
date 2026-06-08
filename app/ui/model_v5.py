@@ -13,7 +13,7 @@ def model_v5_tab():
 
     Current Model tab — compact bird header with MAP/INFO toggle.
     MAP view: interactive map, land cover, population, density, download.
-    INFO view: species info, photo gallery, songs.
+    INFO view: species info, photo gallery, sounds.
 
     Returns
     -------
@@ -113,7 +113,7 @@ def model_v5_tab():
                 ui.navset_card_underline(
                     ui.nav_panel("Info",   ui.output_ui("species_info")),
                     ui.nav_panel("Images", ui.output_ui("species_images")),
-                    ui.nav_panel("Songs",  ui.output_ui("species_songs")),
+                    ui.nav_panel("Sounds",  ui.output_ui("species_songs")),
                     title="Species Info",
                 ),
             ),
