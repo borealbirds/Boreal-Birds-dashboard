@@ -1,24 +1,30 @@
+from pathlib import Path
+
 from shiny import ui
 
 from shared import read_md
 
-def _announcement_card(display: bool = False):
+def _announcement_card(display: bool = False, file: str = "announcements.md"):
     """
-    Conditional UI card for announcements.
+    Conditional UI card for announcements. Checks that the file exists and is not empty.
 
     Parameters
     ----------
     display : bool, optional
         Whether to display the announcements card. Set to True to show announcements and False to hide.
-    
+    file : str, optional
+        Filename of the announcements markdown in the contents directory.
+        
     Returns
     -------
     shiny.ui
     """
-    if display:
+    path = Path(__file__).parent.parent / "content" / file
+
+    if display & path.exists() & bool(path.read_text(encoding="utf-8").strip()):
         return ui.card(
             ui.card_header("Announcements"),
-            ui.markdown(read_md("announcements.md")),
+            ui.markdown(read_md(file)),
             fill=False,
             class_="announcement-card",
         )
