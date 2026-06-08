@@ -735,32 +735,138 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Spectrogram: collapsed (default) and expanded ────────────────── */
+/* ── Spectrogram: inline (clickable, canvas must be first child) ──── */
 .spectrogram-container {
   height: 80px;
   overflow: hidden;
-  transition: height 0.35s ease;
+  position: relative;
+  cursor: pointer;
+  background: #111;
+  transition: height 0.3s ease;
 }
 
-.spectrogram-container.spec-expanded {
-  height: 200px;
-}
+.spectrogram-container.spec-expanded { height: 200px; }
 
-/* ── Expand button ────────────────────────────────────────────────── */
-.spec-expand-btn {
-  display: block;
-  margin: 0.25rem 0 0 0;
-  background: none;
-  border: none;
+.sound-meta {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  padding: 0.35rem 0 0.1rem;
   font-size: 0.72rem;
   color: var(--secondary);
-  cursor: pointer;
-  padding: 0;
-  opacity: 0.6;
-  font-family: inherit;
 }
 
-.spec-expand-btn:hover { opacity: 1; }
+.sound-meta span b { color: var(--text-primary); margin-right: 0.2rem; }
+
+/* ── Sound spectrogram modal ──────────────────────────────────────── */
+.song-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5,10,20,0.92);
+  z-index: 9998;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.song-modal-inner {
+  background: #0d1117;
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem 1.5rem;
+  width: min(820px, 95vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.song-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 1.3rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.song-modal-close:hover { color: white; }
+
+.song-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sm-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+}
+
+.sm-cm-btns { display: flex; gap: 0.3rem; }
+
+.sm-cm-btn {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition-fast);
+}
+.sm-cm-btn:hover  { color: white; border-color: rgba(255,255,255,0.4); }
+.sm-cm-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+.sm-waveform    { height: 0; overflow: hidden; margin: 0; }
+.sm-spectrogram { position: relative; overflow: hidden; margin-bottom: 0.75rem; border-radius: var(--radius-sm); }
+
+.sm-controls { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+.sm-cmap-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+}
+.sm-cmap-select {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.18);
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-family: inherit;
+}
+.sm-cmap-select:hover { background: var(--secondary); }
+.sm-invert-checkbox { accent-color: var(--primary); cursor: pointer; margin: 0; }
+
+.sm-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+}
+
+.sm-meta-item b { color: rgba(255,255,255,0.6); margin-right: 0.3rem; }
+
+.sm-meta-link {
+  color: rgba(110,197,116,0.8);
+  text-decoration: none;
+  font-size: 0.75rem;
+}
+.sm-meta-link:hover { color: rgba(110,197,116,1); text-decoration: underline; }
 
 /* ── Species info: links row ──────────────────────────────────────── */
 .info-row-links {
