@@ -21,7 +21,9 @@
   --transition-fast: all 0.2s ease-in-out;
 }
 
-* { box-sizing: border-box; }
+* { 
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -29,6 +31,18 @@ body {
   font-family: Poppins, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+}
+.container-fluid {
+  border: 0 !important;
+}
+
+.tab-pane[data-value="Welcome"] {
+  background-image: url('/img/BAM-OurWork-BaltimoreOriole.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
 }
 
 .navbar {
@@ -150,7 +164,24 @@ body {
 .announcement-card .card-header {
   background-color: var(--light-green);
   color: var(--text-primary);
+  border-radius: 12px;
 }
+
+.welcome-card .card-header {
+  border-radius: 12px;
+}
+
+.announcement-card,
+.welcome-card {
+  background: rgba(255, 255, 255, 0.6); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); /* Required for Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
 
 /* ── Bird header row ──────────────────────────────────────────────── */
 .bird-header-row {
@@ -381,10 +412,15 @@ body {
 
 /* ── Welcome / Model access ───────────────────────────────────────── */
 .footer {
+  background-color: var(--primary);
+  color: var(--text-light);
   text-align: center;
   padding: 0.5rem;
-  border-top: 1px solid var(--border-light);
   font-size: 0.8rem;
+}
+
+.footer a {
+  color: var(--light-yellow)
 }
 
 /* ── Species Info tab ─────────────────────────────────────────────── */
