@@ -11,6 +11,9 @@ import yaml
 
 app_dir = Path(__file__).parent.parent
 
+# Live Posit Connect Cloud dynamic map tiler base domain address
+PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
+
 REMOTE_DATA_FOLDER = "dashboard/"
 BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
 DATA_DIR = app_dir / "data"
@@ -66,7 +69,7 @@ def load_subregion_boundaries() -> gpd.GeoDataFrame:
     gdf = gdf.to_crs(epsg=4326)
 
     # simplify boundaries to load faster
-    gdf["geometry"] = gdf.geometry.simplify(0.01)
+    gdf["geometry"] = gdf.geometry.simplify(0.001)
 
     return gdf
 
