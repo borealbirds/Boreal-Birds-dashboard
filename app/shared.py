@@ -20,6 +20,8 @@ BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
 DATA_DIR = app_dir / "data"
 CONTENT_DIR = Path(__file__).parent / "content"
 V5_META_PATH = DATA_DIR / "model_v5" / "12_BAMV5-results.xlsx"
+# change V5_META_PATH to the following after the file get uploads to DRAC
+# V5_META_PATH = f"http://206.12.92.143/data/12_BAMV5-results.xlsx" 
 BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
 COVARIATE_MTDATA = DATA_DIR / "model_v5" / "covariate_metadata_modelevaluation - covariates_label.csv"
 MARGINAL_FX_DIR = DATA_DIR / "model_v5" / "marginaleffects"
