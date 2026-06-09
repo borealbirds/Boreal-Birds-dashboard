@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from functools import lru_cache
 from urllib.parse import urljoin
 import yaml
+import time
 
 
 app_dir = Path(__file__).parent.parent
@@ -22,6 +23,38 @@ V5_META_PATH = DATA_DIR / "model_v5" / "12_BAMV5-results.xlsx"
 BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
 COVARIATE_MTDATA = DATA_DIR / "model_v5" / "covariate_metadata_modelevaluation - covariates_label.csv"
 MARGINAL_FX_DIR = DATA_DIR / "model_v5" / "marginaleffects"
+
+# cache to check titiler API health status
+TILER_HEALTH_TTL = 30
+_tiler_health_cache = {
+    "timestamp": 0,
+    "healthy": False
+}
+
+def tiler_is_healthy() -> bool:
+    now = time.time()
+
+    if now - _tiler_health_cache["timestamp"] < TILER_HEALTH_TTL:
+        return _tiler_health_cache["healthy"]
+
+    try:
+        r = requests.get(
+            f"{PRODUCTION_TILER_BASE}/health",
+            timeout=3
+        )
+
+        healthy = (
+            r.status_code == 200 and
+            r.json().get("status") == "ok"
+        )
+
+    except Exception:
+        healthy = False
+
+    _tiler_health_cache["healthy"] = healthy
+    _tiler_health_cache["timestamp"] = now
+
+    return healthy
 
 def get_tif_path(species_id: str, region: str, year: int) -> str:
     """

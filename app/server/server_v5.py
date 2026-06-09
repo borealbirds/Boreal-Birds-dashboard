@@ -38,6 +38,7 @@ from shared import (
     load_species_metadata,
     load_subregion_boundaries,
     load_covariate_metadata,
+    tiler_is_healthy, 
     PRODUCTION_TILER_BASE
 )
 
@@ -48,6 +49,9 @@ warnings.filterwarnings(
     category=RuntimeWarning,
     module="numpy.ma.core"
 )
+
+# log in terminal
+print(f"\n\n\nTitiler API Health Status: \n\tTitiler is healthy: {tiler_is_healthy()}\n\n\n")
 
 birds = load_species_metadata()
 abundances = load_abundance_data()
