@@ -1,1 +1,3 @@
 **2026-06-02** BAM V5 model products are temporarily unavailable. Previous model products released August 2025 are being improved and will be released alongside the remaining species list in May 2026. Some species in the August 2025 release were affected by a code bug that mispecified the effects of landcover covariates in the model prediction.
+
+**2026-03-01** In late March 2025, we discovered a systematic error in the offsets used in these models, and have since updated the products to correct that error. For more information, please see the QPAD-offsets-correction repository or email bamp@ualberta.ca.
