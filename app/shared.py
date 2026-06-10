@@ -7,18 +7,56 @@ from bs4 import BeautifulSoup
 from functools import lru_cache
 from urllib.parse import urljoin
 import yaml
+import time
 
 
 app_dir = Path(__file__).parent.parent
+
+# Live Posit Connect Cloud dynamic map tiler base domain address
+PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
 
 REMOTE_DATA_FOLDER = "dashboard/"
 BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
 DATA_DIR = app_dir / "data"
 CONTENT_DIR = Path(__file__).parent / "content"
 V5_META_PATH = DATA_DIR / "model_v5" / "12_BAMV5-results.xlsx"
+# change V5_META_PATH to the following after the file get uploads to DRAC
+# V5_META_PATH = f"http://206.12.92.143/data/12_BAMV5-results.xlsx" 
 BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
 COVARIATE_MTDATA = DATA_DIR / "model_v5" / "covariate_metadata_modelevaluation - covariates_label.csv"
 MARGINAL_FX_DIR = DATA_DIR / "model_v5" / "marginaleffects"
+
+# cache to check titiler API health status
+TILER_HEALTH_TTL = 30
+_tiler_health_cache = {
+    "timestamp": 0,
+    "healthy": False
+}
+
+def tiler_is_healthy() -> bool:
+    now = time.time()
+
+    if now - _tiler_health_cache["timestamp"] < TILER_HEALTH_TTL:
+        return _tiler_health_cache["healthy"]
+
+    try:
+        r = requests.get(
+            f"{PRODUCTION_TILER_BASE}/health",
+            timeout=3
+        )
+
+        healthy = (
+            r.status_code == 200 and
+            r.json().get("status") == "ok"
+        )
+
+    except Exception:
+        healthy = False
+
+    _tiler_health_cache["healthy"] = healthy
+    _tiler_health_cache["timestamp"] = now
+
+    return healthy
 
 def get_tif_path(species_id: str, region: str, year: int) -> str:
     """
@@ -66,7 +104,7 @@ def load_subregion_boundaries() -> gpd.GeoDataFrame:
     gdf = gdf.to_crs(epsg=4326)
 
     # simplify boundaries to load faster
-    gdf["geometry"] = gdf.geometry.simplify(0.01)
+    gdf["geometry"] = gdf.geometry.simplify(0.001)
 
     return gdf
 

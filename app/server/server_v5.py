@@ -38,6 +38,8 @@ from shared import (
     load_species_metadata,
     load_subregion_boundaries,
     load_covariate_metadata,
+    tiler_is_healthy, 
+    PRODUCTION_TILER_BASE
 )
 
 # alt.data_transformers.enable("vegafusion")
@@ -48,14 +50,14 @@ warnings.filterwarnings(
     module="numpy.ma.core"
 )
 
+# log in terminal
+print(f"\n\n\nTitiler API Health Status: \n\tTitiler is healthy: {tiler_is_healthy()}\n\n\n")
+
 birds = load_species_metadata()
 abundances = load_abundance_data()
 subregions = load_subregion_boundaries()
 region_dict = load_region_data().rows_by_key(key="region", named=True, unique=True)
 covariates = load_covariate_metadata()
-
-# Live Posit Connect Cloud dynamic map tiler base domain address
-PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
 
 # Hardcoded fallback center metrics for geographic bounding contexts
 REGION_CENTERS = {
@@ -312,29 +314,38 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         return get_tif_path(species_id, region, int(year))
 
     @reactive.calc
-    def raster_statistics():
+    def raster_info():
         """Query min/max data statistics remotely using the TiTiler metadata API."""
         url = file_url()
-        if not url or not url_exists(url):
-            return {"min": 0.0, "max": 1.0}
-            
+        print(url, url_exists(url))
+        if url == None:
+            return {"status": "loading"}
+        elif not url or not url_exists(url):
+            return {"status": "missing"}
+        if not tiler_is_healthy():
+            return {"status": "tiler_unavailable"}
+
         try:
             encoded_cog = requests.utils.quote(url, safe="")
-            # Query the statistics endpoint exposed by the tiler
             stats_url = f"{PRODUCTION_TILER_BASE}/cog/statistics?url={encoded_cog}"
-            res = requests.get(stats_url, timeout=5).json()
-            
-            band_key = list(res.keys())[0] if res else None
-            if band_key:
-                band_stats = res[band_key]
-                return {
-                    "min": float(band_stats.get("min", 0.0)),
-                    "max": float(band_stats.get("max", 1.0))
-                }
-            return {"min": 0.0, "max": 1.0}
+            res = requests.get(stats_url, timeout = 5)
+            res.raise_for_status()
+
+            stats = res.json()
+            band_key = next(iter(stats), None)
+            if not band_key:
+                return {"status": "error"}
+
+            band = stats[band_key]
+
+            return {
+                "status": "ready",
+                "min": float(band.get("min", 0)),
+                "max": float(band.get("max", 1))
+            }
         except Exception as e:
-            print(f"Error fetching TiTiler statistics: {e}")
-            return {"min": 0.0, "max": 1.0}
+            print(f"Statistics request failed: {e}")
+            return {"status": "tiler_starting"}
     
     REGION_LAYERS = {
         "Canada": build_region_layer("Canada"),
@@ -346,12 +357,47 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     def map_widget():
         """Generate the interactive map widget leveraging the remote cloud tiler engine."""
         url = file_url()
+        info = raster_info()
 
-        if not url:
-            return HTML("<p>Loading / No data available</p>")
-
-        if not url_exists(url):
-            return HTML("<p>Raster not found on data server</p>")
+        if info["status"] == "tiler_unavailable":
+            return HTML("""
+                <div style="padding:20px">
+                    <h4>Map service starting</h4>
+                    <p>
+                        The raster tiling service (Titiler API) is currently
+                        unavailable. Please try again in a few
+                        minutes.
+                    </p>
+                </div>
+            """)
+        
+        if info["status"] == "tiler_starting":
+            return HTML("""
+                <div style="padding:20px">
+                    <h4>Loading raster</h4>
+                    <p>
+                        Initializing selected raster.
+                    </p>
+                </div>
+            """)
+        
+        if info["status"] == "missing":
+            return HTML("""
+                <div style="padding:20px">
+                    <h4>Raster unavailable</h4>
+                    <p>
+                        The requested raster file could not be
+                        found.
+                    </p>
+                </div>
+            """)
+        
+        if info["status"] == "loading":
+            return HTML("""
+                <div style="padding:20px">
+                    <h4>Loading Raster ...</h4>
+                </div>
+            """)
 
         encoded_cog = requests.utils.quote(url, safe="")
         
@@ -375,9 +421,8 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         m = Map(layers=[esri, positron, osm], center=map_center, zoom=4, scroll_wheel_zoom=True)
 
         # generate legend utilizing remote data calculations
-        stats = raster_statistics()
-        rmin = stats["min"]
-        rmax = stats["max"]
+        rmin = info["min"]
+        rmax = info["max"]
 
         legend = WidgetControl(
             widget=HTML(f"""
