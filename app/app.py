@@ -28,7 +28,6 @@ app_ui = ui.page_navbar(
     ui.nav_menu(
         "Model Access",
         tools_tab(),
-        vignettes_tab(),
         citing_tab(),
     ),
     methods_tab(),
