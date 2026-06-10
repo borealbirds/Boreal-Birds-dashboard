@@ -41,7 +41,7 @@ def welcome_tab():
             ui.layout_columns(
                 _announcement_card(display=True),
                 ui.card(
-                    ui.card_header("A Boreal Avian Modelling Project", style="font-size:1.25rem"),
+                    ui.card_header("A Boreal Avian Modelling Project"),
                     ui.markdown(read_md("welcome.md")),
                     class_="welcome-card"
                 ),

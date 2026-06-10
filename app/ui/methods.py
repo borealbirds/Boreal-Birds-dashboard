@@ -8,7 +8,7 @@ methods_accordion = ui.accordion(
     *[
         ui.accordion_panel(
             section["section"],
-            ui.markdown(read_md(section["file"]))
+            ui.markdown(read_md(section["file"])),
         )
         for section in methods_sections
     ],
@@ -22,6 +22,7 @@ def methods_tab():
             ui.card(
                 ui.card_header("Our Methods - An Overview"),
                 ui.markdown(read_md("methods/methods-intro.md")),
+                class_="methods-info"
             ),
             ui.card(
                 methods_accordion,

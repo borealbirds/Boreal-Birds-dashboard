@@ -60,6 +60,7 @@ def tools_tab():
             ui.card(
                 ui.card_header("Explore BAM Products"),
                 ui.markdown(read_md("tools.md")),
+                fill=False,
                 class_="tools-card"
             ),
             col_widths=(-1, 10, -1),
