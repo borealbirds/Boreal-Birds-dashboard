@@ -4,7 +4,7 @@ from shinywidgets import output_widget
 from icons import question_circle_fill
 from ui.sidebar import sidebar
 
-def model_v5_tab():
+def landbirds_v5_tab():
     """
     This function constructs a navigation panel containing a bird information 
     header and a multi-tabbed card interface. The card interface allows users 
@@ -20,7 +20,7 @@ def model_v5_tab():
     shiny.ui
     """
     return ui.nav_panel(
-        "Current Model",
+        "Landbirds v5",
         ui.layout_sidebar(
             sidebar("v5"),
 
@@ -111,6 +111,7 @@ def model_v5_tab():
             ui.panel_conditional(
                 "input.view_toggle === 'info'",
                 ui.navset_card_underline(
+                    ui.nav_spacer(),
                     ui.nav_panel("Info",   ui.output_ui("species_info")),
                     ui.nav_panel("Images", ui.output_ui("species_images")),
                     ui.nav_panel("Sounds",  ui.output_ui("species_songs")),

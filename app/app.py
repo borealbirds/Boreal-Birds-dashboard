@@ -5,8 +5,8 @@ from shiny import App, Inputs, Outputs, Session, ui
 from components import audio, footer, website, website_contact
 from server.server_v5 import server_v5
 from ui.methods import methods_tab
-from ui.model_v4 import model_v4_tab
-from ui.model_v5 import model_v5_tab
+from ui.landbirds_v4 import landbirds_v4_tab
+from ui.landbirds_v5 import landbirds_v5_tab
 from ui.model_access import citing_tab, vignettes_tab, tools_tab
 from ui.welcome import welcome_tab
 
@@ -22,8 +22,8 @@ app_ui = ui.page_navbar(
     welcome_tab(),
     ui.nav_menu(
         "Models",
-        model_v5_tab(),
-        model_v4_tab(),
+        landbirds_v5_tab(),
+        landbirds_v4_tab(),
     ),
     ui.nav_menu(
         "Model Access",
@@ -37,7 +37,7 @@ app_ui = ui.page_navbar(
         website(),
         website_contact(),
     ),
-    selected="Current Model",
+    selected="Landbirds v5",
     id="tabs",
     title=ui.tags.a(
         ui.tags.img(
