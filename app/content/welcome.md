@@ -1,5 +1,3 @@
-## Boreal Bird Species Results
-
 Explore population sizes, habitat associations, and distributions for status assessment, regional planning conservation prioritization, and recovery of species at risk.
 
 We developed a generalized analytical approach to model species density in relation to environmental covariates, using the Boreal Avian Modelling Project database of point-count surveys."
