@@ -91,7 +91,7 @@ body {
 }
 
 /* Dropdown items */
-.dropdown-menu > li > a {
+.navbar-nav .dropdown-menu > li > a {
     color: var(--text-light);
     padding: 0.7rem 1.2rem;
     transition: background 0.15s ease;
@@ -99,15 +99,24 @@ body {
 }
 
 /* Dropdown hover */
-.dropdown-menu > li > a:hover {
+.navbar-nav .dropdown-menu > li > a:hover {
     background: var(--medium-blue);
     color: var(--text-light) !important;
 }
 
 /* Active dropdown page */
-.dropdown-menu > li > a.active {
+.navbar-nav .dropdown-menu > li > a.active {
     background: var(--blue-green);
     color: var(--text-light) !important;
+}
+
+/* Tools navset styling */
+
+#tools_navset .nav-link {
+  color: var(--secondary);
+  font-weight: 550;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 /* ── Sidebar ──────────────────────────────────────────────────────── */
