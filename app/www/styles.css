@@ -29,15 +29,20 @@ body {
   margin: 0;
   padding: 0;
   font-family: Poppins, sans-serif;
-  background-color: var(--bg-primary);
+  background-color: rgb(211, 211, 211, 0.5);
   color: var(--text-primary);
 }
 .container-fluid {
   border: 0 !important;
 }
 
-.tab-pane[data-value="Welcome"] {
-  background-image: url('/img/BAM-OurWork-BaltimoreOriole.jpg');
+.tab-pane[data-value="Welcome"],
+.tab-pane[data-value="Methods"],
+.tab-pane[data-value="Citing Results"],
+.tab-pane[data-value="Tools"] {
+  background-image: 
+    linear-gradient(to bottom, rgb(21, 59, 64, 0.4), rgb(21, 59, 64, 0.4)),
+    url('/img/BAM-OurWork-BaltimoreOriole.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -86,7 +91,7 @@ body {
 }
 
 /* Dropdown items */
-.dropdown-menu > li > a {
+.navbar-nav .dropdown-menu > li > a {
     color: var(--text-light);
     padding: 0.7rem 1.2rem;
     transition: background 0.15s ease;
@@ -94,15 +99,24 @@ body {
 }
 
 /* Dropdown hover */
-.dropdown-menu > li > a:hover {
+.navbar-nav .dropdown-menu > li > a:hover {
     background: var(--medium-blue);
     color: var(--text-light) !important;
 }
 
 /* Active dropdown page */
-.dropdown-menu > li > a.active {
+.navbar-nav .dropdown-menu > li > a.active {
     background: var(--blue-green);
     color: var(--text-light) !important;
+}
+
+/* Tools navset styling */
+
+#tools_navset .nav-link {
+  color: var(--secondary);
+  font-weight: 550;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 /* ── Sidebar ──────────────────────────────────────────────────────── */
@@ -156,30 +170,40 @@ body {
   text-transform: uppercase;
 }
 
-.citing-card .card-header,
-.tools-card .card-header {
-  font-size: 1.25rem;
-}
-
 .announcement-card .card-header {
   background-color: var(--light-green);
   color: var(--text-primary);
   border-radius: 12px;
 }
 
+.accordion-panel .card-header,
+.tools-card .card-header,
+.methods-info .card-header,
+.citing-card .card-header,
 .welcome-card .card-header {
+  background-color: var(--primary);
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 1.25rem;
   border-radius: 12px;
 }
 
+.accordion-panel,
 .announcement-card,
+.tools-card,
+.methods-info,
+.citing-card,
 .welcome-card {
-  background: rgba(255, 255, 255, 0.6); 
+  background: rgba(255, 255, 255, 0.65); 
   backdrop-filter: blur(10px); 
   -webkit-backdrop-filter: blur(10px); /* Required for Safari support */
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 10px;
 }
 
 
@@ -974,15 +998,28 @@ body {
 
 /* Accordion styling */
 
+  /* background: rgba(255, 255, 255, 0.65); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  padding: 10px; */
+
+
 /* Each panel */
 .accordion-item {
-  border: 1px solid var(--border-light) !important;
-  border-radius: 14px !important;
+  /* border: 1px solid var(--border-light); */
   margin-right: 1.5rem;
   margin-bottom: 1rem;
   overflow: hidden;
-  background: var(--bg-secondary);
   transition: all 0.2s ease;
+  border: var(--medium-blue) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* Hover effect */
@@ -1037,12 +1074,12 @@ body {
 .methods-accordion,
 .methods-accordion .card,
 .methods-accordion .card-body {
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-    border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
 }
 
 .vega-tooltip,

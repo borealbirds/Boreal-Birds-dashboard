@@ -3,13 +3,13 @@ from shinywidgets import output_widget
 from ui.sidebar import sidebar
 from icons import question_circle_fill
 
-def model_v4_tab():
+def landbirds_v4_tab():
     """
     Historical Model tab — same layout shell as Current Model.
     Server wiring for v4 to be implemented in a future sprint.
     """
     return ui.nav_panel(
-        "Historical Model",
+        "Landbirds v4 (Historical)",
         ui.layout_sidebar(
             sidebar("v4"),
 
