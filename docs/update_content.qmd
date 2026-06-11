@@ -1,0 +1,22 @@
+---
+title: "Markdown Contents"
+page-layout: full
+---
+
+
+::: {.list-table}
+
+- - Markdown files
+  - Description
+
+- - `welcome.md`
+  - content for the welcome tab
+
+- - row 2 col 1
+  - row 2 col 2
+
+- - row 3 col 1
+  - row 3 col 2
+
+:::
+

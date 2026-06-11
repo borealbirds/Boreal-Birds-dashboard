@@ -1,0 +1,20 @@
+# ui.landbirds_v4 { #app.ui.landbirds_v4 }
+
+`ui.landbirds_v4`
+
+
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [landbirds_v4_tab](#app.ui.landbirds_v4.landbirds_v4_tab) | Historical Model tab — same layout shell as Current Model. |
+
+### landbirds_v4_tab { #app.ui.landbirds_v4.landbirds_v4_tab }
+
+```python
+ui.landbirds_v4.landbirds_v4_tab()
+```
+
+Historical Model tab — same layout shell as Current Model.
+Server wiring for v4 to be implemented in a future sprint.

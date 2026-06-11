@@ -2,11 +2,10 @@
 
 ## Core Modules
 
-Modules handling core bird data logic.
+Modules for data loading and UI components
 
 | | |
 | --- | --- |
-| [modules.bird](modules.bird.qmd#app.modules.bird) |  |
 | [shared](shared.qmd#app.shared) |  |
 | [components](components.qmd#app.components) |  |
 | [icons](icons.qmd#app.icons) |  |
@@ -28,5 +27,6 @@ Frontend interface and layout modules.
 | [ui.sidebar](ui.sidebar.qmd#app.ui.sidebar) |  |
 | [ui.welcome](ui.welcome.qmd#app.ui.welcome) |  |
 | [ui.methods](ui.methods.qmd#app.ui.methods) |  |
-| [ui.model_v5](ui.model_v5.qmd#app.ui.model_v5) |  |
+| [ui.landbirds_v4](ui.landbirds_v4.qmd#app.ui.landbirds_v4) |  |
+| [ui.landbirds_v5](ui.landbirds_v5.qmd#app.ui.landbirds_v5) |  |
 | [ui.model_access](ui.model_access.qmd#app.ui.model_access) |  |

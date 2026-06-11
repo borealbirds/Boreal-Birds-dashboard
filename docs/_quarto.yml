@@ -10,6 +10,8 @@ website:
     contents:
       - href: index.qmd
         text: Home
+      - href: update_content.qmd
+        text: Markdown Contents
       - section: "Reference"
         contents:
           - reference/index.qmd
@@ -26,9 +28,9 @@ quartodoc:
   
   sections:
     - title: Core Modules
-      desc: Modules handling core bird data logic.
+      desc: Modules for data loading and UI components
       contents:
-        - modules.bird
+        # - modules.bird
         - shared
         - components
         - icons
@@ -44,5 +46,6 @@ quartodoc:
         - ui.sidebar
         - ui.welcome
         - ui.methods
-        - ui.model_v5
+        - ui.landbirds_v4
+        - ui.landbirds_v5
         - ui.model_access

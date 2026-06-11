@@ -1,4 +1,0 @@
-# modules.bird { #app.modules.bird }
-
-`modules.bird`
-

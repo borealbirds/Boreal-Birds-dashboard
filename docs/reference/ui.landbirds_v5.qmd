@@ -1,6 +1,6 @@
-# ui.model_v5 { #app.ui.model_v5 }
+# ui.landbirds_v5 { #app.ui.landbirds_v5 }
 
-`ui.model_v5`
+`ui.landbirds_v5`
 
 
 
@@ -8,12 +8,12 @@
 
 | Name | Description |
 | --- | --- |
-| [model_v5_tab](#app.ui.model_v5.model_v5_tab) | This function constructs a navigation panel containing a bird information  |
+| [landbirds_v5_tab](#app.ui.landbirds_v5.landbirds_v5_tab) | This function constructs a navigation panel containing a bird information  |
 
-### model_v5_tab { #app.ui.model_v5.model_v5_tab }
+### landbirds_v5_tab { #app.ui.landbirds_v5.landbirds_v5_tab }
 
 ```python
-ui.model_v5.model_v5_tab()
+ui.landbirds_v5.landbirds_v5_tab()
 ```
 
 This function constructs a navigation panel containing a bird information 
