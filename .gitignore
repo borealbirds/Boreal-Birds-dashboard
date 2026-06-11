@@ -5,3 +5,6 @@ data/model_v5/marginaleffects/*
 __pycache__
 .ipynb_checkpoints
 .quarto
+
+/.quarto/
+**/*.quarto_ipynb

@@ -1,0 +1,32 @@
+# Function reference {.doc .doc-index}
+
+## Core Modules
+
+Modules handling core bird data logic.
+
+| | |
+| --- | --- |
+| [modules.bird](modules.bird.qmd#app.modules.bird) |  |
+| [shared](shared.qmd#app.shared) |  |
+| [components](components.qmd#app.components) |  |
+| [icons](icons.qmd#app.icons) |  |
+
+## Server Logic
+
+Backend server modules for the dashboard.
+
+| | |
+| --- | --- |
+| [server.server_v5](server.server_v5.qmd#app.server.server_v5) |  |
+
+## UI Components
+
+Frontend interface and layout modules.
+
+| | |
+| --- | --- |
+| [ui.sidebar](ui.sidebar.qmd#app.ui.sidebar) |  |
+| [ui.welcome](ui.welcome.qmd#app.ui.welcome) |  |
+| [ui.methods](ui.methods.qmd#app.ui.methods) |  |
+| [ui.model_v5](ui.model_v5.qmd#app.ui.model_v5) |  |
+| [ui.model_access](ui.model_access.qmd#app.ui.model_access) |  |

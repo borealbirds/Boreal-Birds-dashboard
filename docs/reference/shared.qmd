@@ -1,0 +1,193 @@
+# shared { #app.shared }
+
+`shared`
+
+
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [available_regions](#app.shared.available_regions) | Identify geographic regions for a specific species and  |
+| [available_years](#app.shared.available_years) | Parse available model years for a specific species and region by scanning filenames. |
+| [get_cov_fx_data](#app.shared.get_cov_fx_data) | Return the associated marginal effects file for the selected covariates. |
+| [get_tif_path](#app.shared.get_tif_path) | Construct the HTTP URL to a specific .tif file. |
+| [list_directory](#app.shared.list_directory) | Parse Apache directory listing and return entries. |
+| [load_abundance_data](#app.shared.load_abundance_data) | Load species taxonomic and descriptive data from the Excel results summary file. |
+| [load_covariate_metadata](#app.shared.load_covariate_metadata) | Load Covariate metadata and full-form names from the csv file. |
+| [load_region_data](#app.shared.load_region_data) | Load region-level data from the Excel results summary file. |
+| [load_species_metadata](#app.shared.load_species_metadata) | Load species taxonomic and descriptive data from the Excel results summary file. |
+| [load_subregion_boundaries](#app.shared.load_subregion_boundaries) | Load and preprocess ecological subregion boundaries for leaflet rendering. |
+| [read_md](#app.shared.read_md) | Read the contents of a markdown file from the content directory. |
+| [read_yaml](#app.shared.read_yaml) | Read the contents of a YAML file from the content directory and parse it. |
+| [species_ids](#app.shared.species_ids) | Scan the data directory for all species with available model results and  |
+
+### available_regions { #app.shared.available_regions }
+
+```python
+shared.available_regions(species_id)
+```
+
+Identify geographic regions for a specific species and 
+list available regions from remote Apache directory.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name       | Type   | Description                            | Default    |
+|------------|--------|----------------------------------------|------------|
+| species_id | str    | The unique identifier for the species. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type        | Description                                                      |
+|--------|-------------|------------------------------------------------------------------|
+|        | list of str | Sorted list of region names found within the species' directory. |
+
+### available_years { #app.shared.available_years }
+
+```python
+shared.available_years(species_id, region)
+```
+
+Parse available model years for a specific species and region by scanning filenames.
+
+This function looks for .tif files following the naming convention 
+'{species}_{region}_{year}.tif' and extracts the integer year.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name       | Type   | Description                            | Default    |
+|------------|--------|----------------------------------------|------------|
+| species_id | str    | The unique identifier for the species. | _required_ |
+| region     | str    | The geographic region identifier.      | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type        | Description                                          |
+|--------|-------------|------------------------------------------------------|
+|        | list of int | Sorted list of years found for the given parameters. |
+
+### get_cov_fx_data { #app.shared.get_cov_fx_data }
+
+```python
+shared.get_cov_fx_data(covs)
+```
+
+Return the associated marginal effects file for the selected covariates.
+
+### get_tif_path { #app.shared.get_tif_path }
+
+```python
+shared.get_tif_path(species_id, region, year)
+```
+
+Construct the HTTP URL to a specific .tif file.
+
+### list_directory { #app.shared.list_directory }
+
+```python
+shared.list_directory(url)
+```
+
+Parse Apache directory listing and return entries.
+
+### load_abundance_data { #app.shared.load_abundance_data }
+
+```python
+shared.load_abundance_data()
+```
+
+Load species taxonomic and descriptive data from the Excel results summary file.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                 |
+|--------|--------------|-------------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'species' sheet metadata. |
+
+### load_covariate_metadata { #app.shared.load_covariate_metadata }
+
+```python
+shared.load_covariate_metadata()
+```
+
+Load Covariate metadata and full-form names from the csv file.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                           |
+|--------|--------------|-------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the Covariate metadata. |
+
+### load_region_data { #app.shared.load_region_data }
+
+```python
+shared.load_region_data()
+```
+
+Load region-level data from the Excel results summary file.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                             |
+|--------|--------------|---------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'regions' sheet data. |
+
+### load_species_metadata { #app.shared.load_species_metadata }
+
+```python
+shared.load_species_metadata()
+```
+
+Load species taxonomic and descriptive data from the Excel results summary file.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                 |
+|--------|--------------|-------------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'species' sheet metadata. |
+
+### load_subregion_boundaries { #app.shared.load_subregion_boundaries }
+
+```python
+shared.load_subregion_boundaries()
+```
+
+Load and preprocess ecological subregion boundaries for leaflet rendering.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                                 |
+|--------|------------------|---------------------------------------------|
+|        | gpd.GeoDataFrame | Simplified subregion polygons in EPSG:4326. |
+
+### read_md { #app.shared.read_md }
+
+```python
+shared.read_md(filename)
+```
+
+Read the contents of a markdown file from the content directory.
+
+### read_yaml { #app.shared.read_yaml }
+
+```python
+shared.read_yaml(filename)
+```
+
+Read the contents of a YAML file from the content directory and parse it.
+
+### species_ids { #app.shared.species_ids }
+
+```python
+shared.species_ids()
+```
+
+Scan the data directory for all species with available model results and 
+list available species IDs from remote Apache directory.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type        | Description                                                              |
+|--------|-------------|--------------------------------------------------------------------------|
+|        | list of str | Sorted list of species IDs based on existing subdirectories in DATA_DIR. |

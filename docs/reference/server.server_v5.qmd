@@ -1,0 +1,29 @@
+# server.server_v5 { #app.server.server_v5 }
+
+`server.server_v5`
+
+
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [server_v5](#app.server.server_v5.server_v5) | Main server logic for the Model V5 tab, managing reactive data flow  |
+| [url_exists](#app.server.server_v5.url_exists) | Ensure url for the file exists in the data host server |
+
+### server_v5 { #app.server.server_v5.server_v5 }
+
+```python
+server.server_v5.server_v5(input, output, session)
+```
+
+Main server logic for the Model V5 tab, managing reactive data flow 
+and spatial visualization.
+
+### url_exists { #app.server.server_v5.url_exists }
+
+```python
+server.server_v5.url_exists(url)
+```
+
+Ensure url for the file exists in the data host server

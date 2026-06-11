@@ -1,0 +1,19 @@
+# ui.welcome { #app.ui.welcome }
+
+`ui.welcome`
+
+
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [welcome_tab](#app.ui.welcome.welcome_tab) | UI for the welcome tab, including announcements and project overview. |
+
+### welcome_tab { #app.ui.welcome.welcome_tab }
+
+```python
+ui.welcome.welcome_tab()
+```
+
+UI for the welcome tab, including announcements and project overview.

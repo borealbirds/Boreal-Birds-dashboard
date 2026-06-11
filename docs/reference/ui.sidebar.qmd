@@ -1,0 +1,19 @@
+# ui.sidebar { #app.ui.sidebar }
+
+`ui.sidebar`
+
+
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [sidebar](#app.ui.sidebar.sidebar) | model version: v4 or v5 |
+
+### sidebar { #app.ui.sidebar.sidebar }
+
+```python
+ui.sidebar.sidebar(model_version)
+```
+
+model version: v4 or v5

@@ -1,0 +1,64 @@
+# components { #app.components }
+
+`components`
+
+
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [audio](#app.components.audio) | Audio player for bird sounds and spectrograms. |
+| [email](#app.components.email) | Open an external email to the BAM team. |
+| [footer](#app.components.footer) | Footer with copyright and license information. |
+| [report_issue](#app.components.report_issue) | Link to the GitHub issues page for reporting issues. |
+| [website](#app.components.website) | Link to the BAM website. |
+| [website_contact](#app.components.website_contact) | Link to the BAM website contact page. |
+
+### audio { #app.components.audio }
+
+```python
+components.audio()
+```
+
+Audio player for bird sounds and spectrograms.
+
+### email { #app.components.email }
+
+```python
+components.email()
+```
+
+Open an external email to the BAM team.
+
+### footer { #app.components.footer }
+
+```python
+components.footer()
+```
+
+Footer with copyright and license information.
+
+### report_issue { #app.components.report_issue }
+
+```python
+components.report_issue()
+```
+
+Link to the GitHub issues page for reporting issues.
+
+### website { #app.components.website }
+
+```python
+components.website()
+```
+
+Link to the BAM website.
+
+### website_contact { #app.components.website_contact }
+
+```python
+components.website_contact()
+```
+
+Link to the BAM website contact page.

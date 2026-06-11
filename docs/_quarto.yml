@@ -5,10 +5,20 @@ project:
 website:
   title: "Boreal Birds Documentation"
   sidebar:
-    structure:
+    style: "docked"
+    search: true
+    contents:
+      - href: index.qmd
+        text: Home
       - section: "Reference"
         contents:
           - reference/index.qmd
+          - auto: app
+
+format:
+  html:
+    toc: true
+    toc-depth: 3
 
 quartodoc:
   dir: reference
@@ -34,3 +44,5 @@ quartodoc:
         - ui.sidebar
         - ui.welcome
         - ui.methods
+        - ui.model_v5
+        - ui.model_access

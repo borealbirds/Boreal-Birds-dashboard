@@ -1,0 +1,37 @@
+# ui.model_access { #app.ui.model_access }
+
+`ui.model_access`
+
+
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [citing_tab](#app.ui.model_access.citing_tab) | UI for the citing tab; how to cite BAM model results. |
+| [tools_tab](#app.ui.model_access.tools_tab) | UI for the tools tab, providing resources for exploring BAM products. |
+| [vignettes_tab](#app.ui.model_access.vignettes_tab) | UI for the vignettes tab, featuring vignettes for the BAMexploreR package. |
+
+### citing_tab { #app.ui.model_access.citing_tab }
+
+```python
+ui.model_access.citing_tab()
+```
+
+UI for the citing tab; how to cite BAM model results.
+
+### tools_tab { #app.ui.model_access.tools_tab }
+
+```python
+ui.model_access.tools_tab()
+```
+
+UI for the tools tab, providing resources for exploring BAM products.
+
+### vignettes_tab { #app.ui.model_access.vignettes_tab }
+
+```python
+ui.model_access.vignettes_tab()
+```
+
+UI for the vignettes tab, featuring vignettes for the BAMexploreR package.
