@@ -1,0 +1,36 @@
+project:
+  type: website
+  output-dir: _build
+
+website:
+  title: "Boreal Birds Documentation"
+  sidebar:
+    structure:
+      - section: "Reference"
+        contents:
+          - reference/index.qmd
+
+quartodoc:
+  dir: reference
+  package: app
+  
+  sections:
+    - title: Core Modules
+      desc: Modules handling core bird data logic.
+      contents:
+        - modules.bird
+        - shared
+        - components
+        - icons
+        
+    - title: Server Logic
+      desc: Backend server modules for the dashboard.
+      contents:
+        - server.server_v5
+        
+    - title: UI Components
+      desc: Frontend interface and layout modules.
+      contents:
+        - ui.sidebar
+        - ui.welcome
+        - ui.methods
