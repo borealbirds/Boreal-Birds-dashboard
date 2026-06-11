@@ -3,7 +3,7 @@ from shiny import ui
 from shared import read_md
 
 
-def _vignette_panel(title, src, width="100%", height="100%"):
+def _vignette_panel(title, src):
     """
     Create a navigation panel with an embedded iframe for a vignette.
 
@@ -13,10 +13,6 @@ def _vignette_panel(title, src, width="100%", height="100%"):
         Title of the vignette navigation panel.
     src: str
         File path of the vignette to be embedded in the iframe.
-    width: str, optional
-        Width of the iframe (default is "100%").
-    height: str, optional
-        Height of the iframe (default is "100%").
 
     Returns
     -------
@@ -27,9 +23,12 @@ def _vignette_panel(title, src, width="100%", height="100%"):
         title,
         ui.tags.iframe(
             src=src,
-            width=width,
-            height=height,
-            style="border:none; display:block;"
+            style="""
+                width: 100%;
+                height: 60vh;
+                border: none;
+                display: block;
+            """
         ),
     )
 
@@ -59,7 +58,17 @@ def tools_tab():
         ui.layout_columns(
             ui.card(
                 ui.card_header("Explore BAM Products"),
-                ui.markdown(read_md("tools.md")),
+                ui.navset_tab(
+                    ui.nav_panel("All", ui.markdown(read_md("tools.md"))),
+                    ui.nav_menu(
+                        "R Package Vignettes",
+                        _vignette_panel("Introduction", "vignettes/BAMexploreR_1_intro.html"),
+                        _vignette_panel("Access", "vignettes/BAMexploreR_2_access.html"),
+                        _vignette_panel("Distribution", "vignettes/BAMexploreR_3_distribution.html"),
+                        _vignette_panel("Habitat", "vignettes/BAMexploreR_4_habitat.html"),
+                    ),
+                    id="tools_navset"
+                ),
                 class_="tools-card"
             ),
             col_widths=(-1, 10, -1),
@@ -75,6 +84,7 @@ def citing_tab():
             ui.card(
                 ui.card_header("How to Cite BAM Model Results"),
                 ui.markdown(read_md("citing.md")),
+                fill=False,
                 class_="citing-card"
             ),
             col_widths=(-1, 10, -1),
