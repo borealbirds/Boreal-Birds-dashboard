@@ -1,4 +1,18 @@
+"""
+Image/Sound related helper functions and javascripts
+"""
 from shiny import ui
+from pathlib import Path
+
+def get_sidebar_image_path(species_id: str, common_name: str) -> tuple[str, str] | None:
+    """Return the relative web asset path and filename for a species sidebar image if it exists."""
+    folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
+    img_dir = Path(__file__).parent.parent / "www" / "img" / folder_name
+    if img_dir.exists():
+        jpgs = sorted(img_dir.glob("*.jpg"))
+        if jpgs:
+            return f"img/{folder_name}/{jpgs[0].name}", folder_name
+    return None
 
 def lightbox_script():
     return ui.HTML("""

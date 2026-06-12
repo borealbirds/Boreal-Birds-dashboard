@@ -56,35 +56,6 @@ def _format_population_value(pop_df: pl.DataFrame) -> str:
         return f"{pop_raw:.3f}"
     return f"{pop_raw:.2f}"
 
-
-def _get_sidebar_image_path(species_id: str, common_name: str) -> tuple[str, str] | None:
-    """Return the relative web asset path and filename for a species sidebar image if it exists."""
-    folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
-    img_dir = Path(__file__).parent.parent / "www" / "img" / folder_name
-    if img_dir.exists():
-        jpgs = sorted(img_dir.glob("*.jpg"))
-        if jpgs:
-            return f"img/{folder_name}/{jpgs[0].name}", folder_name
-    return None
-
-
-def _get_map_error_html(status: str) -> HTML:
-    """Return appropriate fallback HTML widgets for tiler states."""
-    messages = {
-        "tiler_unavailable": ("Map service starting", "The raster tiling service (Titiler API) is currently unavailable. Please try again in a few minutes."),
-        "tiler_starting": ("Loading raster", "Initializing selected raster."),
-        "missing": ("Raster unavailable", "The requested raster file could not be found."),
-        "loading": ("Loading Raster ...", "")
-    }
-    title, body = messages.get(status, ("Error", "An unexpected status occurred."))
-    return HTML(f"""
-        <div style="padding:20px">
-            <h4>{title}</h4>
-            {"<p>" + body + "</p>" if body else ""}
-        </div>
-    """)
-
-
 # ── MAIN SERVER LOGIC ──────────────────────────────────────────────
 
 def server_v5(input: Inputs, output: Outputs, session: Session):
@@ -232,7 +203,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         if len(bird) == 0:
             return ui.span()
             
-        img_info = _get_sidebar_image_path(bird.item(0, "id"), bird.item(0, "english"))
+        img_info = get_sidebar_image_path(bird.item(0, "id"), bird.item(0, "english"))
         if img_info:
             src_path, folder_name = img_info
             return ui.tags.img(
@@ -257,7 +228,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         """Generate the interactive map widget leveraging the remote cloud tiler engine."""
         info = raster_info()
         if info["status"] != "ready":
-            return _get_map_error_html(info["status"])
+            return get_map_error_html(info["status"])
 
         url = file_url()
         encoded_cog = requests.utils.quote(url, safe="")

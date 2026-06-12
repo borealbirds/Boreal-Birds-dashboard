@@ -1,3 +1,6 @@
+"""
+Map related helper functions
+"""
 import geopandas as gpd
 from shared import BOUNDARIES_PATH, load_region_data
 from functools import lru_cache
@@ -14,6 +17,22 @@ REGION_CENTERS = {
 }
 
 REGION_DICT = load_region_data().rows_by_key(key="region", named=True, unique=True)
+
+def get_map_error_html(status: str) -> HTML:
+    """Return appropriate fallback HTML widgets for tiler states."""
+    messages = {
+        "tiler_unavailable": ("Map service starting", "The raster tiling service (Titiler API) is currently unavailable. Please try again in a few minutes."),
+        "tiler_starting": ("Loading raster", "Initializing selected raster."),
+        "missing": ("Raster unavailable", "The requested raster file could not be found."),
+        "loading": ("Loading Raster ...", "")
+    }
+    title, body = messages.get(status, ("Error", "An unexpected status occurred."))
+    return HTML(f"""
+        <div style="padding:20px">
+            <h4>{title}</h4>
+            {"<p>" + body + "</p>" if body else ""}
+        </div>
+    """)
 
 @lru_cache(maxsize=1)
 def load_subregion_boundaries() -> gpd.GeoDataFrame:
