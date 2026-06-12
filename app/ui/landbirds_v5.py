@@ -1,10 +1,17 @@
+"""
+Landbirds Version 5 model layout view.
+
+Assembles the primary model dashboard tab utilizing a conditional view toggle 
+to alternate between geospatial model output mappings and qualitative species briefs.
+"""
+
 from shiny import ui
 from shinywidgets import output_widget
 
 from icons import question_circle_fill
 from ui.sidebar import sidebar
 
-def landbirds_v5_tab():
+def landbirds_v5_tab() -> ui.NavPanel:
     """
     This function constructs a navigation panel containing a bird information 
     header and a multi-tabbed card interface. The card interface allows users 
@@ -17,7 +24,8 @@ def landbirds_v5_tab():
 
     Returns
     -------
-    shiny.ui
+    NavPanel
+        The operational grid environment mapping layout rows and view toggles.
     """
     return ui.nav_panel(
         "Landbirds v5",

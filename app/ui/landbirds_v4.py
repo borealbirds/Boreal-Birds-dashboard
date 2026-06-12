@@ -1,3 +1,10 @@
+"""
+Landbirds Version 4 historical model placeholder view template.
+
+Acts as a structural interface mirror for legacy metrics, providing the 
+front-end layout panels for future backend server wiring sprints.
+"""
+
 from shiny import ui
 from shinywidgets import output_widget
 from ui.sidebar import sidebar
@@ -5,8 +12,15 @@ from icons import question_circle_fill
 
 def landbirds_v4_tab():
     """
-    Historical Model tab — same layout shell as Current Model.
-    Server wiring for v4 to be implemented in a future sprint.
+    Build the interface shell layout for the historical Version 4 model tab.
+
+    Constructs a template layout matching the current application theme 
+    using static placeholder text content nodes pending programmatic data hookups.
+
+    Returns
+    -------
+    NavPanel
+        The template layout panel object mapping future navigation structures.
     """
     return ui.nav_panel(
         "Landbirds v4 (Historical)",

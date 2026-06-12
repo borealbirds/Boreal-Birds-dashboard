@@ -1,11 +1,28 @@
 """
-Image/Sound related helper functions and javascripts
+Media utility assets and client-side JavaScript injection pipelines.
+
+Resolves local storage paths for bird imagery and injects HTML/JavaScript 
+engines for interactive photo lightboxes and audio spectrograms.
 """
 from shiny import ui
 from pathlib import Path
 
 def get_sidebar_image_path(species_id: str, common_name: str) -> tuple[str, str] | None:
-    """Return the relative web asset path and filename for a species sidebar image if it exists."""
+    """
+    Resolve the web asset path and directory name for a species sidebar image.
+
+    Parameters
+    ----------
+    species_id : str
+        The unique species alpha-numeric identifier code.
+    common_name : str
+        The English common name of the bird species.
+
+    Returns
+    -------
+    tuple of (str, str) or None
+        A tuple of (relative_web_url, folder_name) if an image exists, else None.
+    """
     folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
     img_dir = Path(__file__).parent.parent / "www" / "img" / folder_name
     if img_dir.exists():
@@ -14,7 +31,15 @@ def get_sidebar_image_path(species_id: str, common_name: str) -> tuple[str, str]
             return f"img/{folder_name}/{jpgs[0].name}", folder_name
     return None
 
-def lightbox_script():
+def lightbox_script()-> ui.HTML:
+    """
+    Generate the HTML and JavaScript script block for the image gallery lightbox.
+
+    Returns
+    -------
+    HTML
+        A raw HTML tag containing the client-side modal and gallery navigation logic.
+    """
     return ui.HTML("""
 <script>
 if (!document.getElementById('species-lightbox')) {
@@ -91,7 +116,23 @@ function updateLb() {
 </script>
 """)
 
-def sound_script(sounds_json):
+def sound_script(sounds_json: str)-> ui.HTML:
+    """
+    Generate the HTML and JavaScript script block for WaveSurfer audio players.
+
+    Initializes client-side audio waveforms, mel-scale spectrograms, color themes, 
+    and full-screen audio inspection modals.
+
+    Parameters
+    ----------
+    sounds_json : str
+        A JSON-serialized string containing audio paths and metadata records.
+
+    Returns
+    -------
+    HTML
+        A raw HTML tag containing the client-side WaveSurfer orchestration logic.
+    """
     return ui.HTML(f"""
 <script>
 (async function() {{

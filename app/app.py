@@ -1,3 +1,19 @@
+"""
+Main entry point and UI layout for the BAM Shiny Dashboard.
+
+This script assembles the global navbar layout, links static web assets, 
+and coordinates the reactive server orchestration loops.
+
+Attributes
+----------
+www_dir : Path
+    Path to static frontend assets (CSS, images, favicons).
+app_ui : page_navbar
+    The main user interface navigation and layout structure.
+app : App
+    The instantiated Shiny application runtime object.
+"""
+
 from pathlib import Path
 
 from shiny import App, Inputs, Outputs, Session, ui
@@ -50,8 +66,26 @@ app_ui = ui.page_navbar(
 )
 
 
-def server(input: Inputs, output: Outputs, session: Session):
-    """Registers model outputs."""
+def server(input: Inputs, output: Outputs, session: Session) -> None:
+    """
+    Root server coordinator for the Shiny application.
+
+    Delegates the reactive session execution loop downstream to the 
+    Version 5 analytical backend engine.
+
+    Parameters
+    ----------
+    input : Inputs
+        Reactive container for user interface input nodes.
+    output : Outputs
+        Reactive registry handling user interface output components.
+    session : Session
+        The active client connection and runtime execution session.
+
+    Returns
+    -------
+    None
+    """
     server_v5(input, output, session)
 
 

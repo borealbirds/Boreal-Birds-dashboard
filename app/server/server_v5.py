@@ -1,3 +1,11 @@
+"""
+Backend analytical server coordination engine for Landbirds Version 5 models.
+
+Orchestrates reactive pipeline computations, updates filtering ranges, 
+handles asynchronous TiTiler spatial metadata statistics collections, and 
+renders localized chart widgets, audio tracks, image grids, and datasets.
+"""
+
 import io
 import json
 import warnings
@@ -45,10 +53,22 @@ birds = load_species_metadata()
 abundances = load_abundance_data()
 covariates = load_covariate_metadata()
 
-# ── PURE HELPER FUNCTIONS (Non-reactive) ───────────────────────────
+# ── HELPER FUNCTIONS (Non-reactive) -----───────────────────────────
 
 def _format_population_value(pop_df: pl.DataFrame) -> str:
-    """Extract and format the population estimate string."""
+    """
+    Extract and format a population estimate numeric value as a clean string.
+
+    Parameters
+    ----------
+    pop_df : pl.DataFrame
+        Filtered data row containing the target population metric column.
+
+    Returns
+    -------
+    str
+        Formatted decimal representation, or an em-dash if missing.
+    """
     pop_raw = pop_df.item(0, 'population_estimate') if len(pop_df) > 0 else None
     if pop_raw is None:
         return "—"
@@ -60,25 +80,64 @@ def _format_population_value(pop_df: pl.DataFrame) -> str:
 
 def server_v5(input: Inputs, output: Outputs, session: Session):
     """
-    Main server logic for the Model V5 tab, managing reactive data flow 
-    and spatial visualization.
+    Execute reactive data flow state logic for the Version 5 model panel.
+
+    Manages calculations across distinct application pipelines including Leaflet 
+    map view instances, dynamic dataset slicing using Polars, reactive chart rendering 
+    via Altair, media galleries, and workbook extraction routines.
+
+    Parameters
+    ----------
+    input : Inputs
+        Reactive session input dictionary container mapping active interface selections.
+    output : Outputs
+        Reactive renderer object registry controlling interface output nodes.
+    session : Session
+        The current active browser runtime and communication link execution loop.
+
+    Returns
+    -------
+    None
     """
 
-    # ── CENTRALIZED REACTIVE CALCS (Data Layers) ───────────────────
+    # Reactive Calcs
 
     @reactive.calc
     def current_bird_meta() -> pl.DataFrame:
-        """Returns the single row metadata slice for the selected species."""
+        """
+        [@reactive.calc] Slice global metadata for the selected bird species.
+
+        Returns
+        -------
+        pl.DataFrame
+            A single-row data slice matching the current active English common name.
+        """
         return birds.filter(pl.col("english") == input.species_v5())
 
     @reactive.calc
     def population_data() -> pl.DataFrame:
-        """Returns regional abundance data filtered by species."""
+        """
+        [@reactive.calc] Extract regional abundance data filtered by species.
+
+        Returns
+        -------
+        pl.DataFrame
+            Complete temporal and regional abundance rows for the selected species.
+        """
         return abundances.filter(pl.col("english") == input.species_v5())
 
     @reactive.calc
     def current_population_slice() -> pl.DataFrame:
-        """Returns specific population row matching current input parameters."""
+        """
+        [@reactive.calc] Extract a single population row for specific filters.
+
+        Filters the collection by active species, selected region, and year inputs.
+
+        Returns
+        -------
+        pl.DataFrame
+            The unique intersection data record matching all active layout nodes.
+        """
         return abundances.filter(
             (pl.col("english") == input.species_v5()) &
             (pl.col("region")  == input.region_v5()) &
@@ -87,7 +146,14 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     @reactive.calc
     def file_url() -> str | None:
-        """Construct the remote URL string path for the selected raster."""
+        """
+        [@reactive.calc] Resolve the absolute remote URL for the target COG.
+
+        Returns
+        -------
+        str or None
+            The structured HTTP URL to the target cloud-optimized GeoTIFF, or None.
+        """
         bird = current_bird_meta()
         species_id = bird.item(0, "id") if len(bird) > 0 else None
         region = input.region_v5()
@@ -99,7 +165,14 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     @reactive.calc
     def raster_info() -> dict:
-        """Query min/max data statistics remotely using the TiTiler metadata API."""
+        """
+        [@reactive.calc] Query min/max data stats from the remote TiTiler metadata API.
+
+        Returns
+        -------
+        dict
+            Status payload dictionary containing 'status' strings and min/max bounds.
+        """
         url = file_url()
         if url is None:
             return {"status": "loading"}
@@ -130,16 +203,16 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             return {"status": "tiler_starting"}
 
 
-    # ── REACTIVE EFFECTS (UI Synchronization) ──────────────────────
+    # UI updates
 
     @reactive.effect
     def _set_map_default():
-        """Force MAP view on session init."""
+        """[@reactive.effect] Enforce default 'map' radio view selection on initial connection."""
         ui.update_radio_buttons("view_toggle", selected="map")
 
     @reactive.effect
     def _update_regions():
-        """Update the region dropdown choices dynamically based on species availability."""
+        """[@reactive.effect] Update the dropdown region list choices based on species data availability."""
         bird = current_bird_meta()
         species_id = bird.item(0, "id") if len(bird) > 0 else None
 
@@ -153,7 +226,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     @reactive.effect
     def _update_year_range():
-        """Update the slider range and default value based on available temporal data."""
+        """[@reactive.effect] Update slider range boundaries based on temporal data availability."""
         bird = current_bird_meta()
         species_id = bird.item(0, "id") if len(bird) > 0 else None
         region = input.region_v5()
@@ -168,10 +241,11 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         ui.update_slider("year_v5", min=min(years), max=max(years), value=max(years))
 
 
-    # ── RENDERED UI ELEMENTS ───────────────────────────────────────
+    # Bird info UI
 
     @render.ui
-    def selected_bird():
+    def selected_bird()-> ui.Tag:
+        """[@render.ui] Render the header component displaying names and active population bounds."""
         bird = current_bird_meta()
         pop_df = current_population_slice()
         pop_value = _format_population_value(pop_df)
@@ -198,7 +272,8 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
 
     @render.ui
-    def sidebar_bird_image_v5():
+    def sidebar_bird_image_v5()-> ui.Tag:
+        """[@render.ui] Render the sidebar profile picture for the active species if it exists."""
         bird = current_bird_meta()
         if len(bird) == 0:
             return ui.span()
@@ -215,7 +290,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         return ui.span()
 
 
-    # ── SPATIAL VISUALIZATION (Map Engine) ─────────────────────────
+    # Map Rendering
     
     REGION_LAYERS = {
         "Canada": build_region_layer("Canada"),
@@ -224,8 +299,18 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     }
 
     @render_widget
-    def map_widget():
-        """Generate the interactive map widget leveraging the remote cloud tiler engine."""
+    def map_widget()-> Map:
+        """
+        [@render_widget] Build an interactive Ipyleaflet Map map layout object.
+
+        Fetches dynamic PNG tiles from Titiler API, draws boundaries, hooks up
+        hover listener tooltips, and binds click-to-zoom matrix overrides.
+
+        Returns
+        -------
+        Map
+            The fully configured interactive geospatial visualization frame instance.
+        """
         info = raster_info()
         if info["status"] != "ready":
             return get_map_error_html(info["status"])
@@ -346,7 +431,15 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── TABULAR DATA ───────────────────────────────────────────────────
 
     @render.data_frame
-    def population_size():
+    def population_size()-> render.DataGrid:
+        """
+        [@render.data_frame] Output sorted tabular records using an analytical grid component.
+
+        Returns
+        -------
+        DataGrid
+            Sorted metrics collection with active background rows highlighted.
+        """
         region = input.region_v5()
         year = int(input.year_v5())
 
@@ -387,7 +480,8 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── INFO TAB ───────────────────────────────────────────────────────
 
     @render.ui
-    def species_info():
+    def species_info()-> ui.Tag:
+        """[@render.ui] Render taxonomic info strings alongside contextual search hyperlinks."""
         bird = current_bird_meta()
         species_id = bird.item(0, "id")
         scientific = bird.item(0, "scientific")
@@ -421,7 +515,8 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── IMAGES TAB ─────────────────────────────────────────────────────
 
     @render.ui
-    def species_images():
+    def species_images()-> ui.Tag:
+        """[@render.ui] Assemble a masonry layout grid sorted by biological sex categories."""
         bird = current_bird_meta()
         species_id = bird.item(0, "id")
         common_name = bird.item(0, "english")
@@ -511,10 +606,11 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             class_="images-tab-wrapper species-images-container",
         )
 
-    # ── SONGS TAB ──────────────────────────────────────────────────────
+    # ── SOUNDS TAB ──────────────────────────────────────────────────────
 
     @render.ui
-    def species_songs():
+    def species_songs()-> ui.Tag:
+        """[@render.ui] Construct an audio player layout linked to client-side WaveSurfer timelines."""
         bird = current_bird_meta()
         species_id = bird.item(0, "id")
         common_name = bird.item(0, "english")
@@ -585,7 +681,15 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     
     # ── Chart details ───────────────────────────────────────────────────────
     @render_altair
-    def population_chart():
+    def population_chart()-> alt.Chart:
+        """
+        [@render_altair] Build a scatter plot of regional population totals with x-axis in symlog scale.
+
+        Returns
+        -------
+        Chart
+            An Altair object plotting points alongside bootstrap variation bands.
+        """
 
         df = population_data()
 
@@ -654,7 +758,15 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
 
     @render_altair
-    def density_chart():
+    def density_chart()-> alt.Chart:
+        """
+        [@render_altair] Build a scatter plot mapping estimated male density indexes.
+
+        Returns
+        -------
+        Chart
+            An Altair point graph displaying regional bird densities.
+        """
         df = population_data()
 
         points = alt.Chart(df).mark_point(
@@ -724,7 +836,8 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── COVARIATE FILTER & MARGINAL EFFECTS ───────────────────────────
 
     @render.ui
-    def marginal_fx_filter():
+    def marginal_fx_filter()-> ui.Tag:
+        """[@render.ui] Render variable select dropdown constraints for covariate analyses."""
         cov_choices = sorted(covariates.get_column("name").unique().to_list())
         # cov_choices.append("year")
         res_choices = covariates.get_column("prediction_resolution").unique().to_list()
@@ -744,7 +857,15 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
 
     @render_altair
-    def marginal_fx_chart():
+    def marginal_fx_chart()-> alt.Chart:
+        """
+        [@render_altair] Plot binned marginal effect parameters across bird-co-variates.
+
+        Returns
+        -------
+        Chart
+            An Altair regression plot charting density responses against covariates.
+        """
         req(
             input.covariate_filter(), 
             input.resolution_filter(), 
@@ -783,12 +904,28 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
-    def downloadAll():
+    def downloadAll()-> str:
+        """
+        [@render.download] Route requests straight to the monolithic master database file.
+
+        Returns
+        -------
+        str
+            The absolute system file path targeting the complete global workbook.
+        """
 
         return str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
-    def downloadFiltered():
+    def downloadFiltered()-> Generator[bytes, None, None]:
+        """
+        [@render.download] Compile a multi-sheet filtered Excel workbook on-the-fly.
+
+        Yields
+        ------
+        bytes
+            In-memory buffered string chunks containing the packed Excel workbook asset data.
+        """
         model_results = str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
         metadata = pl.read_excel(model_results, sheet_name="metadata")
         species = pl.read_excel(model_results, sheet_name="species").filter(pl.col("english") == input.species_v5())
@@ -813,7 +950,8 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             yield buffer.getvalue()
 
     @render.ui
-    def download_filtered_btn():
+    def download_filtered_btn()-> ui.Tag:
+        """[@render.ui] Render a custom contextual export execution trigger button for the bird model."""
         species = input.species_v5()
 
         return ui.download_button(

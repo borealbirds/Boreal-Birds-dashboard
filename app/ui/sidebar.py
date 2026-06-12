@@ -1,9 +1,32 @@
+"""
+Sidebar navigation controls and reactive inputs for model tabs.
+
+Dynamically extracts validated species catalog definitions to construct 
+consistent dashboard filtering sidebars across distinct framework versions.
+"""
+
 from shiny import ui
 from shared import load_species_metadata
 
 
-def sidebar(model_version: str):
-    """ model version: v4 or v5 """
+def sidebar(model_version: str) -> ui.Sidebar:
+    """
+    Initialize the standardized filtering sidebar layout for bird model views.
+
+    Populates a core dropdown selection input using verified English common names 
+    sourced directly from active species metadata collections.
+
+    Parameters
+    ----------
+    model_version : str
+        The version string identifier ('v4' or 'v5') used to namespace 
+        the reactive interface components.
+
+    Returns
+    -------
+    Sidebar
+        The configured layout panel object containing the filter controls.
+    """
     species_choices = sorted(load_species_metadata().get_column("english").to_list())
 
     return ui.sidebar(
@@ -13,13 +36,11 @@ def sidebar(model_version: str):
             "Species",
             choices=species_choices,
             size=4
-#             size=7
         ),
         ui.input_select(
             f"region_{model_version}",
             "Region",
             choices=[],
-            #size=3
         ),
         ui.input_slider(
             f"year_{model_version}",

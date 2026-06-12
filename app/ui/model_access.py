@@ -1,9 +1,16 @@
+"""
+Model access layout views, R package vignettes, and citation components.
+
+Constructs dedicated panels for documentation workflows, embedding localized 
+vignette HTML files via iframe modules and parsing reference citations.
+"""
+
 from shiny import ui
 
 from shared import read_md
 
 
-def _vignette_panel(title, src):
+def _vignette_panel(title: str, src: str) -> ui.NavPanel:
     """
     Create a navigation panel with an embedded iframe for a vignette.
 
@@ -12,7 +19,7 @@ def _vignette_panel(title, src):
     title: str
         Title of the vignette navigation panel.
     src: str
-        File path of the vignette to be embedded in the iframe.
+        Relative file path or external web address pointing to the HTML document.
 
     Returns
     -------
@@ -33,8 +40,15 @@ def _vignette_panel(title, src):
     )
 
 
-def vignettes_tab():
-    """UI for the vignettes tab, featuring vignettes for the BAMexploreR package."""
+def vignettes_tab() -> ui.NavPanel:
+    """
+    Build the standalone tab panel housing the complete package vignette collection.
+
+    Returns
+    -------
+    NavPanel
+        The completed user interface view wrapping structured package documentation.
+    """
     return ui.nav_panel(
         "Vignettes",
         ui.layout_columns(
@@ -51,8 +65,18 @@ def vignettes_tab():
     )
 
 
-def tools_tab():
-    """UI for the tools tab, providing resources for exploring BAM products."""
+def tools_tab()-> ui.NavPanel:
+    """
+    Build the tooling resources layout tab view.
+
+    Aggregates overall asset markdown guides and appends individual reference 
+    vignettes within a nested sub-navigation drop-down menu structure.
+
+    Returns
+    -------
+    NavPanel
+        The constructed interface view holding available developer guidelines.
+    """
     return ui.nav_panel(
         "Tools",
         ui.layout_columns(
@@ -76,8 +100,18 @@ def tools_tab():
     )
 
 
-def citing_tab():
-    """UI for the citing tab; how to cite BAM model results."""
+def citing_tab()-> ui.NavPanel:
+    """
+    Build the citation view interface container.
+
+    Pulls and renders markdown blocks stating data reuse rights, permissions,
+    and official project referencing guidelines.
+
+    Returns
+    -------
+    NavPanel
+        A dedicated user interface tab wrapping formal citation documentation.
+    """
     return ui.nav_panel(
         "Citing Results",
         ui.layout_columns(
