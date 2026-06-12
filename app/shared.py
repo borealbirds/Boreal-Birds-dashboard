@@ -173,6 +173,7 @@ def get_cov_fx_data(covs: list) -> pl.DataFrame:
 def load_species_metadata() -> pl.DataFrame:
     """
     Load species taxonomic and descriptive data from the Excel results summary file.
+
     - lists the species for which results are available
         - id:                   AOU code for the species
         - scientific:           scientific name for the species
@@ -201,6 +202,7 @@ def load_covariate_metadata() -> pl.DataFrame:
 def load_abundance_data() -> pl.DataFrame:
     """
     Load population density estimates from the Excel results summary file.
+
     - species specific population size (million males) and density estimates (males / ha) by region (density = abundance / area)
         - id:                   AOU code for the species
         - scientific:           scientific name for the species
@@ -224,6 +226,7 @@ def load_abundance_data() -> pl.DataFrame:
 def load_region_data() -> pl.DataFrame:
     """
     Load region data from the Excel results summary file.
+    
     - lists the individual modelling regions and the mosaiced model regions
         - region:               code for the region (country and bird conservation region number for single model regions)
         - type:                 type of model region (single model vs mosaic of multiple single models)
