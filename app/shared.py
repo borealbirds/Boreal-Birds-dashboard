@@ -4,7 +4,6 @@ from io import BytesIO
 import geopandas as gpd
 from pathlib import Path
 from bs4 import BeautifulSoup
-from functools import lru_cache
 from urllib.parse import urljoin
 import yaml
 import time
@@ -58,6 +57,16 @@ def tiler_is_healthy() -> bool:
 
     return healthy
 
+def url_exists(url: str) -> bool:
+    """
+    Ensure url for the file exists in the data host server
+    """
+    try:
+        r = requests.head(url, timeout=10)
+        return r.status_code == 200
+    except Exception:
+        return False
+
 def get_tif_path(species_id: str, region: str, year: int) -> str:
     """
     Construct the HTTP URL to a specific .tif file.
@@ -86,27 +95,6 @@ def get_cov_fx_data(covs: list) -> pl.DataFrame:
             df = df.vstack(df_1).rechunk()
     
     return df
-
-@lru_cache(maxsize=1)
-def load_subregion_boundaries() -> gpd.GeoDataFrame:
-    """
-    Load and preprocess ecological subregion boundaries for leaflet rendering.
-
-    Returns
-    -------
-    gpd.GeoDataFrame
-        Simplified subregion polygons in EPSG:4326.
-    """
-
-    gdf = gpd.read_file(BOUNDARIES_PATH)
-
-    # convert from EPSG:3978 to EPSG:4326
-    gdf = gdf.to_crs(epsg=4326)
-
-    # simplify boundaries to load faster
-    gdf["geometry"] = gdf.geometry.simplify(0.001)
-
-    return gdf
 
 def load_species_metadata() -> pl.DataFrame:
     """
