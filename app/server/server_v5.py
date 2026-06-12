@@ -45,6 +45,47 @@ birds = load_species_metadata()
 abundances = load_abundance_data()
 covariates = load_covariate_metadata()
 
+# ── PURE HELPER FUNCTIONS (Non-reactive) ───────────────────────────
+
+def _format_population_value(pop_df: pl.DataFrame) -> str:
+    """Extract and format the population estimate string."""
+    pop_raw = pop_df.item(0, 'population_estimate') if len(pop_df) > 0 else None
+    if pop_raw is None:
+        return "—"
+    elif round(pop_raw, 2) == 0.0:
+        return f"{pop_raw:.3f}"
+    return f"{pop_raw:.2f}"
+
+
+def _get_sidebar_image_path(species_id: str, common_name: str) -> tuple[str, str] | None:
+    """Return the relative web asset path and filename for a species sidebar image if it exists."""
+    folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
+    img_dir = Path(__file__).parent.parent / "www" / "img" / folder_name
+    if img_dir.exists():
+        jpgs = sorted(img_dir.glob("*.jpg"))
+        if jpgs:
+            return f"img/{folder_name}/{jpgs[0].name}", folder_name
+    return None
+
+
+def _get_map_error_html(status: str) -> HTML:
+    """Return appropriate fallback HTML widgets for tiler states."""
+    messages = {
+        "tiler_unavailable": ("Map service starting", "The raster tiling service (Titiler API) is currently unavailable. Please try again in a few minutes."),
+        "tiler_starting": ("Loading raster", "Initializing selected raster."),
+        "missing": ("Raster unavailable", "The requested raster file could not be found."),
+        "loading": ("Loading Raster ...", "")
+    }
+    title, body = messages.get(status, ("Error", "An unexpected status occurred."))
+    return HTML(f"""
+        <div style="padding:20px">
+            <h4>{title}</h4>
+            {"<p>" + body + "</p>" if body else ""}
+        </div>
+    """)
+
+
+# ── MAIN SERVER LOGIC ──────────────────────────────────────────────
 
 def server_v5(input: Inputs, output: Outputs, session: Session):
     """
@@ -52,29 +93,118 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     and spatial visualization.
     """
 
+    # ── CENTRALIZED REACTIVE CALCS (Data Layers) ───────────────────
+
+    @reactive.calc
+    def current_bird_meta() -> pl.DataFrame:
+        """Returns the single row metadata slice for the selected species."""
+        return birds.filter(pl.col("english") == input.species_v5())
+
+    @reactive.calc
+    def population_data() -> pl.DataFrame:
+        """Returns regional abundance data filtered by species."""
+        return abundances.filter(pl.col("english") == input.species_v5())
+
+    @reactive.calc
+    def current_population_slice() -> pl.DataFrame:
+        """Returns specific population row matching current input parameters."""
+        return abundances.filter(
+            (pl.col("english") == input.species_v5()) &
+            (pl.col("region")  == input.region_v5()) &
+            (pl.col("year")    == str(input.year_v5()))
+        )
+
+    @reactive.calc
+    def file_url() -> str | None:
+        """Construct the remote URL string path for the selected raster."""
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id") if len(bird) > 0 else None
+        region = input.region_v5()
+        year = input.year_v5()
+
+        if not species_id or not region or not year:
+            return None
+        return get_tif_path(species_id, region, int(year))
+
+    @reactive.calc
+    def raster_info() -> dict:
+        """Query min/max data statistics remotely using the TiTiler metadata API."""
+        url = file_url()
+        if url is None:
+            return {"status": "loading"}
+        if not url or not url_exists(url):
+            return {"status": "missing"}
+        if not tiler_is_healthy():
+            return {"status": "tiler_unavailable"}
+
+        try:
+            encoded_cog = requests.utils.quote(url, safe="")
+            stats_url = f"{PRODUCTION_TILER_BASE}/cog/statistics?url={encoded_cog}"
+            res = requests.get(stats_url, timeout=5)
+            res.raise_for_status()
+
+            stats = res.json()
+            band_key = next(iter(stats), None)
+            if not band_key:
+                return {"status": "error"}
+
+            band = stats[band_key]
+            return {
+                "status": "ready",
+                "min": float(band.get("min", 0)),
+                "max": float(band.get("max", 1))
+            }
+        except Exception as e:
+            print(f"Statistics request failed: {e}")
+            return {"status": "tiler_starting"}
+
+
+    # ── REACTIVE EFFECTS (UI Synchronization) ──────────────────────
+
     @reactive.effect
     def _set_map_default():
         """Force MAP view on session init."""
         ui.update_radio_buttons("view_toggle", selected="map")
 
+    @reactive.effect
+    def _update_regions():
+        """Update the region dropdown choices dynamically based on species availability."""
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id") if len(bird) > 0 else None
+
+        if not species_id:
+            ui.update_select("region_v5", choices=[], selected=None)
+            return
+
+        regions = available_regions(species_id)
+        selected_default = "Canada" if regions and "Canada" in regions else (regions[0] if regions else None)
+        ui.update_select("region_v5", choices=regions, selected=selected_default)
+
+    @reactive.effect
+    def _update_year_range():
+        """Update the slider range and default value based on available temporal data."""
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id") if len(bird) > 0 else None
+        region = input.region_v5()
+
+        if not species_id or not region:
+            return
+
+        years = available_years(species_id, region)
+        if not years:
+            return
+
+        ui.update_slider("year_v5", min=min(years), max=max(years), value=max(years))
+
+
+    # ── RENDERED UI ELEMENTS ───────────────────────────────────────
+
     @render.ui
     def selected_bird():
-        bird   = birds.filter(pl.col("english") == input.species_v5())
+        bird = current_bird_meta()
+        pop_df = current_population_slice()
+        pop_value = _format_population_value(pop_df)
         region = input.region_v5()
-        year   = int(input.year_v5())
-
-        pop_df = abundances.filter(
-            (pl.col("english") == input.species_v5()) &
-            (pl.col("region")  == region) &
-            (pl.col("year") == str(year))
-        )
-        pop_raw   = pop_df.item(0, 'population_estimate') if len(pop_df) > 0 else None
-        if pop_raw is None:
-            pop_value = "—"
-        elif round(pop_raw, 2) == 0.0:
-            pop_value = f"{pop_raw:.3f}"
-        else:
-            pop_value = f"{pop_raw:.2f}"
 
         return ui.div(
             ui.div(
@@ -98,112 +228,23 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     @render.ui
     def sidebar_bird_image_v5():
-        bird        = birds.filter(pl.col("english") == input.species_v5())
-        species_id  = bird.item(0, "id")
-        common_name = bird.item(0, "english")
-        folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
-        img_dir     = Path(__file__).parent.parent / "www" / "img" / folder_name
-        if img_dir.exists():
-            jpgs = sorted(img_dir.glob("*.jpg"))
-            if jpgs:
-                return ui.tags.img(
-                    src=f"img/{folder_name}/{jpgs[0].name}",
-                    class_="bird-image-sidebar",
-                    alt=common_name,
-                    onerror="this.style.display='none'",
-                )
+        bird = current_bird_meta()
+        if len(bird) == 0:
+            return ui.span()
+            
+        img_info = _get_sidebar_image_path(bird.item(0, "id"), bird.item(0, "english"))
+        if img_info:
+            src_path, folder_name = img_info
+            return ui.tags.img(
+                src=src_path,
+                class_="bird-image-sidebar",
+                alt=bird.item(0, "english"),
+                onerror="this.style.display='none'",
+            )
         return ui.span()
 
-    @reactive.effect
-    def _update_regions():
-        """Update the region dropdown choices dynamically based on species availability."""
-        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
 
-        if not species_id:
-            ui.update_select("region_v5", choices=[], selected=None)
-            return
-
-        regions = available_regions(species_id)
-
-        ui.update_select(
-            "region_v5",
-            choices=regions,
-            selected=(
-                "Canada" if regions and "Canada" in regions else (
-                    regions[0] if regions else None
-                )
-            ),
-        )
-
-    @reactive.effect
-    def _update_year_range():
-        """Update the slider range and default value based on available temporal data."""
-        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
-        region = input.region_v5()
-
-        if not species_id or not region:
-            return
-
-        years = available_years(species_id, region)
-
-        if not years:
-            return
-
-        ui.update_slider(
-            "year_v5",
-            min=min(years),
-            max=max(years),
-            value=max(years),
-        )
-    
-    @reactive.calc
-    def file_url():
-        """Construct the remote URL string path for the selected raster."""
-        species_id = birds.filter(
-            pl.col("english") == input.species_v5()
-        ).item(0, "id")
-
-        region = input.region_v5()
-        year = int(input.year_v5())
-
-        if not species_id or not region or not year:
-            return None
-
-        return get_tif_path(species_id, region, int(year))
-
-    @reactive.calc
-    def raster_info():
-        """Query min/max data statistics remotely using the TiTiler metadata API."""
-        url = file_url()
-        print(url, url_exists(url))
-        if url == None:
-            return {"status": "loading"}
-        elif not url or not url_exists(url):
-            return {"status": "missing"}
-        if not tiler_is_healthy():
-            return {"status": "tiler_unavailable"}
-
-        try:
-            encoded_cog = requests.utils.quote(url, safe="")
-            stats_url = f"{PRODUCTION_TILER_BASE}/cog/statistics?url={encoded_cog}"
-            res = requests.get(stats_url, timeout = 5)
-            res.raise_for_status()
-
-            stats = res.json()
-            band_key = next(iter(stats), None)
-            if not band_key:
-                return {"status": "error"}
-
-            band = stats[band_key]
-
-            return {
-                "status": "ready",
-                "min": float(band.get("min", 0)),
-                "max": float(band.get("max", 1))
-            }
-        except Exception as e:
-            print(f"Statistics request failed: {e}")
-            return {"status": "tiler_starting"}
+    # ── SPATIAL VISUALIZATION (Map Engine) ─────────────────────────
     
     REGION_LAYERS = {
         "Canada": build_region_layer("Canada"),
@@ -214,74 +255,30 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     @render_widget
     def map_widget():
         """Generate the interactive map widget leveraging the remote cloud tiler engine."""
-        url = file_url()
         info = raster_info()
+        if info["status"] != "ready":
+            return _get_map_error_html(info["status"])
 
-        if info["status"] == "tiler_unavailable":
-            return HTML("""
-                <div style="padding:20px">
-                    <h4>Map service starting</h4>
-                    <p>
-                        The raster tiling service (Titiler API) is currently
-                        unavailable. Please try again in a few
-                        minutes.
-                    </p>
-                </div>
-            """)
-        
-        if info["status"] == "tiler_starting":
-            return HTML("""
-                <div style="padding:20px">
-                    <h4>Loading raster</h4>
-                    <p>
-                        Initializing selected raster.
-                    </p>
-                </div>
-            """)
-        
-        if info["status"] == "missing":
-            return HTML("""
-                <div style="padding:20px">
-                    <h4>Raster unavailable</h4>
-                    <p>
-                        The requested raster file could not be
-                        found.
-                    </p>
-                </div>
-            """)
-        
-        if info["status"] == "loading":
-            return HTML("""
-                <div style="padding:20px">
-                    <h4>Loading Raster ...</h4>
-                </div>
-            """)
-
+        url = file_url()
         encoded_cog = requests.utils.quote(url, safe="")
+        region = input.region_v5()
         
-        # center on the selected region
-        map_center = REGION_CENTERS.get(input.region_v5(), [60.0, -110.0])
-
-        # Basemaps
+        # Basemaps Setup
         positron = basemap_to_tiles(basemaps.CartoDB.Positron)
-        positron.base = True
-        positron.name = "Positron (minimal)"
-        
+        positron.base, positron.name = True, "Positron (minimal)"
+
         osm = basemap_to_tiles(basemaps.OpenStreetMap.Mapnik)
-        osm.base = True
-        osm.name = "Open Street Map (default)"
+        osm.base, osm.name = True, "Open Street Map (default)"
         
         esri = basemap_to_tiles(basemap=basemaps.Esri.WorldImagery)
-        esri.base = True
-        esri.name = "World Imagery (satellite)"
+        esri.base, esri.name = True, "World Imagery (satellite)"
 
-        # Initialize core map interface
+        # initialize map
+        map_center = REGION_CENTERS.get(region, [60.0, -110.0])
         m = Map(layers=[esri, positron, osm], center=map_center, zoom=4, scroll_wheel_zoom=True)
 
-        # generate legend utilizing remote data calculations
-        rmin = info["min"]
-        rmax = info["max"]
-
+        # generate legend using stats from titiler
+        rmin, rmax = info["min"], info["max"]
         legend = WidgetControl(
             widget=HTML(f"""
             <div class="map-legend">
@@ -303,19 +300,12 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             f"&rescale={rmin},{rmax}"
         )
 
-        mean_density = TileLayer(
-            url=tile_string,
-            name="Mean Density",
-        )
-
+        mean_density = TileLayer(url=tile_string, name="Mean Density")
         m.add(mean_density)
         m.add(legend)
 
-        region = input.region_v5()
-
         if region in REGION_LAYERS:
             region_layer, hover_card, hover_control = REGION_LAYERS[region]
-
             default_center = REGION_CENTERS.get(region, [60, -110])
             default_zoom = 4
 
@@ -381,26 +371,19 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
         return m
 
-    @reactive.calc
-    def population_data():
-        return abundances.filter(
-            (pl.col("english") == input.species_v5())
-        )
+
+    # ── TABULAR DATA ───────────────────────────────────────────────────
 
     @render.data_frame
     def population_size():
         region = input.region_v5()
-        year   = int(input.year_v5())
+        year = int(input.year_v5())
 
         if not region:
             return render.DataGrid(pl.DataFrame(), selection_mode="rows")
 
-        df = abundances.filter(
-            (pl.col("english") == input.species_v5()) &
-            # (pl.col("region")  == region) &
-            (pl.col("year")    == str(year))
-        )
 
+        df = population_data().filter(pl.col("year") == str(year))
         df = df.select([
             "year",
             "region", 
@@ -434,14 +417,11 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     @render.ui
     def species_info():
-        bird        = birds.filter(pl.col("english") == input.species_v5())
-        species_id  = bird.item(0, "id")
-        scientific  = bird.item(0, "scientific")
-        french      = bird.item(0, "french")
-        family      = bird.item(0, "family")
-
-        ebird_url = f"https://ebird.org/species/{species_id.lower()}"
-        bow_url   = f"https://birdsoftheworld.org/bow/species/{species_id.lower()}"
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id")
+        scientific = bird.item(0, "scientific")
+        french = bird.item(0, "french")
+        family = bird.item(0, "family")
 
         def info_row(label, value, italic=False):
             return ui.div(
@@ -471,16 +451,16 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     @render.ui
     def species_images():
-        bird            = birds.filter(pl.col("english") == input.species_v5())
-        species_id      = bird.item(0, "id")
-        common_name     = bird.item(0, "english")
-        french_name     = bird.item(0, "french")
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id")
+        common_name = bird.item(0, "english")
+        french_name = bird.item(0, "french")
         try:
             scientific_name = bird.item(0, "scientific")
         except Exception:
             scientific_name = ""
         folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
-        img_dir     = Path(__file__).parent.parent / "www" / "img" / folder_name
+        img_dir = Path(__file__).parent.parent / "www" / "img" / folder_name
 
         if not img_dir.exists():
             return ui.p("No images available for this species.", class_="text-muted p-3")
@@ -488,25 +468,23 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         photos = []
         for jpg in sorted(img_dir.glob("*.jpg")):
             meta_path = img_dir / f"{jpg.stem}_metadata.json"
-            sex, attribution = "unknown", ""
+            sex, attribution, obs_url, license = "unknown", "", "", ""
             if meta_path.exists():
                 try:
-                    meta        = json.loads(meta_path.read_text())
-                    sex         = meta.get("sex", "unknown")
+                    meta = json.loads(meta_path.read_text())
+                    sex = meta.get("sex", "unknown")
                     attribution = meta.get("attribution", "")
+                    obs_url = meta.get("obs_url", "")
+                    license = meta.get("license", "")
                 except Exception:
                     pass
-            obs_url = ""
-            license = ""
-            if meta_path.exists():
-                try:
-                    m2       = json.loads(meta_path.read_text())
-                    obs_url  = m2.get("obs_url", "")
-                    license  = m2.get("license", "")
-                except Exception:
-                    pass
-            photos.append({"file": jpg.name, "sex": sex, "attribution": attribution,
-                           "obs_url": obs_url, "license": license})
+            photos.append({
+                "file": jpg.name, 
+                "sex": sex, 
+                "attribution": attribution, 
+                "obs_url": obs_url, 
+                "license": license
+            })
 
         if not photos:
             return ui.p("No images found.", class_="text-muted p-3")
@@ -534,22 +512,19 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                         ),
                         ui.span(
                             SEX_SYMBOL.get(p["sex"], "?"),
-                            class_=f"sex-badge sex-{p['sex']}",
+                            class_=f"sex-badge sex-{p['sex']}"
                         ) if with_badges else ui.span(),
                         class_="photo-cell",
-                    )
-                    for p in items
+                    ) for p in items
                 ],
                 class_="photo-grid",
             )
 
-        male_photos   = [p for p in photos if p["sex"] == "male"]
+        male_photos = [p for p in photos if p["sex"] == "male"]
         female_photos = [p for p in photos if p["sex"] == "female"]
 
-        lightbox_js = lightbox_script()
-
         return ui.div(
-            lightbox_js,
+            lightbox_script(),
             ui.HTML("""
                 <label class="tag-toggle-floating">
                     <input type="checkbox"
@@ -569,15 +544,13 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     @render.ui
     def species_songs():
-        bird            = birds.filter(pl.col("english") == input.species_v5())
-        species_id      = bird.item(0, "id")
-        common_name     = bird.item(0, "english")
-        try:
-            scientific_name = bird.item(0, "scientific")
-        except Exception:
-            scientific_name = ""
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id")
+        common_name = bird.item(0, "english")
+        scientific_name = bird.item(0, "scientific") if "scientific" in bird.columns else ""
+        
         folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
-        audio_dir   = Path(__file__).parent.parent / "www" / "audio" / folder_name
+        audio_dir = Path(__file__).parent.parent / "www" / "audio" / folder_name
 
         if not audio_dir.exists():
             return ui.p("No sounds available for this species.", class_="text-muted p-3")
@@ -596,22 +569,21 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
         songs = [
             {
-                "wsId":      f"ws-{species_id}-{i}",
-                "specId":    f"spec-{species_id}-{i}",
-                "metaId":    f"meta-{species_id}-{i}",
-                "btnId":     f"btn-{species_id}-{i}",
-                "src":       f"/audio/{folder_name}/{f.name}",
-                "label":        f"Sound {i}",
-                "commonName":   common_name,
+                "wsId": f"ws-{species_id}-{i}",
+                "specId": f"spec-{species_id}-{i}",
+                "metaId": f"meta-{species_id}-{i}",
+                "btnId": f"btn-{species_id}-{i}",
+                "src": f"/audio/{folder_name}/{f.name}",
+                "label": f"Sound {i}",
+                "commonName": common_name,
                 "scientificName": scientific_name,
                 "recordist": (m := meta_map.get(str(i), {})).get("recordist", ""),
-                "country":   m.get("country", ""),
-                "date":      m.get("date", ""),
-                "quality":   m.get("quality", ""),
-                "license":   m.get("license", ""),
-                "xc_url":    m.get("xeno_canto_url", "") or m.get("obs_url", ""),
-            }
-            for i, f in enumerate(audio_files, 1)
+                "country": m.get("country", ""),
+                "date": m.get("date", ""),
+                "quality": m.get("quality", ""),
+                "license": m.get("license", ""),
+                "xc_url": m.get("xeno_canto_url", "") or m.get("obs_url", ""),
+            } for i, f in enumerate(audio_files, 1)
         ]
 
         song_blocks = [
@@ -629,8 +601,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                 ui.div(id=s["specId"], class_="spectrogram-container"),
                 ui.div(id=s["metaId"], class_="sound-meta"),
                 class_="song-block",
-            )
-            for s in songs
+            ) for s in songs
         ]
 
         sounds_json = json.dumps(songs)
@@ -695,7 +666,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                 alt.Tooltip("population_estimate:Q", title="Population Estimate"),
                 alt.Tooltip("population_lower:Q", title="Lower Estimate"),
                 alt.Tooltip("population_upper:Q", title="Upper Estimate"),
-        ]
+            ]
         ).add_params(nearest)
 
         error_bars = points.mark_rule().encode(
@@ -708,13 +679,11 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                 f"Regional Population Estimates for the {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
             ),
-            width="container",
-            height=750
+            width="container", height=750
         )
 
     @render_altair
     def density_chart():
-
         df = population_data()
 
         points = alt.Chart(df).mark_point(
@@ -764,7 +733,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                 alt.Tooltip("density_estimate:Q", title="Density Estimate"),
                 alt.Tooltip("density_lower:Q", title="Lower Estimate"),
                 alt.Tooltip("density_upper:Q", title="Upper Estimate"),
-        ]
+            ]
         ).add_params(nearest)
 
         error_bars = points.mark_rule().encode(
@@ -777,17 +746,17 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                 f"Regional Density Estimates for {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
             ),
-            width="container",
-            height=750
+            width="container", height=750
         )
-    
+
+
+    # ── COVARIATE FILTER & MARGINAL EFFECTS ───────────────────────────
+
     @render.ui
     def marginal_fx_filter():
-        
         cov_choices = sorted(covariates.get_column("name").unique().to_list())
         # cov_choices.append("year")
         res_choices = covariates.get_column("prediction_resolution").unique().to_list()
-
 
         return ui.layout_columns(
             ui.input_select(
@@ -805,18 +774,21 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     @render_altair
     def marginal_fx_chart():
-        req(input.covariate_filter())
-        req(input.resolution_filter())
-        req(input.species_v5())
+        req(
+            input.covariate_filter(), 
+            input.resolution_filter(), 
+            input.species_v5()
+        )
         
-        bird_code = birds.filter(pl.col("english") == input.species_v5()).item(0,"id")
+        bird = current_bird_meta()
+        bird_code = bird.item(0, "id") if len(bird) > 0 else ""
 
-        fx_df = get_cov_fx_data(
-                covariates.filter(
-                    (pl.col("name") == input.covariate_filter()) & (pl.col("prediction_resolution") == input.resolution_filter())
-                ).get_column("variable").to_list()
-            ).filter(pl.col("species") == bird_code)
-        
+        cov_vars = covariates.filter(
+            (pl.col("name") == input.covariate_filter()) & 
+            (pl.col("prediction_resolution") == input.resolution_filter())
+        ).get_column("variable").to_list()
+
+        fx_df = get_cov_fx_data(cov_vars).filter(pl.col("species") == bird_code)
         viz_df = fx_df.with_columns(pl.col("x").round(2)).group_by(["bcr", "x"]).agg(pl.col("y").mean().alias("mean_y"))
 
         points = alt.Chart(viz_df).mark_point().encode(
@@ -846,7 +818,6 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
     def downloadFiltered():
-
         model_results = str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
         metadata = pl.read_excel(model_results, sheet_name="metadata")
         species = pl.read_excel(model_results, sheet_name="species").filter(pl.col("english") == input.species_v5())
