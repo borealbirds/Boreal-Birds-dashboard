@@ -3,20 +3,84 @@ title: "Markdown Contents"
 page-layout: full
 ---
 
+# General Contents
 
 ::: {.list-table}
 
 - - Markdown files
   - Description
+  - Reference
 
 - - `welcome.md`
   - content for the welcome tab
+  - `app/ui/welcome.py`
 
-- - row 2 col 1
-  - row 2 col 2
+- - `announcements.md`
+  - description...
+  - `app/ui/welcome.py`
 
-- - row 3 col 1
-  - row 3 col 2
+- - `tools.md`
+  - description...
+  - `app/ui/model_access.py`
+
+- - `citing.md`
+  - description...
+  - `app/ui/model_access.py`
 
 :::
 
+# Methods (see `app/ui/methods.py`)
+
+
+::: {.list-table}
+
+- - Files
+  - description
+
+- - `methods-intro.md`
+  - method introduction
+
+- - `methods-sections.yaml`
+  - yaml file that points to different markdown files for methods accordion listed below
+
+:::
+
+::: {.list-table}
+
+- - Markdown Files
+  - description
+
+- - `study-area.md`
+  - Study Area
+
+- - `data-and-subsampling.md`
+  - Avian Data and Subsampling
+
+- - `density-calibration-and-offsets.md`
+  - Density Calibration, Detectability Offsets
+
+- - `environmental-covariates.md`
+  - Environmental Covariates
+
+- - `model-building.md`
+  - Model Building
+
+- - `model-validation.md`
+  - Model Validation
+
+- - `bootstrap-averaging-prediction.md`
+  - Bootstrap Averaging and Prediction
+
+- - `density-maps.md`
+  - Density Maps
+
+- - `regional-population-estimates.md`
+  - Regional Population Estimates
+
+- - `landcover-density-estimates.md`
+  - Land Cover Based Density Estimates
+
+- - `data-availability.md`
+  - Data Availability
+
+:::
