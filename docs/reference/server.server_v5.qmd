@@ -2,14 +2,17 @@
 
 `server.server_v5`
 
+Backend analytical server coordination engine for Landbirds Version 5 models.
 
+Orchestrates reactive pipeline computations, updates filtering ranges, 
+handles asynchronous TiTiler spatial metadata statistics collections, and 
+renders localized chart widgets, audio tracks, image grids, and datasets.
 
 ## Functions
 
 | Name | Description |
 | --- | --- |
-| [server_v5](#app.server.server_v5.server_v5) | Main server logic for the Model V5 tab, managing reactive data flow  |
-| [url_exists](#app.server.server_v5.url_exists) | Ensure url for the file exists in the data host server |
+| [server_v5](#app.server.server_v5.server_v5) | Execute reactive data flow state logic for the Version 5 model panel. |
 
 ### server_v5 { #app.server.server_v5.server_v5 }
 
@@ -17,13 +20,22 @@
 server.server_v5.server_v5(input, output, session)
 ```
 
-Main server logic for the Model V5 tab, managing reactive data flow 
-and spatial visualization.
+Execute reactive data flow state logic for the Version 5 model panel.
 
-### url_exists { #app.server.server_v5.url_exists }
+Manages calculations across distinct application pipelines including Leaflet 
+map view instances, dynamic dataset slicing using Polars, reactive chart rendering 
+via Altair, media galleries, and workbook extraction routines.
 
-```python
-server.server_v5.url_exists(url)
-```
+#### Parameters {.doc-section .doc-section-parameters}
 
-Ensure url for the file exists in the data host server
+| Name    | Type    | Description                                                                      | Default    |
+|---------|---------|----------------------------------------------------------------------------------|------------|
+| input   | Inputs  | Reactive session input dictionary container mapping active interface selections. | _required_ |
+| output  | Outputs | Reactive renderer object registry controlling interface output nodes.            | _required_ |
+| session | Session | The current active browser runtime and communication link execution loop.        | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description   |
+|--------|--------|---------------|
+|        | None   |               |

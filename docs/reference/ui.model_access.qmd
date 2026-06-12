@@ -2,15 +2,18 @@
 
 `ui.model_access`
 
+Model access layout views, R package vignettes, and citation components.
 
+Constructs dedicated panels for documentation workflows, embedding localized 
+vignette HTML files via iframe modules and parsing reference citations.
 
 ## Functions
 
 | Name | Description |
 | --- | --- |
-| [citing_tab](#app.ui.model_access.citing_tab) | UI for the citing tab; how to cite BAM model results. |
-| [tools_tab](#app.ui.model_access.tools_tab) | UI for the tools tab, providing resources for exploring BAM products. |
-| [vignettes_tab](#app.ui.model_access.vignettes_tab) | UI for the vignettes tab, featuring vignettes for the BAMexploreR package. |
+| [citing_tab](#app.ui.model_access.citing_tab) | Build the citation view interface container. |
+| [tools_tab](#app.ui.model_access.tools_tab) | Build the tooling resources layout tab view. |
+| [vignettes_tab](#app.ui.model_access.vignettes_tab) | Build the standalone tab panel housing the complete package vignette collection. |
 
 ### citing_tab { #app.ui.model_access.citing_tab }
 
@@ -18,7 +21,16 @@
 ui.model_access.citing_tab()
 ```
 
-UI for the citing tab; how to cite BAM model results.
+Build the citation view interface container.
+
+Pulls and renders markdown blocks stating data reuse rights, permissions,
+and official project referencing guidelines.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type     | Description                                                            |
+|--------|----------|------------------------------------------------------------------------|
+|        | NavPanel | A dedicated user interface tab wrapping formal citation documentation. |
 
 ### tools_tab { #app.ui.model_access.tools_tab }
 
@@ -26,7 +38,16 @@ UI for the citing tab; how to cite BAM model results.
 ui.model_access.tools_tab()
 ```
 
-UI for the tools tab, providing resources for exploring BAM products.
+Build the tooling resources layout tab view.
+
+Aggregates overall asset markdown guides and appends individual reference 
+vignettes within a nested sub-navigation drop-down menu structure.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type     | Description                                                            |
+|--------|----------|------------------------------------------------------------------------|
+|        | NavPanel | The constructed interface view holding available developer guidelines. |
 
 ### vignettes_tab { #app.ui.model_access.vignettes_tab }
 
@@ -34,4 +55,10 @@ UI for the tools tab, providing resources for exploring BAM products.
 ui.model_access.vignettes_tab()
 ```
 
-UI for the vignettes tab, featuring vignettes for the BAMexploreR package.
+Build the standalone tab panel housing the complete package vignette collection.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type     | Description                                                                  |
+|--------|----------|------------------------------------------------------------------------------|
+|        | NavPanel | The completed user interface view wrapping structured package documentation. |

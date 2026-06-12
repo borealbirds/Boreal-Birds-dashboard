@@ -2,7 +2,10 @@
 
 `ui.landbirds_v5`
 
+Landbirds Version 5 model layout view.
 
+Assembles the primary model dashboard tab utilizing a conditional view toggle 
+to alternate between geospatial model output mappings and qualitative species briefs.
 
 ## Functions
 
@@ -27,6 +30,6 @@ INFO view: species info, photo gallery, sounds.
 
 #### Returns {.doc-section .doc-section-returns}
 
-| Name   | Type     | Description   |
-|--------|----------|---------------|
-|        | shiny.ui |               |
+| Name   | Type     | Description                                                            |
+|--------|----------|------------------------------------------------------------------------|
+|        | NavPanel | The operational grid environment mapping layout rows and view toggles. |

@@ -1,0 +1,47 @@
+# app { #app.app }
+
+`app`
+
+Main entry point and UI layout for the BAM Shiny Dashboard.
+
+This script assembles the global navbar layout, links static web assets, 
+and coordinates the reactive server orchestration loops.
+
+## Attributes {.doc-section .doc-section-attributes}
+
+| Name    | Type        | Description                                              |
+|---------|-------------|----------------------------------------------------------|
+| www_dir | Path        | Path to static frontend assets (CSS, images, favicons).  |
+| app_ui  | page_navbar | The main user interface navigation and layout structure. |
+| app     | App         | The instantiated Shiny application runtime object.       |
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [server](#app.app.server) | Root server coordinator for the Shiny application. |
+
+### server { #app.app.server }
+
+```python
+app.server(input, output, session)
+```
+
+Root server coordinator for the Shiny application.
+
+Delegates the reactive session execution loop downstream to the 
+Version 5 analytical backend engine.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name    | Type    | Description                                                  | Default    |
+|---------|---------|--------------------------------------------------------------|------------|
+| input   | Inputs  | Reactive container for user interface input nodes.           | _required_ |
+| output  | Outputs | Reactive registry handling user interface output components. | _required_ |
+| session | Session | The active client connection and runtime execution session.  | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description   |
+|--------|--------|---------------|
+|        | None   |               |
