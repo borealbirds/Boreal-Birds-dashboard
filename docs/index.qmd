@@ -40,6 +40,5 @@ shiny run app/app.py --reload
 
 ### Update Documentation
 ```bash
-quartodoc build --config docs/_quarto.yml
-quarto render docs
+make build-docs
 ```
