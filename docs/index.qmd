@@ -1,0 +1,44 @@
+---
+title: "Boreal Birds Dashboard Documentation"
+subtitle: "Boreal Avian Modelling Center (BAM)"
+page-layout: full
+about:
+  template: marquee
+  links:
+    - icon: github
+      text: GitHub Repository
+      href: https://github.com/UBC-MDS/Boreal-Birds
+---
+
+Welcome to the documentation for the **Boreal Birds Dashboard**.
+
+---
+
+## Quick Start Guide
+
+### Prerequisites
+Ensure you have the required package manager installed (Conda/Mamba is highly recommended). Dependencies are specified in the root `environment.yml` and `app/requirements.txt` files.
+
+### Development Setup
+
+1. **Clone the repository and enter the workspace:**
+```bash
+git clone https://github.com/UBC-MDS/Boreal-Birds.git
+cd Boreal-Birds
+```
+
+2. **Create and activate the environment:**
+```bash
+conda env create -f environment.yml
+conda activate bird
+```
+
+3. **Launch the interactive Shiny dashboard application locally:**
+```bash
+shiny run app/app.py --reload
+```
+
+### Update Documentation
+```bash
+make build-docs
+```

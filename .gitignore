@@ -4,3 +4,7 @@ data/model_v5/marginaleffects/*
 .DS_Store
 __pycache__
 .ipynb_checkpoints
+.quarto
+
+/.quarto/
+**/*.quarto_ipynb

@@ -1,23 +1,33 @@
+"""
+Welcome tab layout and announcement sub-components for the dashboard.
+
+Constructs the landing interface view, pulling text content and dynamic 
+updates out of localized markdown utility assets.
+"""
 from pathlib import Path
 
 from shiny import ui
 
 from shared import read_md
 
-def _announcement_card(display: bool = False, file: str = "announcements.md"):
+def _announcement_card(display: bool = False, file: str = "announcements.md") -> ui.Card | None:
     """
-    Conditional UI card for announcements. Checks that the file exists and is not empty.
+    Render a conditional UI card containing recent project announcements.
+
+    Verifies the toggle state, confirms file existence, and checks that 
+    the text payload is not empty before rendering.
 
     Parameters
     ----------
-    display : bool, optional
-        Whether to display the announcements card. Set to True to show announcements and False to hide.
-    file : str, optional
-        Filename of the announcements markdown in the contents directory.
-        
+    display : bool, default False
+        Global toggle switch to show (True) or hide (False) the block.
+    file : str, default "announcements.md"
+        Target file name located within the app content directory.
+
     Returns
     -------
-    shiny.ui
+    Card or None
+        A populated UI card container element, or None if conditions fail.
     """
     path = Path(__file__).parent.parent / "content" / file
 
@@ -32,8 +42,15 @@ def _announcement_card(display: bool = False, file: str = "announcements.md"):
         return None
 
 
-def welcome_tab():
-    """UI for the welcome tab, including announcements and project overview."""
+def welcome_tab() -> ui.NavPanel:
+    """
+    Build the primary interface landing tab panel layout view.
+
+    Returns
+    -------
+    NavPanel
+        The completed layout container housing cards and project briefs.
+    """
     return ui.nav_panel(
         "Welcome",
         ui.div(

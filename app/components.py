@@ -1,8 +1,28 @@
+"""
+UI layout components and global utilities for the BAM dashboard.
+
+Provides reusable navigation controls, footer licensing blocks, and front-end 
+JavaScript hooks for dynamic audio playback.
+
+Main Capabilities
+-----------------
+* Injects external links and navigation items into the top navbar menus.
+* Renders the application copyright and CC BY-SA 4.0 data license footer.
+* Binds client-side audio pipelines dynamically using WaveSurfer.js.
+"""
+
 from shiny import ui
 
 
-def website():
-    """Link to the BAM website."""
+def website() -> ui.NavSetArg:
+    """
+    Generate a dynamic navigation item linking to the core BAM project web portal.
+
+    Returns
+    -------
+    shiny.ui.NavSetArg
+        A navigation controller containing an external anchor element configuration.
+    """
     return ui.nav_control(
             ui.a(
                 "Our Website",
@@ -12,8 +32,15 @@ def website():
         )
 
 
-def website_contact():
-    """Link to the BAM website contact page."""
+def website_contact() -> ui.NavSetArg:
+    """
+    Generate a navigation layout button mapping to the official team directory page.
+
+    Returns
+    -------
+    shiny.ui.NavSetArg
+        A web component mapping directly to external communication infrastructure.
+    """
     return ui.nav_control(
         ui.a(
             "Email Us",
@@ -22,8 +49,15 @@ def website_contact():
             ),
         )
 
-def email():
-    """Open an external email to the BAM team."""
+def email() -> ui.NavSetArg:
+    """
+    Generate an interface interaction gateway linking to default mail applications.
+
+    Returns
+    -------
+    shiny.ui.NavSetArg
+        An operational interface anchor using mailto address routing actions.
+    """
     return ui.nav_control(
         ui.a(
             "Email Us",
@@ -33,8 +67,15 @@ def email():
         )
 
 
-def report_issue():
-    """Link to the GitHub issues page for reporting issues."""
+def report_issue() -> ui.NavSetArg:
+    """
+    Generate an issue-tracking shortcut pointing to repository management layers.
+
+    Returns
+    -------
+    shiny.ui.NavSetArg
+        A link asset to log defects, structural feature requests, or application bugs.
+    """
     return ui.nav_control(
             ui.a(
                 "Report an Issue",
@@ -44,8 +85,15 @@ def report_issue():
         )
 
 
-def footer():
-    """Footer with copyright and license information."""
+def footer() -> ui.Tag:
+    """
+    Render the copyright disclosure and Creative Commons usage policy wrapper.
+
+    Returns
+    -------
+    shiny.ui.Tag
+        A bottom-anchored content div element styled with appropriate CSS rules.
+    """
     return ui.div(
         ui.HTML(
             '&copy; 2026 '
@@ -57,8 +105,23 @@ def footer():
     )
 
 
-def audio():
-    """Audio player for bird sounds and spectrograms."""
+def audio() -> ui.Tag:
+    """
+    Inject JavaScript pipelines for WaveSurfer audio and spectrogram rendering.
+
+    Registers a custom Shiny message handler to initialize and synchronize 
+    multi-instance audio players and visual timelines on the client side.
+
+    Returns
+    -------
+    Tag
+        An HTML script block containing client-side audio runtime logic.
+
+    Notes
+    -----
+    Active WaveSurfer tracking instances are loaded via CDN and maintained 
+    globally in the browser window scope under `window._wsInstances`.
+    """
     return ui.HTML(
         """
         <script>

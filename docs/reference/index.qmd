@@ -1,0 +1,42 @@
+# Function reference {.doc .doc-index}
+
+## Core Modules
+
+Main application entry points, helper functions for map and medias, static configuration assets, and global system icons.
+
+| | |
+| --- | --- |
+| [app](app.qmd#app.app) | Main entry point and UI layout for the BAM Shiny Dashboard. |
+| [modules.map](modules.map.qmd#app.modules.map) | Geospatial map helper utilities and vector boundary processing. |
+| [modules.media](modules.media.qmd#app.modules.media) | Media utility assets and client-side JavaScript injection pipelines. |
+| [components](components.qmd#app.components) | UI layout components and global utilities for the BAM dashboard. |
+| [icons](icons.qmd#app.icons) | UI Asset Icon Library Module. |
+
+## Data Loading
+
+Unified data access layer for high-performance Polars pipelines, remote DRAC servers, and TiTiler API gateways.
+
+| | |
+| --- | --- |
+| [shared](shared.qmd#app.shared) | Data access layer for the BAM dashboard backend. |
+
+## Server Logic
+
+Backend server logic, and reactive workflow execution routing.
+
+| | |
+| --- | --- |
+| [server.server_v5](server.server_v5.qmd#app.server.server_v5) | Backend analytical server coordination engine for Landbirds Version 5 models. |
+
+## UI Components
+
+Modular frontend interface layouts, navigation controls, responsive panels, and view toggle containers.
+
+| | |
+| --- | --- |
+| [ui.sidebar](ui.sidebar.qmd#app.ui.sidebar) | Sidebar navigation controls and reactive inputs for model tabs. |
+| [ui.welcome](ui.welcome.qmd#app.ui.welcome) | Welcome tab layout and announcement sub-components for the dashboard. |
+| [ui.methods](ui.methods.qmd#app.ui.methods) | Methods and modeling methodologies layout views. |
+| [ui.landbirds_v4](ui.landbirds_v4.qmd#app.ui.landbirds_v4) | Landbirds Version 4 historical model placeholder view template. |
+| [ui.landbirds_v5](ui.landbirds_v5.qmd#app.ui.landbirds_v5) | Landbirds Version 5 model layout view. |
+| [ui.model_access](ui.model_access.qmd#app.ui.model_access) | Model access layout views, R package vignettes, and citation components. |

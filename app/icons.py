@@ -1,3 +1,12 @@
+"""
+UI Asset Icon Library Module.
+
+Attributes
+----------
+question_circle_fill : shiny.ui.HTML
+    Bootstrap question-circle-fill inline SVG icon wrapper element used 
+    extensively to trigger info tooltips on application headers.
+"""
 from shiny import ui
 
 question_circle_fill = ui.HTML(

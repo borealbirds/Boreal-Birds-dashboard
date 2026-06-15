@@ -1,0 +1,9 @@
+---
+title: "Static Assets"
+---
+
+# `img/`
+
+# `audio/`
+
+# `vignettes/`

@@ -1,0 +1,64 @@
+# ui.model_access { #app.ui.model_access }
+
+`ui.model_access`
+
+Model access layout views, R package vignettes, and citation components.
+
+Constructs dedicated panels for documentation workflows, embedding localized 
+vignette HTML files via iframe modules and parsing reference citations.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [citing_tab](#app.ui.model_access.citing_tab) | Build the citation view interface container. |
+| [tools_tab](#app.ui.model_access.tools_tab) | Build the tooling resources layout tab view. |
+| [vignettes_tab](#app.ui.model_access.vignettes_tab) | Build the standalone tab panel housing the complete package vignette collection. |
+
+### citing_tab { #app.ui.model_access.citing_tab }
+
+```python
+ui.model_access.citing_tab()
+```
+
+Build the citation view interface container.
+
+Pulls and renders markdown blocks stating data reuse rights, permissions,
+and official project referencing guidelines.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type     | Description                                                            |
+|--------|----------|------------------------------------------------------------------------|
+|        | NavPanel | A dedicated user interface tab wrapping formal citation documentation. |
+
+### tools_tab { #app.ui.model_access.tools_tab }
+
+```python
+ui.model_access.tools_tab()
+```
+
+Build the tooling resources layout tab view.
+
+Aggregates overall asset markdown guides and appends individual reference 
+vignettes within a nested sub-navigation drop-down menu structure.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type     | Description                                                            |
+|--------|----------|------------------------------------------------------------------------|
+|        | NavPanel | The constructed interface view holding available developer guidelines. |
+
+### vignettes_tab { #app.ui.model_access.vignettes_tab }
+
+```python
+ui.model_access.vignettes_tab()
+```
+
+Build the standalone tab panel housing the complete package vignette collection.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type     | Description                                                                  |
+|--------|----------|------------------------------------------------------------------------------|
+|        | NavPanel | The completed user interface view wrapping structured package documentation. |
