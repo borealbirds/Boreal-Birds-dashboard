@@ -33,10 +33,11 @@ from ipyleaflet import (
 from shiny import Inputs, Outputs, Session, reactive, render, ui, req
 from shinywidgets import render_altair, render_widget
 
-from icons import question_circle_fill
 from shared import *
 from modules.map import *
 from modules.media import *
+from utils.birds import *
+from utils.icons import *
 
 # alt.data_transformers.enable("vegafusion")
 
@@ -52,6 +53,7 @@ print(f"\n\n\nTitiler API Health Status: \n\tTitiler is healthy: {tiler_is_healt
 birds = load_species_metadata()
 abundances = load_abundance_data()
 covariates = load_covariate_metadata()
+IMPOSSIBLE_TO_SEX = impossible_to_sex()
 
 # ── HELPER FUNCTIONS (Non-reactive) -----───────────────────────────
 
@@ -581,15 +583,15 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                         ui.span(
                             SEX_SYMBOL.get(p["sex"], "?"),
                             class_=f"sex-badge sex-{p['sex']}"
-                        ) if with_badges else ui.span(),
+                        ) if with_badges and common_name not in IMPOSSIBLE_TO_SEX else ui.span(),
                         class_="photo-cell",
                     ) for p in items
                 ],
                 class_="photo-grid",
             )
 
-        male_photos = [p for p in photos if p["sex"] == "male"]
-        female_photos = [p for p in photos if p["sex"] == "female"]
+        male_photos = [p for p in photos if p["sex"] == "male" and common_name not in IMPOSSIBLE_TO_SEX]
+        female_photos = [p for p in photos if p["sex"] == "female" and common_name not in IMPOSSIBLE_TO_SEX]
 
         return ui.div(
             lightbox_script(),
@@ -599,11 +601,12 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                         onchange="this.closest('.images-tab-wrapper').classList.toggle('show-sex-tags', this.checked)">
                     ♂♀ labels
                 </label>
-            """),
+            """) if common_name not in IMPOSSIBLE_TO_SEX else None,
+            ui.p("Species that are virtually impossible to sex in the field have been grouped together.") if common_name in IMPOSSIBLE_TO_SEX else None,
             ui.navset_tab(
-                ui.nav_panel(f"All ({len(photos)})",          photo_grid(photos, with_badges=True)),
-                ui.nav_panel(f"Male ({len(male_photos)})",    photo_grid(male_photos)),
-                ui.nav_panel(f"Female ({len(female_photos)})", photo_grid(female_photos)),
+                ui.nav_panel(f"All ({len(photos)})", photo_grid(photos, with_badges=True)),
+                *( [ui.nav_panel(f"Male ({len(male_photos)})", photo_grid(male_photos))] if male_photos else []),
+                *( [ui.nav_panel(f"Female ({len(female_photos)})", photo_grid(female_photos))] if female_photos else []),
             ),
             class_="images-tab-wrapper species-images-container",
         )
