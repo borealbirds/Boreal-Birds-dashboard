@@ -483,6 +483,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     def species_info()-> ui.Tag:
         """[@render.ui] Render taxonomic info strings alongside contextual search hyperlinks."""
         bird = current_bird_meta()
+        common_name = bird.item(0, "english")
         species_id = bird.item(0, "id")
         scientific = bird.item(0, "scientific")
         french = bird.item(0, "french")
@@ -503,9 +504,10 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             ui.div(
                 ui.span("More Information", class_="info-label"),
                 ui.div(
-                    ui.tags.a("eBird ↗",       href=f"https://ebird.org/search?q={scientific.replace(' ', '+')}", target="_blank", class_="info-link"),
-                    ui.tags.a("Xeno-Canto ↗",  href=f"https://xeno-canto.org/species/{scientific.replace(' ', '-')}", target="_blank", class_="info-link"),
-                    ui.tags.a("Wikipedia ↗",   href=f"https://en.wikipedia.org/wiki/{scientific.replace(' ', '_')}", target="_blank", class_="info-link"),
+                    ui.tags.a("eBird ↗", href=f"https://ebird.org/search?q={scientific.replace(' ', '+')}", target="_blank", class_="info-link"),
+                    ui.tags.a("NatureCounts ↗", href=f"https://naturecounts.ca/nc/socb-epoc/search.jsp?qstr={common_name}", target="_blank", class_="info-link"),
+                    ui.tags.a("Wikipedia ↗", href=f"https://en.wikipedia.org/wiki/{scientific.replace(' ', '_')}", target="_blank", class_="info-link"),
+                    ui.tags.a("Xeno-Canto ↗", href=f"https://xeno-canto.org/species/{scientific.replace(' ', '-')}", target="_blank", class_="info-link"),
                 ),
                 class_="info-row info-row-links",
             ),
