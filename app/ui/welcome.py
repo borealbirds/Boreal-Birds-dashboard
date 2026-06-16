@@ -42,7 +42,7 @@ def _announcement_card(display: bool = False, file: str = "announcements.md") ->
         return None
 
 
-def welcome_tab() -> ui.NavPanel:
+def welcome_tab() -> ui.nav_panel:
     """
     Build the primary interface landing tab panel layout view.
 

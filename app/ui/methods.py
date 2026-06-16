@@ -22,7 +22,7 @@ methods_accordion = ui.accordion(
     open=None # opens the first section by default
 )
 
-def methods_tab() -> ui.NavPanel:
+def methods_tab() -> ui.nav_panel:
     """
     Build the methods interface container layout.
 

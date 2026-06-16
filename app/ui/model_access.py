@@ -10,7 +10,7 @@ from shiny import ui
 from shared import read_md
 
 
-def _vignette_panel(title: str, src: str) -> ui.NavPanel:
+def _vignette_panel(title: str, src: str) -> ui.nav_panel:
     """
     Create a navigation panel with an embedded iframe for a vignette.
 
@@ -40,7 +40,7 @@ def _vignette_panel(title: str, src: str) -> ui.NavPanel:
     )
 
 
-def vignettes_tab() -> ui.NavPanel:
+def vignettes_tab() -> ui.nav_panel:
     """
     Build the standalone tab panel housing the complete package vignette collection.
 
@@ -65,7 +65,7 @@ def vignettes_tab() -> ui.NavPanel:
     )
 
 
-def tools_tab()-> ui.NavPanel:
+def tools_tab()-> ui.nav_panel:
     """
     Build the tooling resources layout tab view.
 
@@ -100,7 +100,7 @@ def tools_tab()-> ui.NavPanel:
     )
 
 
-def citing_tab()-> ui.NavPanel:
+def citing_tab()-> ui.nav_panel:
     """
     Build the citation view interface container.
 
