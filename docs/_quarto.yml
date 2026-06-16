@@ -17,7 +17,7 @@ website:
       - section: "Reference"
         contents:
           - reference/index.qmd
-          - auto: app
+          - auto: reference
 
 format:
   html:
@@ -30,13 +30,13 @@ quartodoc:
   
   sections:
     - title: Core Modules
-      desc: Main application entry points, helper functions for map and medias, static configuration assets, and global system icons.
+      desc: Main application entry points, helper functions for map, medias, charts, static configuration assets, and global system icons.
       contents:
         - app
         - modules.map
         - modules.media
-        - components
-        - icons
+        - utils.charts
+        - utils.data
 
     - title: Data Loading
       desc: Unified data access layer for high-performance Polars pipelines, remote DRAC servers, and TiTiler API gateways.
@@ -57,3 +57,10 @@ quartodoc:
         - ui.landbirds_v4
         - ui.landbirds_v5
         - ui.model_access
+
+    - title: Utilities
+      desc: Other utility modules
+      contents:
+        - utils.birds
+        - utils.components
+        - utils.icons
