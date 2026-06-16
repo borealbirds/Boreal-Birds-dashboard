@@ -10,6 +10,8 @@ website:
     contents:
       - href: index.qmd
         text: Home
+      - href: deployment.qmd
+        text: Deployment Instructions
       - href: markdown_contents.qmd
         text: Markdown Contents
       - href: static_assets.qmd
