@@ -213,36 +213,6 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         """[@reactive.effect] Enforce default 'map' radio view selection on initial connection."""
         ui.update_radio_buttons("view_toggle", selected="map")
 
-    @reactive.effect
-    def _update_regions():
-        """[@reactive.effect] Update the dropdown region list choices based on species data availability."""
-        bird = current_bird_meta()
-        species_id = bird.item(0, "id") if len(bird) > 0 else None
-
-        if not species_id:
-            ui.update_select("region_v5", choices=[], selected=None)
-            return
-
-        regions = available_regions(species_id)
-        selected_default = "Canada" if regions and "Canada" in regions else (regions[0] if regions else None)
-        ui.update_select("region_v5", choices=regions, selected=selected_default)
-
-    @reactive.effect
-    def _update_year_range():
-        """[@reactive.effect] Update slider range boundaries based on temporal data availability."""
-        bird = current_bird_meta()
-        species_id = bird.item(0, "id") if len(bird) > 0 else None
-        region = input.region_v5()
-
-        if not species_id or not region:
-            return
-
-        years = available_years(species_id, region)
-        if not years:
-            return
-
-        ui.update_slider("year_v5", min=min(years), max=max(years), value=max(years))
-
 
     # Bird info UI
 

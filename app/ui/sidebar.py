@@ -40,7 +40,7 @@ def sidebar(model_version: str) -> ui.Sidebar:
         ui.input_select(
             f"region_{model_version}",
             "Region",
-            choices=[],
+            choices=["Canada", "Alaska", "Lower48"],
         ),
         ui.input_slider(
             f"year_{model_version}",

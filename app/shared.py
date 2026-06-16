@@ -44,9 +44,9 @@ V5_META_PATH = "https://cloud.borealbirds.ca/dashboard/BAMV5-results.xlsx"
 PREDICTOR_INFLUENCE_PATH = "https://cloud.borealbirds.ca/dashboard/PredictorInfluence.csv"
 SPECIES_DATA_PATH = "https://cloud.borealbirds.ca/dashboard/SpeciesData_Rounded.csv"
 
-
+# old links
 REMOTE_DATA_FOLDER = "dashboard/"
-BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
+# BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
 
 DATA_DIR = app_dir / "data"
 CONTENT_DIR = Path(__file__).parent / "content"
@@ -150,7 +150,7 @@ def get_tif_path(species_id: str, region: str, year: int) -> str:
     filename = f"{species_id}_{region}_{year}.tif"
 
     return urljoin(
-        BASE_URL,
+        COG_FOLDER,
         f"{species_id}/{region}/{filename}"
     )
 
@@ -267,153 +267,6 @@ def load_region_data() -> pl.DataFrame:
     )
     
     return regions
-
-def list_directory(url: str) -> list[str]:
-    """
-    Scrape and extract valid paths from DRAC server directory listing.
-
-    Requests index endpoints and ignores structural navigation entries, 
-    query filter strings, or top-level relative assets.
-
-    Parameters
-    ----------
-    url : str
-        The remote directory link listing resource locations.
-
-    Returns
-    -------
-    list of str
-        Cleaned asset filenames or subdirectory names discovered in the catalog.
-    """
-
-    response = requests.get(url, timeout=60)
-    response.raise_for_status()
-
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    entries = []
-
-    for link in soup.find_all("a"):
-        href = link.get("href")
-
-        if href not in [None, "../", '/data/', '?C=N;O=D', '?C=M;O=A', '?C=S;O=A', '?C=D;O=A', f'/data/{REMOTE_DATA_FOLDER}']:
-            entries.append(href.rstrip("/"))
-            continue
-
-    return entries
-
-def species_ids() -> list[str]:
-    """
-    Scan the remote repository index to isolate available species IDs.
-
-    Returns
-    -------
-    list of str
-        Sorted list of species IDs based on existing subdirectories.
-        Returns an empty list if remote catalog requests fail.
-    """
-    try:
-        entries = list_directory(BASE_URL)
-        return sorted(entries)
-
-    except Exception:
-        return []
-
-def available_regions(species_id: str) -> list[str]:
-    """
-    Identify geographic regions for a specific species and 
-    list available regions from remote directory.
-    
-    Falling back to local directories if the remote server is offline.
-
-    Parameters
-    ----------
-    species_id : str
-        The unique identifier for the species.
-
-    Returns
-    -------
-    list of str
-        Sorted list of region names found within the species' directory.
-    """
-    species_url = urljoin(BASE_URL, f"{species_id}/")
-    try:
-        entries = list_directory(species_url)
-        if entries:
-            return sorted(entries)
-    except Exception as e:
-        print(f"[available_regions] Remote unavailable for {species_id}: {e}")
-
-    # Local fallback — scan data/model_v5/{species_id}/
-    local_dir = DATA_DIR / "model_v5" / species_id
-    if local_dir.exists():
-        regions = sorted([d.name for d in local_dir.iterdir() if d.is_dir()])
-        if regions:
-            print(f"[available_regions] Using local data for {species_id}: {regions}")
-            return regions
-
-    print(f"[available_regions] No data found for {species_id}")
-    return []
-
-def available_years(species_id: str, region: str) -> list[int]:
-    """
-    Parse available model years for a specific species and region by scanning filenames.
-
-    This function looks for .tif files following the naming convention 
-    '{species}_{region}_{year}.tif' and extracts the integer year.
-
-    Parameters
-    ----------
-    species_id : str
-        The unique identifier for the species.
-    region : str
-        The geographic region identifier.
-
-    Returns
-    -------
-    list of int
-        Sorted list of years found for the given parameters.
-    """
-    region_url = urljoin(BASE_URL, f"{species_id}/{region}/")
-
-    try:
-        entries = list_directory(region_url)
-        years = []
-        prefix = f"{species_id}_{region}_"
-        for filename in entries:
-            if not filename.endswith(".tif"):
-                continue
-            stem = filename.removesuffix(".tif")
-            if not stem.startswith(prefix):
-                continue
-            try:
-                years.append(int(stem.removeprefix(prefix)))
-            except ValueError:
-                continue
-        if years:
-            return sorted(years)
-    except Exception as e:
-        print(f"[available_years] Remote unavailable for {species_id}/{region}: {e}")
-
-    # Local fallback — scan data/model_v5/{species_id}/{region}/
-    local_dir = DATA_DIR / "model_v5" / species_id / region
-    if local_dir.exists():
-        years = []
-        prefix = f"{species_id}_{region}_"
-        for tif in local_dir.glob("*.tif"):
-            stem = tif.stem
-            if not stem.startswith(prefix):
-                continue
-            try:
-                years.append(int(stem.removeprefix(prefix)))
-            except ValueError:
-                continue
-        if years:
-            print(f"[available_years] Using local data for {species_id}/{region}: {sorted(years)}")
-            return sorted(years)
-
-    print(f"[available_years] No years found for {species_id}/{region}")
-    return []
 
 def read_md(filename) -> str:
     """
