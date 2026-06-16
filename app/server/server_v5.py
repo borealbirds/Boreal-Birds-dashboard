@@ -219,7 +219,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # Bird info UI
 
     @render.ui
-    def selected_bird()-> ui.Tag:
+    def selected_bird()-> ui.tags:
         """[@render.ui] Render the header component displaying names and active population bounds."""
         bird = current_bird_meta()
         pop_df = current_population_slice()
@@ -247,7 +247,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
 
     @render.ui
-    def sidebar_bird_image_v5()-> ui.Tag:
+    def sidebar_bird_image_v5()-> ui.tags:
         """[@render.ui] Render the sidebar profile picture for the active species if it exists."""
         bird = current_bird_meta()
         if len(bird) == 0:
@@ -455,7 +455,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── INFO TAB ───────────────────────────────────────────────────────
 
     @render.ui
-    def species_info()-> ui.Tag:
+    def species_info()-> ui.tags:
         """[@render.ui] Render taxonomic info strings alongside contextual search hyperlinks."""
         bird = current_bird_meta()
         common_name = bird.item(0, "english")
@@ -492,7 +492,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── IMAGES TAB ─────────────────────────────────────────────────────
 
     @render.ui
-    def species_images()-> ui.Tag:
+    def species_images()-> ui.tags:
         """[@render.ui] Assemble a masonry layout grid sorted by biological sex categories."""
         bird = current_bird_meta()
         species_id = bird.item(0, "id")
@@ -586,7 +586,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── SOUNDS TAB ──────────────────────────────────────────────────────
 
     @render.ui
-    def species_songs()-> ui.Tag:
+    def species_songs()-> ui.tags:
         """[@render.ui] Construct an audio player layout linked to client-side WaveSurfer timelines."""
         bird = current_bird_meta()
         species_id = bird.item(0, "id")
@@ -670,7 +670,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── COVARIATE FILTER & MARGINAL EFFECTS ───────────────────────────
 
     @render.ui
-    def marginal_fx_filter()-> ui.Tag:
+    def marginal_fx_filter()-> ui.tags:
         """[@render.ui] Render variable select dropdown constraints for covariate analyses."""
         cov_choices = sorted(covariates.get_column("name").unique().to_list())
         # cov_choices.append("year")
@@ -806,7 +806,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             yield buffer.getvalue()
 
     @render.ui
-    def download_filtered_btn()-> ui.Tag:
+    def download_filtered_btn()-> ui.tags:
         """[@render.ui] Render a custom contextual export execution trigger button for the bird model."""
         species = input.species_v5()
 

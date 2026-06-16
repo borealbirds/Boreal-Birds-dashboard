@@ -9,7 +9,7 @@ from shiny import ui
 from shared import load_species_metadata
 
 
-def sidebar(model_version: str) -> ui.Sidebar:
+def sidebar(model_version: str) -> ui.sidebar:
     """
     Initialize the standardized filtering sidebar layout for bird model views.
 

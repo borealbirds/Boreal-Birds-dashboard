@@ -10,7 +10,7 @@ from shiny import ui
 
 from shared import read_md
 
-def _announcement_card(display: bool = False, file: str = "announcements.md") -> ui.Card | None:
+def _announcement_card(display: bool = False, file: str = "announcements.md") -> ui.card | None:
     """
     Render a conditional UI card containing recent project announcements.
 

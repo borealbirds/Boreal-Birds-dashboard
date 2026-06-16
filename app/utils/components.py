@@ -85,7 +85,7 @@ def report_issue() -> ui.NavSetArg:
         )
 
 
-def footer() -> ui.Tag:
+def footer() -> ui.tags:
     """
     Render the copyright disclosure and Creative Commons usage policy wrapper.
 
@@ -105,7 +105,7 @@ def footer() -> ui.Tag:
     )
 
 
-def audio() -> ui.Tag:
+def audio() -> ui.tags:
     """
     Inject JavaScript pipelines for WaveSurfer audio and spectrogram rendering.
 
