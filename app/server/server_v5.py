@@ -37,6 +37,7 @@ from shared import *
 from modules.map import *
 from modules.media import *
 from utils.birds import *
+from utils.charts import *
 from utils.icons import *
 
 # alt.data_transformers.enable("vegafusion")
@@ -685,158 +686,15 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
     
     # ── Chart details ───────────────────────────────────────────────────────
+
     @render_altair
     def population_chart()-> alt.Chart:
-        """
-        [@render_altair] Build a scatter plot of regional population totals with x-axis in symlog scale.
+        return population_altair(population_data(), input.species_v5())
 
-        Returns
-        -------
-        Chart
-            An Altair object plotting points alongside bootstrap variation bands.
-        """
-
-        df = population_data()
-
-        points = alt.Chart(df).mark_point(
-            filled=True,
-        ).encode(
-            alt.X("population_estimate:Q")
-                .title("Abundance (M males)")
-                .scale(type="symlog"),
-            alt.Y("region_name:N")
-                .title(None)
-                .sort(
-                    field="population_estimate",
-                    order="descending",
-                )
-                .axis(labelLimit=0),
-            alt.Color(
-                "country_name:N",
-                legend=alt.Legend(title="Country")
-            ),
-        ).transform_calculate(
-            region_name=f"{REGION_DICT}[datum.region].name_adj",
-            country_name=f"{REGION_DICT}[datum.region].country"
-        )
-
-        nearest = alt.selection_point(
-            nearest=True,
-            on="pointerover",
-            fields=["population_estimate"],
-            empty=False
-        )
-        when_near = alt.when(nearest)
-
-        highlight = points.mark_point(
-            size=50,
-            stroke="#153B40FF",
-        ).encode(
-            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
-        )
-
-        rules = alt.Chart(df).mark_rule(
-            color="#153B40FF",
-        ).encode(
-            x="population_estimate:Q",
-            opacity=alt.when(nearest)
-                .then(alt.value(0.5))
-                .otherwise(alt.value(0)),
-            tooltip=[
-                alt.Tooltip("population_estimate:Q", title="Population Estimate"),
-                alt.Tooltip("population_lower:Q", title="Lower Estimate"),
-                alt.Tooltip("population_upper:Q", title="Upper Estimate"),
-            ]
-        ).add_params(nearest)
-
-        error_bars = points.mark_rule().encode(
-            x="population_lower:Q",
-            x2="population_upper:Q",
-        )
-
-        return (points + error_bars + rules + highlight).properties(
-            title=alt.Title(
-                f"Regional Population Estimates for the {input.species_v5()}",
-                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
-            ),
-            width="container", height=750
-        )
 
     @render_altair
     def density_chart()-> alt.Chart:
-        """
-        [@render_altair] Build a scatter plot mapping estimated male density indexes.
-
-        Returns
-        -------
-        Chart
-            An Altair point graph displaying regional bird densities.
-        """
-        df = population_data()
-
-        points = alt.Chart(df).mark_point(
-            filled=True,
-        ).encode(
-            alt.X("density_estimate:Q")
-                .title("Density (males/ha)"),
-            alt.Y("region_name:N")
-                .title(None)
-                .sort(
-                    field="density_estimate",
-                    order="descending",
-                )
-                .axis(labelLimit=0),
-            alt.Color(
-                "country_name:N",
-                legend=alt.Legend(title="Country")
-            ),
-        ).transform_calculate(
-            region_name=f"{REGION_DICT}[datum.region].name_adj",
-            country_name=f"{REGION_DICT}[datum.region].country"
-        )
-
-        nearest = alt.selection_point(
-            nearest=True,
-            on="pointerover",
-            fields=["density_estimate"],
-            empty=False
-        )
-        when_near = alt.when(nearest)
-
-        highlight = points.mark_point(
-            size=50,
-            stroke="#153B40FF",
-        ).encode(
-            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
-        )
-
-        rules = alt.Chart(df).mark_rule(
-            color="#153B40FF",
-        ).encode(
-            x="density_estimate:Q",
-            opacity=alt.when(nearest)
-                .then(alt.value(0.5))
-                .otherwise(alt.value(0)),
-            tooltip=[
-                alt.Tooltip("density_estimate:Q", title="Density Estimate"),
-                alt.Tooltip("density_lower:Q", title="Lower Estimate"),
-                alt.Tooltip("density_upper:Q", title="Upper Estimate"),
-            ]
-        ).add_params(nearest)
-
-        error_bars = points.mark_rule().encode(
-            x="density_lower:Q",
-            x2="density_upper:Q",
-        )
-
-        return (points + error_bars + rules + highlight).properties(
-            title=alt.Title(
-                f"Regional Density Estimates for {input.species_v5()}",
-                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
-            ),
-            width="container", height=750
-        )
-
+        return density_altair(population_data(), input.species_v5())
 
     # ── COVARIATE FILTER & MARGINAL EFFECTS ───────────────────────────
 
@@ -846,6 +704,16 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         cov_choices = sorted(covariates.get_column("name").unique().to_list())
         # cov_choices.append("year")
         res_choices = covariates.get_column("prediction_resolution").unique().to_list()
+        bcr_choices = [
+            "Alaska", "can10", "can11", "can12", "can13",
+            "can14", "can3", "can40", "can41", "can42",
+            "can5", "can60", "can61", "can70", "can71",
+            "can72", "can80", "can81", "can82", "can9",
+            "Canada", "Lower48", "usa11", "usa12", "usa13",
+            "usa14", "usa2", "usa23", "usa28", "usa30",
+            "usa40", "usa41423", "usa43", "usa5", "usa10",
+            "usa9",
+        ]
 
         return ui.layout_columns(
             ui.input_select(
@@ -858,55 +726,24 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                 label="Select Resolution",
                 choices=res_choices
             ),
+            ui.input_select(
+                id="bcr_filter",
+                label="Select BCR",
+                choices=bcr_choices
+            ),
             col_widths=(12, 12)
         )
-
+    
     @render_altair
     def marginal_fx_chart()-> alt.Chart:
-        """
-        [@render_altair] Plot binned marginal effect parameters across bird-co-variates.
-
-        Returns
-        -------
-        Chart
-            An Altair regression plot charting density responses against covariates.
-        """
-        req(
-            input.covariate_filter(), 
-            input.resolution_filter(), 
-            input.species_v5()
-        )
-        
-        bird = current_bird_meta()
-        bird_code = bird.item(0, "id") if len(bird) > 0 else ""
-
-        cov_vars = covariates.filter(
-            (pl.col("name") == input.covariate_filter()) & 
-            (pl.col("prediction_resolution") == input.resolution_filter())
-        ).get_column("variable").to_list()
-
-        fx_df = get_cov_fx_data(cov_vars).filter(pl.col("species") == bird_code)
-        viz_df = fx_df.with_columns(pl.col("x").round(2)).group_by(["bcr", "x"]).agg(pl.col("y").mean().alias("mean_y"))
-
-        points = alt.Chart(viz_df).mark_point().encode(
-            alt.X("x:N")
-                .title(f"Covariate: {input.covariate_filter()}")
-                .bin(maxbins=20),
-            alt.Y("mean_y:Q")
-                .title("Marginal Effect on Density")
-                .axis(labelLimit=0),
-            alt.Color(
-                "bcr:N",
-                legend=alt.Legend(title="BCR")
-            ),
+        return covariate_chart(
+            input.covariate_filter(),
+            input.resolution_filter(),
+            input.species_v5(),
+            input.bcr_filter()
         )
 
-        # trendline = points.transform_regression(
-        #     'x', 'y'
-        # ).mark_line(size=3)
-
-        return (points)
-
+    # ── Download ───────────────────────────
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
     def downloadAll()-> str:
