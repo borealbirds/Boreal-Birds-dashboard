@@ -127,7 +127,9 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         pl.DataFrame
             Complete temporal and regional abundance rows for the selected species.
         """
-        return abundances.filter(pl.col("english") == input.species_v5())
+        return abundances.filter(
+            (pl.col("english") == input.species_v5()) & (pl.col("year") == str(input.year_v5()))
+        )
 
     @reactive.calc
     def current_population_slice() -> pl.DataFrame:
