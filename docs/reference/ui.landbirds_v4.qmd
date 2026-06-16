@@ -27,4 +27,4 @@ Generate a dynamic navigation item linking to the landbird v4 model results.
 
 | Name   | Type               | Description                                                                  |
 |--------|--------------------|------------------------------------------------------------------------------|
-|        | shiny.ui.NavSetArg | A navigation controller containing an external anchor element configuration. |
+|        | shiny.ui.nav_control | A navigation controller containing an external anchor element configuration. |

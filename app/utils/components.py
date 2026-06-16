@@ -14,13 +14,13 @@ Main Capabilities
 from shiny import ui
 
 
-def website() -> ui.NavSetArg:
+def website() -> ui.nav_control:
     """
     Generate a dynamic navigation item linking to the core BAM project web portal.
 
     Returns
     -------
-    shiny.ui.NavSetArg
+    shiny.ui.nav_control
         A navigation controller containing an external anchor element configuration.
     """
     return ui.nav_control(
@@ -32,13 +32,13 @@ def website() -> ui.NavSetArg:
         )
 
 
-def website_contact() -> ui.NavSetArg:
+def website_contact() -> ui.nav_control:
     """
     Generate a navigation layout button mapping to the official team directory page.
 
     Returns
     -------
-    shiny.ui.NavSetArg
+    shiny.ui.nav_control
         A web component mapping directly to external communication infrastructure.
     """
     return ui.nav_control(
@@ -49,13 +49,13 @@ def website_contact() -> ui.NavSetArg:
             ),
         )
 
-def email() -> ui.NavSetArg:
+def email() -> ui.nav_control:
     """
     Generate an interface interaction gateway linking to default mail applications.
 
     Returns
     -------
-    shiny.ui.NavSetArg
+    shiny.ui.nav_control
         An operational interface anchor using mailto address routing actions.
     """
     return ui.nav_control(
@@ -67,13 +67,13 @@ def email() -> ui.NavSetArg:
         )
 
 
-def report_issue() -> ui.NavSetArg:
+def report_issue() -> ui.nav_control:
     """
     Generate an issue-tracking shortcut pointing to repository management layers.
 
     Returns
     -------
-    shiny.ui.NavSetArg
+    shiny.ui.nav_control
         A link asset to log defects, structural feature requests, or application bugs.
     """
     return ui.nav_control(

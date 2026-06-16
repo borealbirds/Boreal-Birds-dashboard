@@ -16,7 +16,7 @@ def landbirds_v4_tab():
 
     Returns
     -------
-    shiny.ui.NavSetArg
+    shiny.ui.nav_control
         A navigation controller containing an external anchor element configuration.
     """
     return ui.nav_control(

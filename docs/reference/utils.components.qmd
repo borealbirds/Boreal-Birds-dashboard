@@ -58,7 +58,7 @@ Generate an interface interaction gateway linking to default mail applications.
 
 | Name   | Type               | Description                                                           |
 |--------|--------------------|-----------------------------------------------------------------------|
-|        | shiny.ui.NavSetArg | An operational interface anchor using mailto address routing actions. |
+|        | shiny.ui.nav_control | An operational interface anchor using mailto address routing actions. |
 
 ### footer { #app.utils.components.footer }
 
@@ -86,7 +86,7 @@ Generate an issue-tracking shortcut pointing to repository management layers.
 
 | Name   | Type               | Description                                                                    |
 |--------|--------------------|--------------------------------------------------------------------------------|
-|        | shiny.ui.NavSetArg | A link asset to log defects, structural feature requests, or application bugs. |
+|        | shiny.ui.nav_control | A link asset to log defects, structural feature requests, or application bugs. |
 
 ### website { #app.utils.components.website }
 
@@ -100,7 +100,7 @@ Generate a dynamic navigation item linking to the core BAM project web portal.
 
 | Name   | Type               | Description                                                                  |
 |--------|--------------------|------------------------------------------------------------------------------|
-|        | shiny.ui.NavSetArg | A navigation controller containing an external anchor element configuration. |
+|        | shiny.ui.nav_control | A navigation controller containing an external anchor element configuration. |
 
 ### website_contact { #app.utils.components.website_contact }
 
@@ -114,4 +114,4 @@ Generate a navigation layout button mapping to the official team directory page.
 
 | Name   | Type               | Description                                                                |
 |--------|--------------------|----------------------------------------------------------------------------|
-|        | shiny.ui.NavSetArg | A web component mapping directly to external communication infrastructure. |
+|        | shiny.ui.nav_control | A web component mapping directly to external communication infrastructure. |
