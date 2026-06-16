@@ -797,7 +797,7 @@ body {
 
 /* ── Spectrogram: inline (clickable, canvas must be first child) ──── */
 .spectrogram-container {
-  height: 80px;
+  height: 300px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
@@ -805,7 +805,7 @@ body {
   transition: height 0.3s ease;
 }
 
-.spectrogram-container.spec-expanded { height: 200px; }
+.spectrogram-container.spec-expanded { height: 300px; }
 
 .sound-meta {
   display: none;

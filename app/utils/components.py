@@ -155,7 +155,7 @@ def audio() -> ui.Tag:
                     plugins: [
                         Spectrogram.create({
                             container:    specEl,
-                            labels:       true,
+                            labels:       false,
                             height:       128,
                             frequencyMax: 8000,
                         })
