@@ -31,13 +31,27 @@ app_dir = Path(__file__).parent.parent
 # Live Posit Connect Cloud dynamic map tiler base domain address
 PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
 
+# Remote accessed
+REMOTE_DATA_URL = Path("https://cloud.borealbirds.ca/")
+REMOTE_DASHBOARD_FOLDER = REMOTE_DATA_URL / "dashboard"
+
+
+COG_FOLDER = "https://cloud.borealbirds.ca/dashboard/cog_species/"
+PREDICTORS_FOLDER = "https://cloud.borealbirds.ca/dashboard/Predictors/"
+
+LANDBIRD_V5_RESULTS = REMOTE_DASHBOARD_FOLDER / "BAMV5-results.xlsx"
+V5_META_PATH = "https://cloud.borealbirds.ca/dashboard/BAMV5-results.xlsx"
+PREDICTOR_INFLUENCE_PATH = "https://cloud.borealbirds.ca/dashboard/PredictorInfluence.csv"
+SPECIES_DATA_PATH = "https://cloud.borealbirds.ca/dashboard/SpeciesData_Rounded.csv"
+
+
 REMOTE_DATA_FOLDER = "dashboard/"
 BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
+
 DATA_DIR = app_dir / "data"
 CONTENT_DIR = Path(__file__).parent / "content"
-V5_META_PATH = DATA_DIR / "model_v5" / "12_BAMV5-results.xlsx"
-# change V5_META_PATH to the following after the file get uploads to DRAC
-# V5_META_PATH = f"http://206.12.92.143/data/12_BAMV5-results.xlsx" 
+
+
 BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
 COVARIATE_MTDATA = DATA_DIR / "model_v5" / "covariate_metadata_modelevaluation - covariates_label.csv"
 MARGINAL_FX_DIR = DATA_DIR / "model_v5" / "marginaleffects"
