@@ -42,7 +42,7 @@ jobs:
           pip install quartodoc
 
       - name: Build Documentation via Makefile
-        run: make build
+        run: make build-docs
 
       - name: Setup GitHub Pages Environment
         uses: actions/configure-pages@v5
