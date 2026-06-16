@@ -27,22 +27,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install Quarto CLI
+        uses: quarto-dev/quarto-actions/setup@v2
         with:
-          python-version: "3.12"
-          cache: "pip" # cache dependencies
+          version: 'pre-release'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          # Install your app packages, quartodoc, and anything needed to import your modules
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          # Ensure quartodoc is explicitly available if not in requirements.txt
-          pip install quartodoc
+      - name: Set up Conda and Environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: environment.yml
+          activate-environment: bird
+          auto-activate-base: false
 
       - name: Build Documentation via Makefile
-        run: make build-docs
+        # execute commands inside the active Conda environment shell loop
+        shell: bash -el {0}
+        run: |
+          make build-docs
 
       - name: Setup GitHub Pages Environment
         uses: actions/configure-pages@v5
