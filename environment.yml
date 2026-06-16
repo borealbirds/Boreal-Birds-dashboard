@@ -27,3 +27,5 @@ dependencies:
   - geopandas
   - xlsxwriter
   - quartodoc
+  - pip:
+    - griffe<2.0.0
