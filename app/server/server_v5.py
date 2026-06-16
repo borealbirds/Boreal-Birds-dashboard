@@ -715,38 +715,81 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     # ── Download ───────────────────────────
 
-    @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
-    def downloadAll()-> str:
+    @lru_cache(maxsize=1)
+    def get_workbook_bytes() -> bytes:
         """
-        [@render.download] Route requests straight to the monolithic master database file.
+        Download the master workbook from the configured HTTPS endpoint.
+
+        The downloaded file is cached in memory to avoid repeated network
+        requests during the lifetime of the application process.
 
         Returns
         -------
-        str
-            The absolute system file path targeting the complete global workbook.
+        bytes
+            Raw binary contents of the Excel workbook.
         """
+        response = requests.get(V5_META_PATH, timeout=30,)
+        response.raise_for_status()
+        return response.content
 
-        return str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
-
-    @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
-    def downloadFiltered()-> Generator[bytes, None, None]:
+    @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
+    def downloadAll() -> Generator[bytes, None, None]:
         """
-        [@render.download] Compile a multi-sheet filtered Excel workbook on-the-fly.
+        Stream the complete master workbook to the client.
+
+        The workbook is retrieved from the configured HTTPS endpoint and served
+        directly to the user without creating a temporary file on the local
+        filesystem.
 
         Yields
         ------
         bytes
-            In-memory buffered string chunks containing the packed Excel workbook asset data.
+            Binary content of the Excel workbook.
+
+        Notes
+        -----
+        The underlying workbook download is cached by ``get_workbook_bytes()``,
+        reducing repeated network requests for subsequent downloads within the
+        same application process.
         """
-        model_results = str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
-        metadata = pl.read_excel(model_results, sheet_name="metadata")
-        species = pl.read_excel(model_results, sheet_name="species").filter(pl.col("english") == input.species_v5())
-        regions = pl.read_excel(model_results, sheet_name="regions")
-        variables = pl.read_excel(model_results, sheet_name="variables")
-        importance = pl.read_excel(model_results, sheet_name="importance").filter(pl.col("english") == input.species_v5())
-        validation = pl.read_excel(model_results, sheet_name="validation").filter(pl.col("english") == input.species_v5())
-        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(
-            (pl.col("english") == input.species_v5()) & (pl.col("year") == str(input.year_v5()))
+        yield get_workbook_bytes()
+
+    @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
+    def downloadFiltered() -> Generator[bytes, None, None]:
+        """
+        Generate a filtered multi-sheet workbook in memory.
+
+        The source workbook is downloaded from the configured HTTPS endpoint,
+        filtered according to the selected species and year inputs, and written
+        to a new Excel workbook without using intermediate files on disk.
+
+        Yields
+        ------
+        bytes
+            Binary content of the generated Excel workbook.
+
+        Notes
+        -----
+        The source workbook is cached in memory by ``get_workbook_bytes()`` to
+        avoid repeated network requests while the application process is active.
+        """
+
+        workbook_bytes = get_workbook_bytes()
+        metadata = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="metadata")
+        species = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="species").filter(
+            pl.col("english") == input.species_v5()
+        )
+        regions = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="regions")
+        variables = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="variables")
+        importance = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="importance").filter(
+            pl.col("english") == input.species_v5()
+        )
+        validation = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="validation").filter(
+            pl.col("english") == input.species_v5()
+        )
+        abundances = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="abundances").filter(
+            (pl.col("english") == input.species_v5())
+            & (pl.col("year") == str(input.year_v5()))
         )
 
         with io.BytesIO() as buffer:
