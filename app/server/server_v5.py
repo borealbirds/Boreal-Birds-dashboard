@@ -1,15 +1,21 @@
+"""
+Backend analytical server coordination engine for Landbirds Version 5 models.
+
+Orchestrates reactive pipeline computations, updates filtering ranges, 
+handles asynchronous TiTiler spatial metadata statistics collections, and 
+renders localized chart widgets, audio tracks, image grids, and datasets.
+"""
+
 import io
 import json
 import warnings
 from datetime import date
-from functools import lru_cache
 from pathlib import Path
 
 import requests
 import altair as alt
 import polars as pl
 import xlsxwriter
-from shapely.geometry import shape
 
 from ipywidgets import Button, HTML, Layout
 from ipyleaflet import (
@@ -24,19 +30,16 @@ from ipyleaflet import (
     WidgetControl,
 )
 
-from shiny import Inputs, Outputs, Session, reactive, render, ui
+from shiny import Inputs, Outputs, Session, reactive, render, ui, req
 from shinywidgets import render_altair, render_widget
 
-from icons import question_circle_fill
-from shared import (
-    available_regions,
-    available_years,
-    get_tif_path,
-    load_abundance_data,
-    load_region_data,
-    load_species_metadata,
-    load_subregion_boundaries,
-)
+from shared import *
+from modules.map import *
+from modules.media import *
+from utils.birds import *
+from utils.icons import *
+
+# alt.data_transformers.enable("vegafusion")
 
 warnings.filterwarnings(
     "ignore",
@@ -44,172 +47,211 @@ warnings.filterwarnings(
     module="numpy.ma.core"
 )
 
+# log in terminal
+print(f"\n\n\nTitiler API Health Status: \n\tTitiler is healthy: {tiler_is_healthy()}\n\n\n")
+
 birds = load_species_metadata()
 abundances = load_abundance_data()
-subregions = load_subregion_boundaries()
-region_dict = load_region_data().rows_by_key(key="region", named=True, unique=True)
+covariates = load_covariate_metadata()
+IMPOSSIBLE_TO_SEX = impossible_to_sex()
 
-# Live Posit Connect Cloud dynamic map tiler base domain address
-PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
+# ── HELPER FUNCTIONS (Non-reactive) -----───────────────────────────
 
-# Hardcoded fallback center metrics for geographic bounding contexts
-REGION_CENTERS = {
-    "Alaska": [64, -149],
-    "Canada": [58, -103],
-    "Lower48": [47.0, -97.0]
-}
-
-def url_exists(url: str) -> bool:
+def _format_population_value(pop_df: pl.DataFrame) -> str:
     """
-    Ensure url for the file exists in the data host server
+    Extract and format a population estimate numeric value as a clean string.
+
+    Parameters
+    ----------
+    pop_df : pl.DataFrame
+        Filtered data row containing the target population metric column.
+
+    Returns
+    -------
+    str
+        Formatted decimal representation, or an em-dash if missing.
     """
-    try:
-        r = requests.head(url, timeout=10)
-        return r.status_code == 200
-    except Exception:
-        return False
+    pop_raw = pop_df.item(0, 'population_estimate') if len(pop_df) > 0 else None
+    if pop_raw is None:
+        return "—"
+    elif round(pop_raw, 2) == 0.0:
+        return f"{pop_raw:.3f}"
+    return f"{pop_raw:.2f}"
 
-def get_region_gdf(region: str):
-    gdf = subregions
-    alaska_bcr = ["usa2", "usa41423", "usa43", "usa40", "usa5"]
-
-    if region == "Canada":
-        return gdf[gdf["bcr"].str.startswith("can")]
-
-    if region == "Lower48":
-        return gdf[
-            gdf["bcr"].str.startswith("usa") &
-            ~gdf["bcr"].isin(alaska_bcr)
-        ]
-
-    if region == "Alaska":
-        return gdf[gdf["bcr"].isin(alaska_bcr)]
-
-    return gdf
-
-def build_region_layer(region_name: str):
-
-    region_gdf = get_region_gdf(region_name)
-
-    geojson_data = json.loads(
-        region_gdf.to_json(drop_id=True)
-    )
-
-    # precompute zoom/centering for each feature
-    for feature in geojson_data["features"]:
-
-        geom = shape(feature["geometry"])
-        minx, miny, maxx, maxy = geom.bounds
-
-        # center of each bcr
-        cx, cy = geom.centroid.x, geom.centroid.y
-
-        feature["properties"]["_center"] = [cy, cx]
-        feature["properties"]["_bounds"] = [[miny, minx], [maxy, maxx]]
-
-        spanx = maxx - minx
-        spany = maxy - miny
-        feature["properties"]["_spanx"] = spanx
-        feature["properties"]["_spany"] = spany
-
-    layer = GeoJSON(
-        data=geojson_data,
-        style={
-            "color": "black",
-            "weight": 1.25,
-            "fillColor": "white", 
-            "fillOpacity": 0, 
-            "opacity": 0.2,
-        },
-        hover_style={
-            "color": "#00FFFF",
-            "weight": 3,
-            "fillColor": "white", 
-            "fillOpacity": 0, 
-            "opacity": 1, 
-        },
-        name="Subregion Boundaries"
-    )
-
-    # floating info card
-    hover_card = HTML(
-        value="""
-        <div style="
-            padding:8px 10px;
-            background:white;
-            border-radius:6px;
-            box-shadow:0 1px 4px rgba(0,0,0,0.25);
-            font-size:13px;
-            min-width:140px;
-        ">
-            Hover over a subregion
-        </div>
-        """,
-        layout=Layout(margin="0px")
-    )
-
-    hover_control = WidgetControl(
-        widget=hover_card,
-        position="bottomleft"
-    )
-
-    return layer, hover_card, hover_control
-
-def zoom_from_span(span_x, span_y):
-    if not span_x or not span_y:
-        return 4
-    # map height / map width (roughly)
-    aspect = 4 / 9
-    # normalize vertical span into width-equivalent span
-    span_y_normalized = span_y / aspect
-    span = max(span_x, span_y_normalized)
-
-    if span > 30:
-        zoom = 4.2
-    elif span > 25:
-        zoom = 4.5
-    elif span > 23:
-        zoom = 4.7
-    elif span > 16:
-        zoom = 5.2
-    elif span > 10:
-        zoom = 5.5
-    elif span > 8:
-        zoom = 6
-    else:
-        zoom = 6.5
-    print("\n\nspan ", span, " zoom ", zoom)
-    return zoom
+# ── MAIN SERVER LOGIC ──────────────────────────────────────────────
 
 def server_v5(input: Inputs, output: Outputs, session: Session):
     """
-    Main server logic for the Model V5 tab, managing reactive data flow 
-    and spatial visualization.
+    Execute reactive data flow state logic for the Version 5 model panel.
+
+    Manages calculations across distinct application pipelines including Leaflet 
+    map view instances, dynamic dataset slicing using Polars, reactive chart rendering 
+    via Altair, media galleries, and workbook extraction routines.
+
+    Parameters
+    ----------
+    input : Inputs
+        Reactive session input dictionary container mapping active interface selections.
+    output : Outputs
+        Reactive renderer object registry controlling interface output nodes.
+    session : Session
+        The current active browser runtime and communication link execution loop.
+
+    Returns
+    -------
+    None
     """
+
+    # Reactive Calcs
+
+    @reactive.calc
+    def current_bird_meta() -> pl.DataFrame:
+        """
+        [@reactive.calc] Slice global metadata for the selected bird species.
+
+        Returns
+        -------
+        pl.DataFrame
+            A single-row data slice matching the current active English common name.
+        """
+        return birds.filter(pl.col("english") == input.species_v5())
+
+    @reactive.calc
+    def population_data() -> pl.DataFrame:
+        """
+        [@reactive.calc] Extract regional abundance data filtered by species.
+
+        Returns
+        -------
+        pl.DataFrame
+            Complete temporal and regional abundance rows for the selected species.
+        """
+        return abundances.filter(pl.col("english") == input.species_v5())
+
+    @reactive.calc
+    def current_population_slice() -> pl.DataFrame:
+        """
+        [@reactive.calc] Extract a single population row for specific filters.
+
+        Filters the collection by active species, selected region, and year inputs.
+
+        Returns
+        -------
+        pl.DataFrame
+            The unique intersection data record matching all active layout nodes.
+        """
+        return abundances.filter(
+            (pl.col("english") == input.species_v5()) &
+            (pl.col("region")  == input.region_v5()) &
+            (pl.col("year")    == str(input.year_v5()))
+        )
+
+    @reactive.calc
+    def file_url() -> str | None:
+        """
+        [@reactive.calc] Resolve the absolute remote URL for the target COG.
+
+        Returns
+        -------
+        str or None
+            The structured HTTP URL to the target cloud-optimized GeoTIFF, or None.
+        """
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id") if len(bird) > 0 else None
+        region = input.region_v5()
+        year = input.year_v5()
+
+        if not species_id or not region or not year:
+            return None
+        return get_tif_path(species_id, region, int(year))
+
+    @reactive.calc
+    def raster_info() -> dict:
+        """
+        [@reactive.calc] Query min/max data stats from the remote TiTiler metadata API.
+
+        Returns
+        -------
+        dict
+            Status payload dictionary containing 'status' strings and min/max bounds.
+        """
+        url = file_url()
+        if url is None:
+            return {"status": "loading"}
+        if not url or not url_exists(url):
+            return {"status": "missing"}
+        if not tiler_is_healthy():
+            return {"status": "tiler_unavailable"}
+
+        try:
+            encoded_cog = requests.utils.quote(url, safe="")
+            stats_url = f"{PRODUCTION_TILER_BASE}/cog/statistics?url={encoded_cog}"
+            res = requests.get(stats_url, timeout=5)
+            res.raise_for_status()
+
+            stats = res.json()
+            band_key = next(iter(stats), None)
+            if not band_key:
+                return {"status": "error"}
+
+            band = stats[band_key]
+            return {
+                "status": "ready",
+                "min": float(band.get("min", 0)),
+                "max": float(band.get("max", 1))
+            }
+        except Exception as e:
+            print(f"Statistics request failed: {e}")
+            return {"status": "tiler_starting"}
+
+
+    # UI updates
 
     @reactive.effect
     def _set_map_default():
-        """Force MAP view on session init."""
+        """[@reactive.effect] Enforce default 'map' radio view selection on initial connection."""
         ui.update_radio_buttons("view_toggle", selected="map")
 
-    @render.ui
-    def selected_bird():
-        bird   = birds.filter(pl.col("english") == input.species_v5())
-        region = input.region_v5() or ""
-        year   = int(input.year_v5())
+    @reactive.effect
+    def _update_regions():
+        """[@reactive.effect] Update the dropdown region list choices based on species data availability."""
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id") if len(bird) > 0 else None
 
-        pop_df = abundances.filter(
-            (pl.col("english") == input.species_v5()) &
-            (pl.col("region")  == region) &
-            (pl.col("year") == str(year))
-        )
-        pop_raw   = pop_df.item(0, 'population_estimate') if len(pop_df) > 0 else None
-        if pop_raw is None:
-            pop_value = "—"
-        elif round(pop_raw, 2) == 0.0:
-            pop_value = f"{pop_raw:.3f}"
-        else:
-            pop_value = f"{pop_raw:.2f}"
+        if not species_id:
+            ui.update_select("region_v5", choices=[], selected=None)
+            return
+
+        regions = available_regions(species_id)
+        selected_default = "Canada" if regions and "Canada" in regions else (regions[0] if regions else None)
+        ui.update_select("region_v5", choices=regions, selected=selected_default)
+
+    @reactive.effect
+    def _update_year_range():
+        """[@reactive.effect] Update slider range boundaries based on temporal data availability."""
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id") if len(bird) > 0 else None
+        region = input.region_v5()
+
+        if not species_id or not region:
+            return
+
+        years = available_years(species_id, region)
+        if not years:
+            return
+
+        ui.update_slider("year_v5", min=min(years), max=max(years), value=max(years))
+
+
+    # Bird info UI
+
+    @render.ui
+    def selected_bird()-> ui.Tag:
+        """[@render.ui] Render the header component displaying names and active population bounds."""
+        bird = current_bird_meta()
+        pop_df = current_population_slice()
+        pop_value = _format_population_value(pop_df)
+        region = input.region_v5()
 
         return ui.div(
             ui.div(
@@ -232,104 +274,25 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
 
     @render.ui
-    def sidebar_bird_image_v5():
-        bird        = birds.filter(pl.col("english") == input.species_v5())
-        species_id  = bird.item(0, "id")
-        common_name = bird.item(0, "english")
-        folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
-        img_dir     = Path(__file__).parent.parent / "www" / "img" / folder_name
-        if img_dir.exists():
-            jpgs = sorted(img_dir.glob("*.jpg"))
-            if jpgs:
-                return ui.tags.img(
-                    src=f"img/{folder_name}/{jpgs[0].name}",
-                    class_="bird-image-sidebar",
-                    alt=common_name,
-                    onerror="this.style.display='none'",
-                )
+    def sidebar_bird_image_v5()-> ui.Tag:
+        """[@render.ui] Render the sidebar profile picture for the active species if it exists."""
+        bird = current_bird_meta()
+        if len(bird) == 0:
+            return ui.span()
+            
+        img_info = get_sidebar_image_path(bird.item(0, "id"), bird.item(0, "english"))
+        if img_info:
+            src_path, folder_name = img_info
+            return ui.tags.img(
+                src=src_path,
+                class_="bird-image-sidebar",
+                alt=bird.item(0, "english"),
+                onerror="this.style.display='none'",
+            )
         return ui.span()
 
-    @reactive.effect
-    def _update_regions():
-        """Update the region dropdown choices dynamically based on species availability."""
-        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
 
-        if not species_id:
-            ui.update_select("region_v5", choices=[], selected=None)
-            return
-
-        regions = available_regions(species_id)
-
-        ui.update_select(
-            "region_v5",
-            choices=regions,
-            selected=(
-                "Canada" if regions and "Canada" in regions else (
-                    regions[0] if regions else None
-                )
-            ),
-        )
-
-    @reactive.effect
-    def _update_year_range():
-        """Update the slider range and default value based on available temporal data."""
-        species_id = birds.filter(pl.col("english") == input.species_v5()).item(0, "id")
-        region = input.region_v5()
-
-        if not species_id or not region:
-            return
-
-        years = available_years(species_id, region)
-
-        if not years:
-            return
-
-        ui.update_slider(
-            "year_v5",
-            min=min(years),
-            max=max(years),
-            value=max(years),
-        )
-    
-    @reactive.calc
-    def file_url():
-        """Construct the remote URL string path for the selected raster."""
-        species_id = birds.filter(
-            pl.col("english") == input.species_v5()
-        ).item(0, "id")
-
-        region = input.region_v5()
-        year = int(input.year_v5())
-
-        if not species_id or not region or not year:
-            return None
-
-        return get_tif_path(species_id, region, int(year))
-
-    @reactive.calc
-    def raster_statistics():
-        """Query min/max data statistics remotely using the TiTiler metadata API."""
-        url = file_url()
-        if not url or not url_exists(url):
-            return {"min": 0.0, "max": 1.0}
-            
-        try:
-            encoded_cog = requests.utils.quote(url, safe="")
-            # Query the statistics endpoint exposed by the tiler
-            stats_url = f"{PRODUCTION_TILER_BASE}/cog/statistics?url={encoded_cog}"
-            res = requests.get(stats_url, timeout=5).json()
-            
-            band_key = list(res.keys())[0] if res else None
-            if band_key:
-                band_stats = res[band_key]
-                return {
-                    "min": float(band_stats.get("min", 0.0)),
-                    "max": float(band_stats.get("max", 1.0))
-                }
-            return {"min": 0.0, "max": 1.0}
-        except Exception as e:
-            print(f"Error fetching TiTiler statistics: {e}")
-            return {"min": 0.0, "max": 1.0}
+    # Map Rendering
     
     REGION_LAYERS = {
         "Canada": build_region_layer("Canada"),
@@ -338,42 +301,42 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     }
 
     @render_widget
-    def map_widget():
-        """Generate the interactive map widget leveraging the remote cloud tiler engine."""
+    def map_widget()-> Map:
+        """
+        [@render_widget] Build an interactive Ipyleaflet Map map layout object.
+
+        Fetches dynamic PNG tiles from Titiler API, draws boundaries, hooks up
+        hover listener tooltips, and binds click-to-zoom matrix overrides.
+
+        Returns
+        -------
+        Map
+            The fully configured interactive geospatial visualization frame instance.
+        """
+        info = raster_info()
+        if info["status"] != "ready":
+            return get_map_error_html(info["status"])
+
         url = file_url()
-
-        if not url:
-            return HTML("<p>Loading / No data available</p>")
-
-        if not url_exists(url):
-            return HTML("<p>Raster not found on data server</p>")
-
         encoded_cog = requests.utils.quote(url, safe="")
+        region = input.region_v5()
         
-        # center on the selected region
-        map_center = REGION_CENTERS.get(input.region_v5(), [60.0, -110.0])
-
-        # Basemaps
+        # Basemaps Setup
         positron = basemap_to_tiles(basemaps.CartoDB.Positron)
-        positron.base = True
-        positron.name = "Positron (minimal)"
-        
+        positron.base, positron.name = True, "Positron (minimal)"
+
         osm = basemap_to_tiles(basemaps.OpenStreetMap.Mapnik)
-        osm.base = True
-        osm.name = "Open Street Map (default)"
+        osm.base, osm.name = True, "Open Street Map (default)"
         
         esri = basemap_to_tiles(basemap=basemaps.Esri.WorldImagery)
-        esri.base = True
-        esri.name = "World Imagery (satellite)"
+        esri.base, esri.name = True, "World Imagery (satellite)"
 
-        # Initialize core map interface
+        # initialize map
+        map_center = REGION_CENTERS.get(region, [60.0, -110.0])
         m = Map(layers=[esri, positron, osm], center=map_center, zoom=4, scroll_wheel_zoom=True)
 
-        # generate legend utilizing remote data calculations
-        stats = raster_statistics()
-        rmin = stats["min"]
-        rmax = stats["max"]
-
+        # generate legend using stats from titiler
+        rmin, rmax = info["min"], info["max"]
         legend = WidgetControl(
             widget=HTML(f"""
             <div class="map-legend">
@@ -395,19 +358,12 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             f"&rescale={rmin},{rmax}"
         )
 
-        mean_density = TileLayer(
-            url=tile_string,
-            name="Mean Density",
-        )
-
+        mean_density = TileLayer(url=tile_string, name="Mean Density")
         m.add(mean_density)
         m.add(legend)
 
-        region = input.region_v5()
-
         if region in REGION_LAYERS:
             region_layer, hover_card, hover_control = REGION_LAYERS[region]
-
             default_center = REGION_CENTERS.get(region, [60, -110])
             default_zoom = 4
 
@@ -427,7 +383,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                     min-width:160px;
                 ">
                     <div>
-                        {region_dict[bcr]['name_adj']}
+                        {REGION_DICT[bcr]['name_adj']}
                     </div>
                 </div>
                 """
@@ -473,26 +429,27 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
         return m
 
-    @reactive.calc
-    def population_data():
-        return abundances.filter(
-            (pl.col("english") == input.species_v5())
-        )
+
+    # ── TABULAR DATA ───────────────────────────────────────────────────
 
     @render.data_frame
-    def population_size():
+    def population_size()-> render.DataGrid:
+        """
+        [@render.data_frame] Output sorted tabular records using an analytical grid component.
+
+        Returns
+        -------
+        DataGrid
+            Sorted metrics collection with active background rows highlighted.
+        """
         region = input.region_v5()
-        year   = int(input.year_v5())
+        year = int(input.year_v5())
 
         if not region:
             return render.DataGrid(pl.DataFrame(), selection_mode="rows")
 
-        df = abundances.filter(
-            (pl.col("english") == input.species_v5()) &
-            # (pl.col("region")  == region) &
-            (pl.col("year")    == str(year))
-        )
 
+        df = population_data().filter(pl.col("year") == str(year))
         df = df.select([
             "year",
             "region", 
@@ -525,15 +482,14 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── INFO TAB ───────────────────────────────────────────────────────
 
     @render.ui
-    def species_info():
-        bird        = birds.filter(pl.col("english") == input.species_v5())
-        species_id  = bird.item(0, "id")
-        scientific  = bird.item(0, "scientific")
-        french      = bird.item(0, "french")
-        family      = bird.item(0, "family")
-
-        ebird_url = f"https://ebird.org/species/{species_id.lower()}"
-        bow_url   = f"https://birdsoftheworld.org/bow/species/{species_id.lower()}"
+    def species_info()-> ui.Tag:
+        """[@render.ui] Render taxonomic info strings alongside contextual search hyperlinks."""
+        bird = current_bird_meta()
+        common_name = bird.item(0, "english")
+        species_id = bird.item(0, "id")
+        scientific = bird.item(0, "scientific")
+        french = bird.item(0, "french")
+        family = bird.item(0, "family")
 
         def info_row(label, value, italic=False):
             return ui.div(
@@ -550,9 +506,10 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             ui.div(
                 ui.span("More Information", class_="info-label"),
                 ui.div(
-                    ui.tags.a("eBird ↗",       href=f"https://ebird.org/search?q={scientific.replace(' ', '+')}", target="_blank", class_="info-link"),
-                    ui.tags.a("Xeno-Canto ↗",  href=f"https://xeno-canto.org/species/{scientific.replace(' ', '-')}", target="_blank", class_="info-link"),
-                    ui.tags.a("Wikipedia ↗",   href=f"https://en.wikipedia.org/wiki/{scientific.replace(' ', '_')}", target="_blank", class_="info-link"),
+                    ui.tags.a("eBird ↗", href=f"https://ebird.org/search?q={scientific.replace(' ', '+')}", target="_blank", class_="info-link"),
+                    ui.tags.a("NatureCounts ↗", href=f"https://naturecounts.ca/nc/socb-epoc/search.jsp?qstr={common_name}", target="_blank", class_="info-link"),
+                    ui.tags.a("Wikipedia ↗", href=f"https://en.wikipedia.org/wiki/{scientific.replace(' ', '_')}", target="_blank", class_="info-link"),
+                    ui.tags.a("Xeno-Canto ↗", href=f"https://xeno-canto.org/species/{scientific.replace(' ', '-')}", target="_blank", class_="info-link"),
                 ),
                 class_="info-row info-row-links",
             ),
@@ -562,17 +519,18 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── IMAGES TAB ─────────────────────────────────────────────────────
 
     @render.ui
-    def species_images():
-        bird            = birds.filter(pl.col("english") == input.species_v5())
-        species_id      = bird.item(0, "id")
-        common_name     = bird.item(0, "english")
-        french_name     = bird.item(0, "french")
+    def species_images()-> ui.Tag:
+        """[@render.ui] Assemble a masonry layout grid sorted by biological sex categories."""
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id")
+        common_name = bird.item(0, "english")
+        french_name = bird.item(0, "french")
         try:
             scientific_name = bird.item(0, "scientific")
         except Exception:
             scientific_name = ""
         folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
-        img_dir     = Path(__file__).parent.parent / "www" / "img" / folder_name
+        img_dir = Path(__file__).parent.parent / "www" / "img" / folder_name
 
         if not img_dir.exists():
             return ui.p("No images available for this species.", class_="text-muted p-3")
@@ -580,25 +538,23 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         photos = []
         for jpg in sorted(img_dir.glob("*.jpg")):
             meta_path = img_dir / f"{jpg.stem}_metadata.json"
-            sex, attribution = "unknown", ""
+            sex, attribution, obs_url, license = "unknown", "", "", ""
             if meta_path.exists():
                 try:
-                    meta        = json.loads(meta_path.read_text())
-                    sex         = meta.get("sex", "unknown")
+                    meta = json.loads(meta_path.read_text())
+                    sex = meta.get("sex", "unknown")
                     attribution = meta.get("attribution", "")
+                    obs_url = meta.get("obs_url", "")
+                    license = meta.get("license", "")
                 except Exception:
                     pass
-            obs_url = ""
-            license = ""
-            if meta_path.exists():
-                try:
-                    m2       = json.loads(meta_path.read_text())
-                    obs_url  = m2.get("obs_url", "")
-                    license  = m2.get("license", "")
-                except Exception:
-                    pass
-            photos.append({"file": jpg.name, "sex": sex, "attribution": attribution,
-                           "obs_url": obs_url, "license": license})
+            photos.append({
+                "file": jpg.name, 
+                "sex": sex, 
+                "attribution": attribution, 
+                "obs_url": obs_url, 
+                "license": license
+            })
 
         if not photos:
             return ui.p("No images found.", class_="text-muted p-3")
@@ -626,137 +582,80 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                         ),
                         ui.span(
                             SEX_SYMBOL.get(p["sex"], "?"),
-                            class_=f"sex-badge sex-{p['sex']}",
-                        ) if with_badges else ui.span(),
+                            class_=f"sex-badge sex-{p['sex']}"
+                        ) if with_badges and common_name not in IMPOSSIBLE_TO_SEX else ui.span(),
                         class_="photo-cell",
-                    )
-                    for p in items
+                    ) for p in items
                 ],
                 class_="photo-grid",
             )
 
-        male_photos   = [p for p in photos if p["sex"] == "male"]
-        female_photos = [p for p in photos if p["sex"] == "female"]
-
-        lightbox_js = ui.HTML("""
-<script>
-if (!document.getElementById('species-lightbox')) {
-    document.body.insertAdjacentHTML('beforeend', `
-        <div id="species-lightbox" class="lb-overlay" onclick="if(event.target===this)closeLb()">
-            <button class="lb-close" onclick="closeLb()">✕</button>
-            <button class="lb-arrow lb-prev" onclick="lbNav(-1)">&#8249;</button>
-            <div class="lb-content">
-                <img id="lb-img" class="lb-main-img">
-                <div id="lb-counter" class="lb-counter"></div>
-                <div id="lb-meta" class="lb-meta"></div>
-            </div>
-            <button class="lb-arrow lb-next" onclick="lbNav(1)">&#8250;</button>
-        </div>
-    `);
-    document.addEventListener('keydown', e => {
-        const lb = document.getElementById('species-lightbox');
-        if (lb && lb.style.display !== 'none') {
-            if (e.key === 'ArrowLeft')  lbNav(-1);
-            if (e.key === 'ArrowRight') lbNav(1);
-            if (e.key === 'Escape')     closeLb();
-        }
-    });
-}
-
-window.openSpeciesLightbox = function(el) {
-    const grid = el.closest('.photo-grid');
-    const imgs = Array.from(grid.querySelectorAll('.species-photo'));
-    window._lbPhotos = imgs.map(i => ({
-        src:         i.src,
-        sex:         i.dataset.sex || '',
-        attribution: i.dataset.attribution || '',
-        obsUrl:      i.dataset.obsUrl || '',
-        license:     i.dataset.license || '',
-        common:      i.dataset.common || '',
-        french:      i.dataset.french || '',
-        scientific:  i.dataset.scientific || '',
-    }));
-    window._lbIdx = imgs.indexOf(el);
-    updateLb();
-    document.getElementById('species-lightbox').style.display = 'flex';
-};
-
-window.lbNav = function(dir) {
-    window._lbIdx = (window._lbIdx + dir + window._lbPhotos.length) % window._lbPhotos.length;
-    updateLb();
-};
-
-window.closeLb = function() {
-    document.getElementById('species-lightbox').style.display = 'none';
-};
-
-function updateLb() {
-    const p   = window._lbPhotos[window._lbIdx];
-    const SEX = { male: '♂ Male', female: '♀ Female', unknown: '' };
-    document.getElementById('lb-img').src     = p.src;
-    document.getElementById('lb-counter').textContent =
-        (window._lbIdx + 1) + ' – ' + window._lbPhotos.length;
-
-    const sexTag  = SEX[p.sex] || '';
-    const license = p.license  ? ' · ' + p.license : '';
-    const link    = p.obsUrl   ? '<a href="' + p.obsUrl + '" target="_blank" class="lb-link">iNaturalist ↗</a>' : '';
-    document.getElementById('lb-meta').innerHTML =
-        '<div class="lb-species-row">' +
-            (p.common     ? '<span class="lb-common">'     + p.common     + '</span>' : '') +
-            (p.scientific ? '<em  class="lb-scientific">'  + p.scientific + '</em>'   : '') +
-            (sexTag       ? '<span class="lb-sex-label">'  + sexTag       + '</span>' : '') +
-        '</div>' +
-        '<div class="lb-attr-row">' +
-            (p.attribution ? '© ' + p.attribution + license : '') +
-            (link          ? '&nbsp;&nbsp;' + link : '') +
-        '</div>';
-}
-</script>
-""")
+        male_photos = [p for p in photos if p["sex"] == "male" and common_name not in IMPOSSIBLE_TO_SEX]
+        female_photos = [p for p in photos if p["sex"] == "female" and common_name not in IMPOSSIBLE_TO_SEX]
 
         return ui.div(
-            lightbox_js,
+            lightbox_script(),
             ui.HTML("""
                 <label class="tag-toggle-floating">
                     <input type="checkbox"
                         onchange="this.closest('.images-tab-wrapper').classList.toggle('show-sex-tags', this.checked)">
                     ♂♀ labels
                 </label>
-            """),
+            """) if common_name not in IMPOSSIBLE_TO_SEX else None,
+            ui.p("Species that are virtually impossible to sex in the field have been grouped together.") if common_name in IMPOSSIBLE_TO_SEX else None,
             ui.navset_tab(
-                ui.nav_panel(f"All ({len(photos)})",          photo_grid(photos, with_badges=True)),
-                ui.nav_panel(f"Male ({len(male_photos)})",    photo_grid(male_photos)),
-                ui.nav_panel(f"Female ({len(female_photos)})", photo_grid(female_photos)),
+                ui.nav_panel(f"All ({len(photos)})", photo_grid(photos, with_badges=True)),
+                *( [ui.nav_panel(f"Male ({len(male_photos)})", photo_grid(male_photos))] if male_photos else []),
+                *( [ui.nav_panel(f"Female ({len(female_photos)})", photo_grid(female_photos))] if female_photos else []),
             ),
             class_="images-tab-wrapper species-images-container",
         )
 
-    # ── SONGS TAB ──────────────────────────────────────────────────────
+    # ── SOUNDS TAB ──────────────────────────────────────────────────────
 
     @render.ui
-    def species_songs():
-        bird        = birds.filter(pl.col("english") == input.species_v5())
-        species_id  = bird.item(0, "id")
+    def species_songs()-> ui.Tag:
+        """[@render.ui] Construct an audio player layout linked to client-side WaveSurfer timelines."""
+        bird = current_bird_meta()
+        species_id = bird.item(0, "id")
         common_name = bird.item(0, "english")
+        scientific_name = bird.item(0, "scientific") if "scientific" in bird.columns else ""
+        
         folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
-        audio_dir   = Path(__file__).parent.parent / "www" / "audio" / folder_name
+        audio_dir = Path(__file__).parent.parent / "www" / "audio" / folder_name
 
         if not audio_dir.exists():
-            return ui.p("No songs available for this species.", class_="text-muted p-3")
+            return ui.p("No sounds available for this species.", class_="text-muted p-3")
 
         audio_files = sorted(audio_dir.glob("*.mp3"))[:5]
         if not audio_files:
             return ui.p("No audio files found.", class_="text-muted p-3")
 
+        # Load metadata keyed by song index (first segment of filename)
+        meta_map = {}
+        for mf in audio_dir.glob("*_metadata.json"):
+            try:
+                meta_map[mf.name.split("_")[0]] = json.loads(mf.read_text())
+            except Exception:
+                pass
+
         songs = [
             {
-                "wsId":  f"ws-{species_id}-{i}",
+                "wsId": f"ws-{species_id}-{i}",
                 "specId": f"spec-{species_id}-{i}",
-                "btnId":  f"btn-{species_id}-{i}",
-                "src":    f"/audio/{folder_name}/{f.name}",
-                "label":  f"Song {i}",
-            }
-            for i, f in enumerate(audio_files, 1)
+                "metaId": f"meta-{species_id}-{i}",
+                "btnId": f"btn-{species_id}-{i}",
+                "src": f"/audio/{folder_name}/{f.name}",
+                "label": f"Sound {i}",
+                "commonName": common_name,
+                "scientificName": scientific_name,
+                "recordist": (m := meta_map.get(str(i), {})).get("recordist", ""),
+                "country": m.get("country", ""),
+                "date": m.get("date", ""),
+                "quality": m.get("quality", ""),
+                "license": m.get("license", ""),
+                "xc_url": m.get("xeno_canto_url", "") or m.get("obs_url", ""),
+            } for i, f in enumerate(audio_files, 1)
         ]
 
         song_blocks = [
@@ -771,102 +670,31 @@ function updateLb() {
                     id=s["wsId"],
                     class_="waveform-container",
                 ),
-                ui.div(
-                    ui.HTML('<div class="ws-loading ws-loading-spec">Computing spectrogram…</div>'),
-                    id=s["specId"],
-                    class_="spectrogram-container",
-                ),
-                ui.tags.button(
-                    "⤢  Expand spectrogram",
-                    id=f"expand-{s['specId']}",
-                    class_="spec-expand-btn",
-                    onclick=f"toggleSpec('{s['specId']}', this)",
-                ),
+                ui.div(id=s["specId"], class_="spectrogram-container"),
+                ui.div(id=s["metaId"], class_="sound-meta"),
                 class_="song-block",
-            )
-            for s in songs
+            ) for s in songs
         ]
 
-        songs_json = json.dumps(songs)
-
-        init_script = f"""
-<script>
-(async function() {{
-    try {{
-        await new Promise(r => setTimeout(r, 200));
-        const {{ default: WaveSurfer }}  = await import('https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js');
-        const {{ default: Spectrogram }} = await import('https://unpkg.com/wavesurfer.js@7/dist/plugins/spectrogram.esm.js');
-
-        window.toggleSpec = function(specId, btn) {{
-            const el = document.getElementById(specId);
-            const expanded = el.classList.toggle('spec-expanded');
-            btn.textContent = expanded ? '⤡  Collapse spectrogram' : '⤢  Expand spectrogram';
-        }};
-
-        const songs = {songs_json};
-        for (const song of songs) {{
-            const wsEl   = document.getElementById(song.wsId);
-            const specEl = document.getElementById(song.specId);
-            const btn    = document.getElementById(song.btnId);
-            if (!wsEl || !specEl) continue;
-            if (wsEl._ws) {{ try {{ wsEl._ws.destroy(); }} catch(e) {{}} }}
-
-            const ws = WaveSurfer.create({{
-                container:     wsEl,
-                waveColor:     'rgba(59,82,139,0.8)',
-                progressColor: '#153B40',
-                cursorColor:   '#ff4444',
-                cursorWidth:   2,
-                height:        56,
-                normalize:     true,
-                plugins: [
-                    Spectrogram.create({{
-                        container:    specEl,
-                        labels:       true,
-                        height:       200,
-                        frequencyMax: 10000,
-                        fftSamples:   1024,
-                    }})
-                ],
-            }});
-            ws.load(song.src);
-            wsEl._ws = ws;
-
-            // Remove loading placeholders once ready
-            ws.on('decode', () => {{
-                wsEl.querySelector('.ws-loading')?.remove();
-                specEl.querySelector('.ws-loading')?.remove();
-            }});
-
-            if (btn) {{
-                btn.addEventListener('click', () => ws.playPause());
-                ws.on('play',   () => btn.textContent = '⏸  Pause');
-                ws.on('pause',  () => btn.textContent = '▶  Play');
-                ws.on('finish', () => btn.textContent = '▶  Play');
-            }}
-
-            specEl.style.position = 'relative';
-            const cursor = document.createElement('div');
-            cursor.style.cssText = 'position:absolute;top:0;left:0;width:2px;height:100%;background:rgba(255,68,68,0.85);pointer-events:none;z-index:10;';
-            specEl.appendChild(cursor);
-            ws.on('timeupdate', t => {{
-                const dur = ws.getDuration();
-                if (dur) cursor.style.left = (t/dur*100)+'%';
-            }});
-        }}
-    }} catch(e) {{ console.error('WaveSurfer init error:', e); }}
-}})();
-</script>"""
+        sounds_json = json.dumps(songs)
 
         return ui.div(
             *song_blocks,
-            ui.HTML(init_script),
+            sound_script(sounds_json),
             class_="songs-container",
         )
     
     # ── Chart details ───────────────────────────────────────────────────────
     @render_altair
-    def population_chart():
+    def population_chart()-> alt.Chart:
+        """
+        [@render_altair] Build a scatter plot of regional population totals with x-axis in symlog scale.
+
+        Returns
+        -------
+        Chart
+            An Altair object plotting points alongside bootstrap variation bands.
+        """
 
         df = population_data()
 
@@ -888,8 +716,8 @@ function updateLb() {
                 legend=alt.Legend(title="Country")
             ),
         ).transform_calculate(
-            region_name=f"{region_dict}[datum.region].name_adj",
-            country_name=f"{region_dict}[datum.region].country"
+            region_name=f"{REGION_DICT}[datum.region].name_adj",
+            country_name=f"{REGION_DICT}[datum.region].country"
         )
 
         nearest = alt.selection_point(
@@ -918,7 +746,7 @@ function updateLb() {
                 alt.Tooltip("population_estimate:Q", title="Population Estimate"),
                 alt.Tooltip("population_lower:Q", title="Lower Estimate"),
                 alt.Tooltip("population_upper:Q", title="Upper Estimate"),
-        ]
+            ]
         ).add_params(nearest)
 
         error_bars = points.mark_rule().encode(
@@ -931,13 +759,19 @@ function updateLb() {
                 f"Regional Population Estimates for the {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
             ),
-            width="container",
-            height=750
+            width="container", height=750
         )
 
     @render_altair
-    def density_chart():
+    def density_chart()-> alt.Chart:
+        """
+        [@render_altair] Build a scatter plot mapping estimated male density indexes.
 
+        Returns
+        -------
+        Chart
+            An Altair point graph displaying regional bird densities.
+        """
         df = population_data()
 
         points = alt.Chart(df).mark_point(
@@ -957,8 +791,8 @@ function updateLb() {
                 legend=alt.Legend(title="Country")
             ),
         ).transform_calculate(
-            region_name=f"{region_dict}[datum.region].name_adj",
-            country_name=f"{region_dict}[datum.region].country"
+            region_name=f"{REGION_DICT}[datum.region].name_adj",
+            country_name=f"{REGION_DICT}[datum.region].country"
         )
 
         nearest = alt.selection_point(
@@ -987,7 +821,7 @@ function updateLb() {
                 alt.Tooltip("density_estimate:Q", title="Density Estimate"),
                 alt.Tooltip("density_lower:Q", title="Lower Estimate"),
                 alt.Tooltip("density_upper:Q", title="Upper Estimate"),
-        ]
+            ]
         ).add_params(nearest)
 
         error_bars = points.mark_rule().encode(
@@ -1000,18 +834,103 @@ function updateLb() {
                 f"Regional Density Estimates for {input.species_v5()}",
                 subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
             ),
-            width="container",
-            height=750
+            width="container", height=750
         )
-    
+
+
+    # ── COVARIATE FILTER & MARGINAL EFFECTS ───────────────────────────
+
+    @render.ui
+    def marginal_fx_filter()-> ui.Tag:
+        """[@render.ui] Render variable select dropdown constraints for covariate analyses."""
+        cov_choices = sorted(covariates.get_column("name").unique().to_list())
+        # cov_choices.append("year")
+        res_choices = covariates.get_column("prediction_resolution").unique().to_list()
+
+        return ui.layout_columns(
+            ui.input_select(
+                id="covariate_filter",
+                label="Select Covariate",
+                choices=cov_choices
+            ),
+            ui.input_select(
+                id="resolution_filter",
+                label="Select Resolution",
+                choices=res_choices
+            ),
+            col_widths=(12, 12)
+        )
+
+    @render_altair
+    def marginal_fx_chart()-> alt.Chart:
+        """
+        [@render_altair] Plot binned marginal effect parameters across bird-co-variates.
+
+        Returns
+        -------
+        Chart
+            An Altair regression plot charting density responses against covariates.
+        """
+        req(
+            input.covariate_filter(), 
+            input.resolution_filter(), 
+            input.species_v5()
+        )
+        
+        bird = current_bird_meta()
+        bird_code = bird.item(0, "id") if len(bird) > 0 else ""
+
+        cov_vars = covariates.filter(
+            (pl.col("name") == input.covariate_filter()) & 
+            (pl.col("prediction_resolution") == input.resolution_filter())
+        ).get_column("variable").to_list()
+
+        fx_df = get_cov_fx_data(cov_vars).filter(pl.col("species") == bird_code)
+        viz_df = fx_df.with_columns(pl.col("x").round(2)).group_by(["bcr", "x"]).agg(pl.col("y").mean().alias("mean_y"))
+
+        points = alt.Chart(viz_df).mark_point().encode(
+            alt.X("x:N")
+                .title(f"Covariate: {input.covariate_filter()}")
+                .bin(maxbins=20),
+            alt.Y("mean_y:Q")
+                .title("Marginal Effect on Density")
+                .axis(labelLimit=0),
+            alt.Color(
+                "bcr:N",
+                legend=alt.Legend(title="BCR")
+            ),
+        )
+
+        # trendline = points.transform_regression(
+        #     'x', 'y'
+        # ).mark_line(size=3)
+
+        return (points)
+
+
     @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
-    def downloadAll():
+    def downloadAll()-> str:
+        """
+        [@render.download] Route requests straight to the monolithic master database file.
+
+        Returns
+        -------
+        str
+            The absolute system file path targeting the complete global workbook.
+        """
 
         return str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
-    def downloadFiltered():
+    def downloadFiltered()-> Generator[bytes, None, None]:
+        """
+        [@render.download] Compile a multi-sheet filtered Excel workbook on-the-fly.
 
+        Yields
+        ------
+        bytes
+            In-memory buffered string chunks containing the packed Excel workbook asset data.
+        """
         model_results = str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
         metadata = pl.read_excel(model_results, sheet_name="metadata")
         species = pl.read_excel(model_results, sheet_name="species").filter(pl.col("english") == input.species_v5())
@@ -1036,7 +955,8 @@ function updateLb() {
             yield buffer.getvalue()
 
     @render.ui
-    def download_filtered_btn():
+    def download_filtered_btn()-> ui.Tag:
+        """[@render.ui] Render a custom contextual export execution trigger button for the bird model."""
         species = input.species_v5()
 
         return ui.download_button(

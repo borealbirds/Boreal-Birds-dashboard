@@ -1,3 +1,10 @@
+"""
+Methods and modeling methodologies layout views.
+
+Loads statistical methodology disclosures from an external YAML manifest to 
+dynamically assemble an interactive user interface layout panel.
+"""
+
 from shiny import ui
 
 from shared import read_md, read_yaml
@@ -8,20 +15,32 @@ methods_accordion = ui.accordion(
     *[
         ui.accordion_panel(
             section["section"],
-            ui.markdown(read_md(section["file"]))
+            ui.markdown(read_md(section["file"])),
         )
         for section in methods_sections
     ],
     open=None # opens the first section by default
 )
 
-def methods_tab():
+def methods_tab() -> ui.NavPanel:
+    """
+    Build the methods interface container layout.
+
+    Arranges introductory markdown sheets alongside an interactive accordion grid
+    with responsive grid-column widths optimized for varying viewport break-points.
+
+    Returns
+    -------
+    NavPanel
+        The completed user interface tab panel holding methodology records.
+    """
     return ui.nav_panel(
         "Methods",
         ui.layout_columns(
             ui.card(
                 ui.card_header("Our Methods - An Overview"),
                 ui.markdown(read_md("methods/methods-intro.md")),
+                class_="methods-info"
             ),
             ui.card(
                 methods_accordion,

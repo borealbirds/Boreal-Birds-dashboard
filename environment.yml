@@ -25,4 +25,5 @@ dependencies:
   - nbclient
   - bs4
   - geopandas
-
+  - xlsxwriter
+  - quartodoc

@@ -1,0 +1,337 @@
+# shared { #app.shared }
+
+`shared`
+
+Data access layer for the BAM dashboard backend.
+
+Orchestrates data flow between remote data servers, the TiTiler mapping 
+gateway, and local disk-backed fallback caches for rasters and tabular files.
+
+## Main Capabilities {.doc-section .doc-section-main-capabilities}
+
+* Monitors the dynamic cloud raster tiler API health status.
+* Resolves HTTP URLs for remote Cloud Optimized GeoTIFFs (COGs).
+* Extracts and aggregates data tables efficiently using Polars.
+* Parses Apache directory listings to scan for available assets.
+
+## Notes {.doc-section .doc-section-notes}
+
+All tabular data workflows utilize the high-performance `polars` engine.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [available_regions](#app.shared.available_regions) | Identify geographic regions for a specific species and  |
+| [available_years](#app.shared.available_years) | Parse available model years for a specific species and region by scanning filenames. |
+| [get_cov_fx_data](#app.shared.get_cov_fx_data) | Extract and assemble regional marginal effect datasets across target covariates. |
+| [get_tif_path](#app.shared.get_tif_path) | Construct the remote HTTP target URL path to a Cloud Optimized GeoTIFF from filter inputs. |
+| [list_directory](#app.shared.list_directory) | Scrape and extract valid paths from DRAC server directory listing. |
+| [load_abundance_data](#app.shared.load_abundance_data) | Load population density estimates from the Excel results summary file. |
+| [load_covariate_metadata](#app.shared.load_covariate_metadata) | Load Covariate metadata and full-form names from the csv file. |
+| [load_region_data](#app.shared.load_region_data) | Load region data from the Excel results summary file. |
+| [load_species_metadata](#app.shared.load_species_metadata) | Load species taxonomic and descriptive data from the Excel results summary file. |
+| [read_md](#app.shared.read_md) | Extract raw text contents out of a localized target Markdown document. |
+| [read_yaml](#app.shared.read_yaml) | Load and parse a localized target YAML configuration layout file. |
+| [species_ids](#app.shared.species_ids) | Scan the remote repository index to isolate available species IDs. |
+| [tiler_is_healthy](#app.shared.tiler_is_healthy) | Check the health status of the remote TiTiler API gateway. |
+| [url_exists](#app.shared.url_exists) | Verify the availability of a specific asset URL on the DRAC server. |
+
+### available_regions { #app.shared.available_regions }
+
+```python
+shared.available_regions(species_id)
+```
+
+Identify geographic regions for a specific species and 
+list available regions from remote directory.
+
+Falling back to local directories if the remote server is offline.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name       | Type   | Description                            | Default    |
+|------------|--------|----------------------------------------|------------|
+| species_id | str    | The unique identifier for the species. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type        | Description                                                      |
+|--------|-------------|------------------------------------------------------------------|
+|        | list of str | Sorted list of region names found within the species' directory. |
+
+### available_years { #app.shared.available_years }
+
+```python
+shared.available_years(species_id, region)
+```
+
+Parse available model years for a specific species and region by scanning filenames.
+
+This function looks for .tif files following the naming convention 
+'{species}_{region}_{year}.tif' and extracts the integer year.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name       | Type   | Description                            | Default    |
+|------------|--------|----------------------------------------|------------|
+| species_id | str    | The unique identifier for the species. | _required_ |
+| region     | str    | The geographic region identifier.      | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type        | Description                                          |
+|--------|-------------|------------------------------------------------------|
+|        | list of int | Sorted list of years found for the given parameters. |
+
+### get_cov_fx_data { #app.shared.get_cov_fx_data }
+
+```python
+shared.get_cov_fx_data(covs)
+```
+
+Extract and assemble regional marginal effect datasets across target covariates.
+
+Reads separate flat tables across multiple parameter directories and combines
+them into a unified structural representation.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type        | Description                                                      | Default    |
+|--------|-------------|------------------------------------------------------------------|------------|
+| covs   | list of str | The covariate variable collection subdirectory names to extract. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                                   |
+|--------|--------------|-------------------------------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing combined parameters for all selected variables. |
+
+### get_tif_path { #app.shared.get_tif_path }
+
+```python
+shared.get_tif_path(species_id, region, year)
+```
+
+Construct the remote HTTP target URL path to a Cloud Optimized GeoTIFF from filter inputs.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name       | Type   | Description                                                             | Default    |
+|------------|--------|-------------------------------------------------------------------------|------------|
+| species_id | str    | The unique alpha-numeric lookup identifier code for the species.        | _required_ |
+| region     | str    | The regional sub-boundary identifier string (e.g., 'Canada', 'Alaska'). | _required_ |
+| year       | int    | The target modeling year parameter.                                     | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                 |
+|--------|--------|-----------------------------------------------------------------------------|
+|        | str    | The absolute concatenated URL address location pointing to the raster file. |
+
+### list_directory { #app.shared.list_directory }
+
+```python
+shared.list_directory(url)
+```
+
+Scrape and extract valid paths from DRAC server directory listing.
+
+Requests index endpoints and ignores structural navigation entries, 
+query filter strings, or top-level relative assets.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type   | Description                                           | Default    |
+|--------|--------|-------------------------------------------------------|------------|
+| url    | str    | The remote directory link listing resource locations. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type        | Description                                                              |
+|--------|-------------|--------------------------------------------------------------------------|
+|        | list of str | Cleaned asset filenames or subdirectory names discovered in the catalog. |
+
+### load_abundance_data { #app.shared.load_abundance_data }
+
+```python
+shared.load_abundance_data()
+```
+
+Load population density estimates from the Excel results summary file.
+
+- species specific population size (million males) and density estimates (males / ha) by region (density = abundance / area)
+    - id:                   AOU code for the species
+    - scientific:           scientific name for the species
+    - english:              common name for the species in English
+    - region:               modelling region
+    - year:                 year of prediction, determined by year of covariate prediction layers used
+    - population_estimate:  mean population estimate
+    - population_lower:     5th percentile of 32 bootstrap population estimate
+    - population_upper:     95th percentile of 32 bootstrap population estimate
+    - density_estimate:     mean density estimate
+    - density_lower:        5th percentile of 32 bootstrap density estimate
+    - density_upper:        5th percentile of 32 bootstrap density estimate
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                    |
+|--------|--------------|----------------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'abundances' sheet metadata. |
+
+### load_covariate_metadata { #app.shared.load_covariate_metadata }
+
+```python
+shared.load_covariate_metadata()
+```
+
+Load Covariate metadata and full-form names from the csv file.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                           |
+|--------|--------------|-------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the Covariate metadata. |
+
+### load_region_data { #app.shared.load_region_data }
+
+```python
+shared.load_region_data()
+```
+
+Load region data from the Excel results summary file.
+
+- lists the individual modelling regions and the mosaiced model regions
+    - region:               code for the region (country and bird conservation region number for single model regions)
+    - type:                 type of model region (single model vs mosaic of multiple single models)
+    - country:              country of the region
+    - bcr:                  Bird conservation region (BCR) name
+    - area_km2:             area of the region (km2)
+    - total_surveys:        total surveys available for the modelling region (including 100km buffer)
+    - bootstrap_surveys:    total surveys used for model training per bootsstrap (including 100 km buffer)
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                             |
+|--------|--------------|---------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'regions' sheet data. |
+
+### load_species_metadata { #app.shared.load_species_metadata }
+
+```python
+shared.load_species_metadata()
+```
+
+Load species taxonomic and descriptive data from the Excel results summary file.
+
+- lists the species for which results are available
+    - id:                   AOU code for the species
+    - scientific:           scientific name for the species
+    - english:              common name for the species in English
+    - french:               common name for the species in French
+    - family:               family for the species
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                 |
+|--------|--------------|-------------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'species' sheet metadata. |
+
+### read_md { #app.shared.read_md }
+
+```python
+shared.read_md(filename)
+```
+
+Extract raw text contents out of a localized target Markdown document.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name     | Type   | Description                                             | Default    |
+|----------|--------|---------------------------------------------------------|------------|
+| filename | str    | The name of the target file stored under `CONTENT_DIR`. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                              |
+|--------|--------|----------------------------------------------------------|
+|        | str    | The unparsed text content block encoded via UTF-8 rules. |
+
+### read_yaml { #app.shared.read_yaml }
+
+```python
+shared.read_yaml(filename)
+```
+
+Load and parse a localized target YAML configuration layout file.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name     | Type   | Description                                                     | Default    |
+|----------|--------|-----------------------------------------------------------------|------------|
+| filename | str    | The name of the configuration asset stored under `CONTENT_DIR`. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                        |
+|--------|--------|--------------------------------------------------------------------|
+|        | dict   | A dictionary representation of the parsed YAML document structure. |
+
+### species_ids { #app.shared.species_ids }
+
+```python
+shared.species_ids()
+```
+
+Scan the remote repository index to isolate available species IDs.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type        | Description                                                                                                         |
+|--------|-------------|---------------------------------------------------------------------------------------------------------------------|
+|        | list of str | Sorted list of species IDs based on existing subdirectories. Returns an empty list if remote catalog requests fail. |
+
+### tiler_is_healthy { #app.shared.tiler_is_healthy }
+
+```python
+shared.tiler_is_healthy()
+```
+
+Check the health status of the remote TiTiler API gateway.
+
+Uses a basic Time-To-Live (TTL) caching mechanism to prevent spamming
+the health endpoint on rapid UI reactive invalidations.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                                                |
+|--------|--------|------------------------------------------------------------------------------------------------------------|
+|        | bool   | True if the tiler endpoint responds with a status code of 200 and an 'ok' status payload, False otherwise. |
+
+#### Notes {.doc-section .doc-section-notes}
+
+The cache state is managed globally by the `_tiler_health_cache` dictionary
+using the window duration defined in `TILER_HEALTH_TTL`.
+
+### url_exists { #app.shared.url_exists }
+
+```python
+shared.url_exists(url)
+```
+
+Verify the availability of a specific asset URL on the DRAC server.
+
+Performs a lightweight HEAD request to verify file existence without
+downloading the payload.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type   | Description                      | Default    |
+|--------|--------|----------------------------------|------------|
+| url    | str    | The full URL string to evaluate. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                        |
+|--------|--------|--------------------------------------------------------------------|
+|        | bool   | True if the server responds with status code 200, False otherwise. |

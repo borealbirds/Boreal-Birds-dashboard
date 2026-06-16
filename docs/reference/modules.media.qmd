@@ -1,0 +1,74 @@
+# modules.media { #app.modules.media }
+
+`modules.media`
+
+Media utility assets and client-side JavaScript injection pipelines.
+
+Resolves local storage paths for bird imagery and injects HTML/JavaScript 
+engines for interactive photo lightboxes and audio spectrograms.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [get_sidebar_image_path](#app.modules.media.get_sidebar_image_path) | Resolve the web asset path and directory name for a species sidebar image. |
+| [lightbox_script](#app.modules.media.lightbox_script) | Generate the HTML and JavaScript script block for the image gallery lightbox. |
+| [sound_script](#app.modules.media.sound_script) | Generate the HTML and JavaScript script block for WaveSurfer audio players. |
+
+### get_sidebar_image_path { #app.modules.media.get_sidebar_image_path }
+
+```python
+modules.media.get_sidebar_image_path(species_id, common_name)
+```
+
+Resolve the web asset path and directory name for a species sidebar image.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type   | Description                                       | Default    |
+|-------------|--------|---------------------------------------------------|------------|
+| species_id  | str    | The unique species alpha-numeric identifier code. | _required_ |
+| common_name | str    | The English common name of the bird species.      | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                        | Description                                                               |
+|--------|-----------------------------|---------------------------------------------------------------------------|
+|        | tuple of (str, str) or None | A tuple of (relative_web_url, folder_name) if an image exists, else None. |
+
+### lightbox_script { #app.modules.media.lightbox_script }
+
+```python
+modules.media.lightbox_script()
+```
+
+Generate the HTML and JavaScript script block for the image gallery lightbox.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                   |
+|--------|--------|-------------------------------------------------------------------------------|
+|        | HTML   | A raw HTML tag containing the client-side modal and gallery navigation logic. |
+
+### sound_script { #app.modules.media.sound_script }
+
+```python
+modules.media.sound_script(sounds_json)
+```
+
+Generate the HTML and JavaScript script block for WaveSurfer audio players.
+
+Initializes client-side audio waveforms, mel-scale spectrograms, color themes, 
+and full-screen audio inspection modals.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type   | Description                                                           | Default    |
+|-------------|--------|-----------------------------------------------------------------------|------------|
+| sounds_json | str    | A JSON-serialized string containing audio paths and metadata records. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                               |
+|--------|--------|---------------------------------------------------------------------------|
+|        | HTML   | A raw HTML tag containing the client-side WaveSurfer orchestration logic. |

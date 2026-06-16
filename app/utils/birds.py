@@ -1,0 +1,102 @@
+"""
+Helper functions related to bird details.
+
+Main Capabilities
+-----------------
+* Provides a set of the birds that are challenging to sex in the field.
+"""
+
+def impossible_to_sex() -> set:
+    """
+    The bird species that are near impossible to sex in the field.
+
+    Returns
+    -------
+    set
+        A set of all bird species not to include sex details for.
+    """
+    return {
+        "Alder Flycatcher",
+        "American Crow",
+        "American Pipit",
+        "American Tree Sparrow",
+        "Bank Swallow",
+        "Barn Swallow",
+        "Black-billed Cuckoo",
+        "Black-billed Magpie",
+        "Black-capped Chickadee",
+        "Blue Jay",
+        "Blue-headed Vireo",
+        "Bohemian Waxwing",
+        "Brown Creeper",
+        "Brown Thrasher",
+        "Cedar Waxwing",
+        "Chipping Sparrow",
+        "Clay-colored Sparrow",
+        "Cliff Swallow",
+        "Common Grackle",
+        "Common Raven",
+        "Dunlin",
+        "Dusky Flycatcher",
+        "Eastern Kingbird",
+        "Eastern Phoebe",
+        "Eastern Wood-Pewee",
+        "European Starling",
+        "Field Sparrow",
+        "Fox Sparrow",
+        "Golden-crowned Kinglet",
+        "Golden-crowned Sparrow",
+        "Grasshopper Sparrow",
+        "Gray Catbird",
+        "Great Crested Flycatcher",
+        "Greater Yellowlegs",
+        "Hammond's Flycatcher",
+        "Hermit Thrush",
+        "Horned Lark",
+        "House Wren",
+        "Killdeer",
+        "Le Conte's Sparrow",
+        "Least Flycatcher",
+        "Lesser Yellowlegs",
+        "Lincoln's Sparrow",
+        "Marsh Wren",
+        "Mourning Dove",
+        "Nelson's Sparrow",
+        "Northern Parula",
+        "Northern Waterthrush",
+        "Olive-sided Flycatcher",
+        "Orange-crowned Warbler",
+        "Ovenbird",
+        "Palm Warbler",
+        "Philadelphia Vireo",
+        "Pine Siskin",
+        "Red-breasted Nuthatch",
+        "Red-eyed Vireo",
+        "Red-headed Woodpecker",
+        "Rock Pigeon",
+        "Rock Sandpiper",
+        "Ruby-crowned Kinglet",
+        "Ruffed Grouse",
+        "Savannah Sparrow",
+        "Sedge Wren",
+        "Solitary Sandpiper",
+        "Song Sparrow",
+        "Spotted Sandpiper",
+        "Swainson's Thrush",
+        "Swamp Sparrow",
+        "Townsend's Solitaire",
+        "Upland Sandpiper",
+        "Varied Thrush",
+        "Veery",
+        "Vesper Sparrow",
+        "Warbling Vireo",
+        "Western Wood-Pewee",
+        "White-breasted Nuthatch",
+        "White-crowned Sparrow",
+        "White-throated Sparrow",
+        "Winter Wren",
+        "Wood Thrush",
+        "Yellow-bellied Flycatcher",
+        "Yellow-billed Cuckoo",
+        "Yellow-throated Vireo",
+    }

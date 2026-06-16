@@ -1,0 +1,59 @@
+project:
+  type: website
+  output-dir: _build
+
+website:
+  title: "Boreal Birds Documentation"
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - href: index.qmd
+        text: Home
+      - href: markdown_contents.qmd
+        text: Markdown Contents
+      - href: static_assets.qmd
+        text: Static Assets
+      - section: "Reference"
+        contents:
+          - reference/index.qmd
+          - auto: app
+
+format:
+  html:
+    toc: true
+    toc-depth: 3
+
+quartodoc:
+  dir: reference
+  package: app
+  
+  sections:
+    - title: Core Modules
+      desc: Main application entry points, helper functions for map and medias, static configuration assets, and global system icons.
+      contents:
+        - app
+        - modules.map
+        - modules.media
+        - components
+        - icons
+
+    - title: Data Loading
+      desc: Unified data access layer for high-performance Polars pipelines, remote DRAC servers, and TiTiler API gateways.
+      contents:
+        - shared
+        
+    - title: Server Logic
+      desc: Backend server logic, and reactive workflow execution routing.
+      contents:
+        - server.server_v5
+        
+    - title: UI Components
+      desc: Modular frontend interface layouts, navigation controls, responsive panels, and view toggle containers.
+      contents:
+        - ui.sidebar
+        - ui.welcome
+        - ui.methods
+        - ui.landbirds_v4
+        - ui.landbirds_v5
+        - ui.model_access

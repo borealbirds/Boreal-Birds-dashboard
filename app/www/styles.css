@@ -21,14 +21,33 @@
   --transition-fast: all 0.2s ease-in-out;
 }
 
-* { box-sizing: border-box; }
+* { 
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   padding: 0;
   font-family: Poppins, sans-serif;
-  background-color: var(--bg-primary);
+  background-color: rgb(211, 211, 211, 0.5);
   color: var(--text-primary);
+}
+.container-fluid {
+  border: 0 !important;
+}
+
+.tab-pane[data-value="Welcome"],
+.tab-pane[data-value="Methods"],
+.tab-pane[data-value="Citing Results"],
+.tab-pane[data-value="Tools"] {
+  background-image: 
+    linear-gradient(to bottom, rgb(21, 59, 64, 0.4), rgb(21, 59, 64, 0.4)),
+    url('/img/BAM-OurWork-BaltimoreOriole.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
 }
 
 .navbar {
@@ -72,7 +91,7 @@ body {
 }
 
 /* Dropdown items */
-.dropdown-menu > li > a {
+.navbar-nav .dropdown-menu > li > a {
     color: var(--text-light);
     padding: 0.7rem 1.2rem;
     transition: background 0.15s ease;
@@ -80,15 +99,24 @@ body {
 }
 
 /* Dropdown hover */
-.dropdown-menu > li > a:hover {
+.navbar-nav .dropdown-menu > li > a:hover {
     background: var(--medium-blue);
     color: var(--text-light) !important;
 }
 
 /* Active dropdown page */
-.dropdown-menu > li > a.active {
+.navbar-nav .dropdown-menu > li > a.active {
     background: var(--blue-green);
     color: var(--text-light) !important;
+}
+
+/* Tools navset styling */
+
+#tools_navset .nav-link {
+  color: var(--secondary);
+  font-weight: 550;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 /* ── Sidebar ──────────────────────────────────────────────────────── */
@@ -142,15 +170,42 @@ body {
   text-transform: uppercase;
 }
 
-.citing-card .card-header,
-.tools-card .card-header {
-  font-size: 1.25rem;
-}
-
 .announcement-card .card-header {
   background-color: var(--light-green);
   color: var(--text-primary);
+  border-radius: 12px;
 }
+
+.accordion-panel .card-header,
+.tools-card .card-header,
+.methods-info .card-header,
+.citing-card .card-header,
+.welcome-card .card-header {
+  background-color: var(--primary);
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  border-radius: 12px;
+}
+
+.accordion-panel,
+.announcement-card,
+.tools-card,
+.methods-info,
+.citing-card,
+.welcome-card {
+  background: rgba(255, 255, 255, 0.65); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); /* Required for Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
 
 /* ── Bird header row ──────────────────────────────────────────────── */
 .bird-header-row {
@@ -381,10 +436,15 @@ body {
 
 /* ── Welcome / Model access ───────────────────────────────────────── */
 .footer {
+  background-color: var(--primary);
+  color: var(--text-light);
   text-align: center;
   padding: 0.5rem;
-  border-top: 1px solid var(--border-light);
   font-size: 0.8rem;
+}
+
+.footer a {
+  color: var(--light-yellow)
 }
 
 /* ── Species Info tab ─────────────────────────────────────────────── */
@@ -735,32 +795,138 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Spectrogram: collapsed (default) and expanded ────────────────── */
+/* ── Spectrogram: inline (clickable, canvas must be first child) ──── */
 .spectrogram-container {
   height: 80px;
   overflow: hidden;
-  transition: height 0.35s ease;
+  position: relative;
+  cursor: pointer;
+  background: #111;
+  transition: height 0.3s ease;
 }
 
-.spectrogram-container.spec-expanded {
-  height: 200px;
-}
+.spectrogram-container.spec-expanded { height: 200px; }
 
-/* ── Expand button ────────────────────────────────────────────────── */
-.spec-expand-btn {
-  display: block;
-  margin: 0.25rem 0 0 0;
-  background: none;
-  border: none;
+.sound-meta {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  padding: 0.35rem 0 0.1rem;
   font-size: 0.72rem;
   color: var(--secondary);
-  cursor: pointer;
-  padding: 0;
-  opacity: 0.6;
-  font-family: inherit;
 }
 
-.spec-expand-btn:hover { opacity: 1; }
+.sound-meta span b { color: var(--text-primary); margin-right: 0.2rem; }
+
+/* ── Sound spectrogram modal ──────────────────────────────────────── */
+.song-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5,10,20,0.92);
+  z-index: 9998;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.song-modal-inner {
+  background: #0d1117;
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem 1.5rem;
+  width: min(820px, 95vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.song-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 1.3rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.song-modal-close:hover { color: white; }
+
+.song-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sm-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+}
+
+.sm-cm-btns { display: flex; gap: 0.3rem; }
+
+.sm-cm-btn {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition-fast);
+}
+.sm-cm-btn:hover  { color: white; border-color: rgba(255,255,255,0.4); }
+.sm-cm-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+.sm-waveform    { height: 0; overflow: hidden; margin: 0; }
+.sm-spectrogram { position: relative; overflow: hidden; margin-bottom: 0.75rem; border-radius: var(--radius-sm); }
+
+.sm-controls { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+.sm-cmap-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.6);
+}
+.sm-cmap-select {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.18);
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-family: inherit;
+}
+.sm-cmap-select:hover { background: var(--secondary); }
+.sm-invert-checkbox { accent-color: var(--primary); cursor: pointer; margin: 0; }
+
+.sm-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.45);
+}
+
+.sm-meta-item b { color: rgba(255,255,255,0.6); margin-right: 0.3rem; }
+
+.sm-meta-link {
+  color: rgba(110,197,116,0.8);
+  text-decoration: none;
+  font-size: 0.75rem;
+}
+.sm-meta-link:hover { color: rgba(110,197,116,1); text-decoration: underline; }
 
 /* ── Species info: links row ──────────────────────────────────────── */
 .info-row-links {
@@ -832,15 +998,28 @@ body {
 
 /* Accordion styling */
 
+  /* background: rgba(255, 255, 255, 0.65); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  padding: 10px; */
+
+
 /* Each panel */
 .accordion-item {
-  border: 1px solid var(--border-light) !important;
-  border-radius: 14px !important;
+  /* border: 1px solid var(--border-light); */
   margin-right: 1.5rem;
   margin-bottom: 1rem;
   overflow: hidden;
-  background: var(--bg-secondary);
   transition: all 0.2s ease;
+  border: var(--medium-blue) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* Hover effect */
@@ -895,12 +1074,12 @@ body {
 .methods-accordion,
 .methods-accordion .card,
 .methods-accordion .card-body {
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-    border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
 }
 
 .vega-tooltip,
