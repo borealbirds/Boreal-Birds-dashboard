@@ -44,14 +44,9 @@ V5_META_PATH = "https://cloud.borealbirds.ca/dashboard/BAMV5-results.xlsx"
 PREDICTOR_INFLUENCE_PATH = "https://cloud.borealbirds.ca/dashboard/PredictorInfluence.csv"
 SPECIES_DATA_PATH = "https://cloud.borealbirds.ca/dashboard/SpeciesData_Rounded.csv"
 
-# old links
-REMOTE_DATA_FOLDER = "dashboard/"
-# BASE_URL = f"http://206.12.92.143/data/{REMOTE_DATA_FOLDER}"
-
-DATA_DIR = app_dir / "data"
 CONTENT_DIR = Path(__file__).parent / "content"
 
-
+DATA_DIR = app_dir / "data"
 BOUNDARIES_PATH = DATA_DIR / "boundaries" / "Subregions_Mosaics_EPSG3978.shp"
 COVARIATE_MTDATA = DATA_DIR / "model_v5" / "covariate_metadata_modelevaluation - covariates_label.csv"
 MARGINAL_FX_DIR = DATA_DIR / "model_v5" / "marginaleffects"
