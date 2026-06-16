@@ -7,7 +7,7 @@ engines for interactive photo lightboxes and audio spectrograms.
 from shiny import ui
 from pathlib import Path
 
-def get_sidebar_image_path(species_id: str, common_name: str) -> tuple[str, str] | None:
+def get_sidebar_image_path(species_id: str, common_name: str) -> tuple[str, str]:
     """
     Resolve the web asset path and directory name for a species sidebar image.
 

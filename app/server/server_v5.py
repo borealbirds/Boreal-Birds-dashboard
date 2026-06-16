@@ -150,7 +150,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
 
     @reactive.calc
-    def file_url() -> str | None:
+    def file_url() -> str:
         """
         [@reactive.calc] Resolve the absolute remote URL for the target COG.
 
