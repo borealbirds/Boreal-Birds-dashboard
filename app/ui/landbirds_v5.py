@@ -8,8 +8,8 @@ to alternate between geospatial model output mappings and qualitative species br
 from shiny import ui
 from shinywidgets import output_widget
 
-from icons import question_circle_fill
 from ui.sidebar import sidebar
+from utils.icons import question_circle_fill
 
 def landbirds_v5_tab() -> ui.NavPanel:
     """

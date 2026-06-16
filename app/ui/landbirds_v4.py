@@ -8,7 +8,7 @@ front-end layout panels for future backend server wiring sprints.
 from shiny import ui
 from shinywidgets import output_widget
 from ui.sidebar import sidebar
-from icons import question_circle_fill
+from utils.icons import question_circle_fill
 
 def landbirds_v4_tab():
     """

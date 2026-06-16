@@ -18,13 +18,13 @@ from pathlib import Path
 
 from shiny import App, Inputs, Outputs, Session, ui
 
-from components import audio, footer, website, website_contact
 from server.server_v5 import server_v5
 from ui.methods import methods_tab
 from ui.landbirds_v4 import landbirds_v4_tab
 from ui.landbirds_v5 import landbirds_v5_tab
-from ui.model_access import citing_tab, vignettes_tab, tools_tab
+from ui.model_access import citing_tab, tools_tab
 from ui.welcome import welcome_tab
+from utils.components import audio, footer, website, website_contact
 
 www_dir = Path(__file__).parent / "www"
 
