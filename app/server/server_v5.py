@@ -575,7 +575,6 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                     ♂♀ labels
                 </label>
             """) if common_name not in IMPOSSIBLE_TO_SEX else None,
-            ui.p("Species that are virtually impossible to sex in the field have been grouped together.") if common_name in IMPOSSIBLE_TO_SEX else None,
             ui.navset_tab(
                 ui.nav_panel(f"All ({len(photos)})", photo_grid(photos, with_badges=True)),
                 *( [ui.nav_panel(f"Male ({len(male_photos)})", photo_grid(male_photos))] if male_photos else []),
