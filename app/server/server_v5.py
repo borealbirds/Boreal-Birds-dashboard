@@ -734,7 +734,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         return response.content
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
-    def downloadAll() -> Generator[bytes, None, None]:
+    def downloadAll():
         """
         Stream the complete master workbook to the client.
 
@@ -756,7 +756,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         yield get_workbook_bytes()
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
-    def downloadFiltered() -> Generator[bytes, None, None]:
+    def downloadFiltered():
         """
         Generate a filtered multi-sheet workbook in memory.
 
