@@ -54,6 +54,7 @@ print(f"\n\n\nTitiler API Health Status: \n\tTitiler is healthy: {tiler_is_healt
 birds = load_species_metadata()
 abundances = load_abundance_data()
 covariates = load_covariate_metadata()
+importance = load_importance_data()
 IMPOSSIBLE_TO_SEX = impossible_to_sex()
 
 # ── HELPER FUNCTIONS (Non-reactive) -----───────────────────────────
@@ -669,9 +670,45 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     # ── COVARIATE FILTER & MARGINAL EFFECTS ───────────────────────────
 
+    @render.data_frame
+    def importance_metrics()-> render.DataTable:
+        """
+        [@render.data_frame] Output sorted tabular records using an analytical grid component.
+
+        Returns
+        -------
+        DataGrid
+            Sorted metrics collection with active background rows highlighted.
+        """
+
+        req(covariates is not None and not covariates.is_empty())
+
+        importance_data = importance.filter(
+            pl.col("english") == input.species_v5()
+            ).sort(
+                "importance_mean", descending=True
+            ).select(
+                ["variable", "region", "importance_mean"]
+            ).head()
+        
+        importance_data = importance_data.with_columns(
+            pl.col("importance_mean").round(1)
+        )
+        
+        importance_data = importance_data.rename({
+            "variable": "Covariate",
+            "region": "BCR",
+            "importance_mean": "Score"
+        })
+
+
+        return render.DataTable(importance_data)
+    
     @render.ui
     def marginal_fx_filter()-> ui.tags:
         """[@render.ui] Render variable select dropdown constraints for covariate analyses."""
+        
+        bird = current_bird_meta().item(0, "english")
         cov_choices = sorted(covariates.get_column("name").unique().to_list())
         # cov_choices.append("year")
         res_choices = covariates.get_column("prediction_resolution").unique().to_list()
@@ -687,20 +724,29 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         ]
 
         return ui.layout_columns(
-            ui.input_select(
-                id="covariate_filter",
-                label="Select Covariate",
-                choices=cov_choices
+            ui.layout_columns(
+                ui.input_select(
+                    id="covariate_filter",
+                    label="Select Covariate",
+                    choices=cov_choices
+                ),
+                ui.input_select(
+                    id="resolution_filter",
+                    label="Select Resolution",
+                    choices=res_choices
+                ),
+                ui.input_select(
+                    id="bcr_filter",
+                    label="Select BCR",
+                    choices=bcr_choices
+                ),
+                col_widths=(12, 12, 12)
             ),
-            ui.input_select(
-                id="resolution_filter",
-                label="Select Resolution",
-                choices=res_choices
-            ),
-            ui.input_select(
-                id="bcr_filter",
-                label="Select BCR",
-                choices=bcr_choices
+            ui.card(
+                # ui.card_body(f"Top Influences for {bird}"),
+                ui.markdown(f"Top Influencers for {bird}"),
+                ui.output_data_frame("importance_metrics"),
+                height = "300px"
             ),
             col_widths=(12, 12)
         )
