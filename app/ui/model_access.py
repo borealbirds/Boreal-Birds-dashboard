@@ -23,7 +23,7 @@ def _vignette_panel(title: str, src: str) -> ui.nav_panel:
 
     Returns
     -------
-    shiny.ui
+    shiny.ui.nav_panel
         A Shiny UI component containing a navigation panel with an embedded iframe of the vignette.
     """
     return ui.nav_panel(
@@ -46,7 +46,7 @@ def vignettes_tab() -> ui.nav_panel:
 
     Returns
     -------
-    NavPanel
+    shiny.ui.nav_panel
         The completed user interface view wrapping structured package documentation.
     """
     return ui.nav_panel(
@@ -74,7 +74,7 @@ def tools_tab()-> ui.nav_panel:
 
     Returns
     -------
-    NavPanel
+    shiny.ui.nav_panel
         The constructed interface view holding available developer guidelines.
     """
     return ui.nav_panel(
@@ -109,7 +109,7 @@ def citing_tab()-> ui.nav_panel:
 
     Returns
     -------
-    NavPanel
+    shiny.ui.nav_panel
         A dedicated user interface tab wrapping formal citation documentation.
     """
     return ui.nav_panel(

@@ -37,7 +37,7 @@ def lightbox_script()-> ui.HTML:
 
     Returns
     -------
-    HTML
+    shiny.ui.HTML
         A raw HTML tag containing the client-side modal and gallery navigation logic.
     """
     return ui.HTML("""
@@ -130,7 +130,7 @@ def sound_script(sounds_json: str)-> ui.HTML:
 
     Returns
     -------
-    HTML
+    shiny.ui.HTML
         A raw HTML tag containing the client-side WaveSurfer orchestration logic.
     """
     return ui.HTML(f"""

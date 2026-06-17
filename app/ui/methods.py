@@ -31,7 +31,7 @@ def methods_tab() -> ui.nav_panel:
 
     Returns
     -------
-    NavPanel
+    shiny.ui.nav_panel
         The completed user interface tab panel holding methodology records.
     """
     return ui.nav_panel(

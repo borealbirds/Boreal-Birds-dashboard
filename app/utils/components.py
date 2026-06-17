@@ -91,7 +91,7 @@ def footer() -> ui.tags:
 
     Returns
     -------
-    shiny.ui.Tag
+    shiny.ui.tags
         A bottom-anchored content div element styled with appropriate CSS rules.
     """
     return ui.div(
@@ -114,7 +114,7 @@ def audio() -> ui.tags:
 
     Returns
     -------
-    Tag
+    shiny.ui.tags
         An HTML script block containing client-side audio runtime logic.
 
     Notes

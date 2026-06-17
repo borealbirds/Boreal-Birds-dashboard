@@ -274,7 +274,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     }
 
     @render_widget
-    def map_widget()-> Map:
+    def map_widget() -> Map:
         """
         [@render_widget] Build an interactive Ipyleaflet Map map layout object.
 
@@ -412,7 +412,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
         Returns
         -------
-        DataGrid
+        shiny.render.DataGrid
             Sorted metrics collection with active background rows highlighted.
         """
         region = input.region_v5()

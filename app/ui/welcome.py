@@ -26,7 +26,7 @@ def _announcement_card(display: bool = False, file: str = "announcements.md") ->
 
     Returns
     -------
-    Card or None
+    shiny.ui.card or None
         A populated UI card container element, or None if conditions fail.
     """
     path = Path(__file__).parent.parent / "content" / file
@@ -48,7 +48,7 @@ def welcome_tab() -> ui.nav_panel:
 
     Returns
     -------
-    NavPanel
+    shiny.ui.nav_panel
         The completed layout container housing cards and project briefs.
     """
     return ui.nav_panel(

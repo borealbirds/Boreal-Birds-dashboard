@@ -21,7 +21,7 @@ def population_altair(data, species) -> alt.Chart:
 
     Returns
     -------
-    Chart
+    alt.Chart
         An Altair object plotting points alongside bootstrap variation bands.
     """
 
@@ -98,7 +98,7 @@ def density_altair(data, species)-> alt.Chart:
 
     Returns
     -------
-    Chart
+    alt.Chart
         An Altair point graph displaying regional bird densities.
     """
     df = data

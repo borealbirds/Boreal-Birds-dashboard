@@ -24,7 +24,7 @@ def landbirds_v5_tab() -> ui.nav_panel:
 
     Returns
     -------
-    NavPanel
+    shiny.ui.nav_panel
         The operational grid environment mapping layout rows and view toggles.
     """
     return ui.nav_panel(

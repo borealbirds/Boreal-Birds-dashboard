@@ -24,7 +24,7 @@ def sidebar(model_version: str) -> ui.sidebar:
 
     Returns
     -------
-    Sidebar
+    shiny.ui.sidebar
         The configured layout panel object containing the filter controls.
     """
     species_choices = sorted(load_species_metadata().get_column("english").to_list())
