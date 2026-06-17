@@ -1,6 +1,6 @@
-# icons { #app.icons }
+# utils.icons { #app.utils.icons }
 
-`icons`
+`utils.icons`
 
 UI Asset Icon Library Module.
 

@@ -11,7 +11,7 @@ from shinywidgets import output_widget
 from ui.sidebar import sidebar
 from utils.icons import question_circle_fill
 
-def landbirds_v5_tab() -> ui.NavPanel:
+def landbirds_v5_tab() -> ui.nav_panel:
     """
     This function constructs a navigation panel containing a bird information 
     header and a multi-tabbed card interface. The card interface allows users 
@@ -24,7 +24,7 @@ def landbirds_v5_tab() -> ui.NavPanel:
 
     Returns
     -------
-    NavPanel
+    shiny.ui.nav_panel
         The operational grid environment mapping layout rows and view toggles.
     """
     return ui.nav_panel(

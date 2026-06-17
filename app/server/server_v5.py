@@ -37,6 +37,7 @@ from shared import *
 from modules.map import *
 from modules.media import *
 from utils.birds import *
+from utils.charts import *
 from utils.icons import *
 
 # alt.data_transformers.enable("vegafusion")
@@ -53,6 +54,7 @@ print(f"\n\n\nTitiler API Health Status: \n\tTitiler is healthy: {tiler_is_healt
 birds = load_species_metadata()
 abundances = load_abundance_data()
 covariates = load_covariate_metadata()
+importance = load_importance_data()
 IMPOSSIBLE_TO_SEX = impossible_to_sex()
 
 # ── HELPER FUNCTIONS (Non-reactive) -----───────────────────────────
@@ -126,7 +128,9 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         pl.DataFrame
             Complete temporal and regional abundance rows for the selected species.
         """
-        return abundances.filter(pl.col("english") == input.species_v5())
+        return abundances.filter(
+            (pl.col("english") == input.species_v5()) & (pl.col("year") == str(input.year_v5()))
+        )
 
     @reactive.calc
     def current_population_slice() -> pl.DataFrame:
@@ -147,7 +151,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
 
     @reactive.calc
-    def file_url() -> str | None:
+    def file_url() -> str:
         """
         [@reactive.calc] Resolve the absolute remote URL for the target COG.
 
@@ -213,40 +217,42 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         ui.update_radio_buttons("view_toggle", selected="map")
 
     @reactive.effect
-    def _update_regions():
-        """[@reactive.effect] Update the dropdown region list choices based on species data availability."""
-        bird = current_bird_meta()
-        species_id = bird.item(0, "id") if len(bird) > 0 else None
+    def update_bcr_filter() -> list:
+        """
+        Changes the selection of BCR's based on user selected covariate and bird species
 
-        if not species_id:
-            ui.update_select("region_v5", choices=[], selected=None)
-            return
+        Returns
+        -------
+        List
+            List of applicable BCR's for a selected bird species and covariate
+        """
 
-        regions = available_regions(species_id)
-        selected_default = "Canada" if regions and "Canada" in regions else (regions[0] if regions else None)
-        ui.update_select("region_v5", choices=regions, selected=selected_default)
+        req(input.covariate_filter())
 
-    @reactive.effect
-    def _update_year_range():
-        """[@reactive.effect] Update slider range boundaries based on temporal data availability."""
-        bird = current_bird_meta()
-        species_id = bird.item(0, "id") if len(bird) > 0 else None
-        region = input.region_v5()
+        covariate_code = input.covariate_filter()
+        bird_code = (
+            birds
+            .filter(pl.col("english") == input.species_v5())
+            .item(0, "id")
+        )
 
-        if not species_id or not region:
-            return
+        file_url, mode = select_covariate_file(covariate_code)
 
-        years = available_years(species_id, region)
-        if not years:
-            return
+        fx_df = pl.read_csv(file_url).filter(
+            (pl.col("species") == bird_code)
+        )
 
-        ui.update_slider("year_v5", min=min(years), max=max(years), value=max(years))
+        bcr_choices = fx_df.get_column("bcr").unique().to_list()
 
+        ui.update_select(
+            "bcr_filter",
+            choices=bcr_choices
+        )
 
     # Bird info UI
 
     @render.ui
-    def selected_bird()-> ui.Tag:
+    def selected_bird()-> ui.tags:
         """[@render.ui] Render the header component displaying names and active population bounds."""
         bird = current_bird_meta()
         pop_df = current_population_slice()
@@ -274,7 +280,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
 
     @render.ui
-    def sidebar_bird_image_v5()-> ui.Tag:
+    def sidebar_bird_image_v5()-> ui.tags:
         """[@render.ui] Render the sidebar profile picture for the active species if it exists."""
         bird = current_bird_meta()
         if len(bird) == 0:
@@ -301,7 +307,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     }
 
     @render_widget
-    def map_widget()-> Map:
+    def map_widget() -> Map:
         """
         [@render_widget] Build an interactive Ipyleaflet Map map layout object.
 
@@ -439,7 +445,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
         Returns
         -------
-        DataGrid
+        shiny.render.DataGrid
             Sorted metrics collection with active background rows highlighted.
         """
         region = input.region_v5()
@@ -482,7 +488,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── INFO TAB ───────────────────────────────────────────────────────
 
     @render.ui
-    def species_info()-> ui.Tag:
+    def species_info()-> ui.tags:
         """[@render.ui] Render taxonomic info strings alongside contextual search hyperlinks."""
         bird = current_bird_meta()
         common_name = bird.item(0, "english")
@@ -519,7 +525,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── IMAGES TAB ─────────────────────────────────────────────────────
 
     @render.ui
-    def species_images()-> ui.Tag:
+    def species_images()-> ui.tags:
         """[@render.ui] Assemble a masonry layout grid sorted by biological sex categories."""
         bird = current_bird_meta()
         species_id = bird.item(0, "id")
@@ -602,7 +608,6 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
                     ♂♀ labels
                 </label>
             """) if common_name not in IMPOSSIBLE_TO_SEX else None,
-            ui.p("Species that are virtually impossible to sex in the field have been grouped together.") if common_name in IMPOSSIBLE_TO_SEX else None,
             ui.navset_tab(
                 ui.nav_panel(f"All ({len(photos)})", photo_grid(photos, with_badges=True)),
                 *( [ui.nav_panel(f"Male ({len(male_photos)})", photo_grid(male_photos))] if male_photos else []),
@@ -614,7 +619,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
     # ── SOUNDS TAB ──────────────────────────────────────────────────────
 
     @render.ui
-    def species_songs()-> ui.Tag:
+    def species_songs()-> ui.tags:
         """[@render.ui] Construct an audio player layout linked to client-side WaveSurfer timelines."""
         bird = current_bird_meta()
         species_id = bird.item(0, "id")
@@ -685,261 +690,196 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
     
     # ── Chart details ───────────────────────────────────────────────────────
+
     @render_altair
     def population_chart()-> alt.Chart:
-        """
-        [@render_altair] Build a scatter plot of regional population totals with x-axis in symlog scale.
+        return population_altair(population_data(), input.species_v5())
 
-        Returns
-        -------
-        Chart
-            An Altair object plotting points alongside bootstrap variation bands.
-        """
-
-        df = population_data()
-
-        points = alt.Chart(df).mark_point(
-            filled=True,
-        ).encode(
-            alt.X("population_estimate:Q")
-                .title("Abundance (M males)")
-                .scale(type="symlog"),
-            alt.Y("region_name:N")
-                .title(None)
-                .sort(
-                    field="population_estimate",
-                    order="descending",
-                )
-                .axis(labelLimit=0),
-            alt.Color(
-                "country_name:N",
-                legend=alt.Legend(title="Country")
-            ),
-        ).transform_calculate(
-            region_name=f"{REGION_DICT}[datum.region].name_adj",
-            country_name=f"{REGION_DICT}[datum.region].country"
-        )
-
-        nearest = alt.selection_point(
-            nearest=True,
-            on="pointerover",
-            fields=["population_estimate"],
-            empty=False
-        )
-        when_near = alt.when(nearest)
-
-        highlight = points.mark_point(
-            size=50,
-            stroke="#153B40FF",
-        ).encode(
-            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
-        )
-
-        rules = alt.Chart(df).mark_rule(
-            color="#153B40FF",
-        ).encode(
-            x="population_estimate:Q",
-            opacity=alt.when(nearest)
-                .then(alt.value(0.5))
-                .otherwise(alt.value(0)),
-            tooltip=[
-                alt.Tooltip("population_estimate:Q", title="Population Estimate"),
-                alt.Tooltip("population_lower:Q", title="Lower Estimate"),
-                alt.Tooltip("population_upper:Q", title="Upper Estimate"),
-            ]
-        ).add_params(nearest)
-
-        error_bars = points.mark_rule().encode(
-            x="population_lower:Q",
-            x2="population_upper:Q",
-        )
-
-        return (points + error_bars + rules + highlight).properties(
-            title=alt.Title(
-                f"Regional Population Estimates for the {input.species_v5()}",
-                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
-            ),
-            width="container", height=750
-        )
 
     @render_altair
     def density_chart()-> alt.Chart:
-        """
-        [@render_altair] Build a scatter plot mapping estimated male density indexes.
-
-        Returns
-        -------
-        Chart
-            An Altair point graph displaying regional bird densities.
-        """
-        df = population_data()
-
-        points = alt.Chart(df).mark_point(
-            filled=True,
-        ).encode(
-            alt.X("density_estimate:Q")
-                .title("Density (males/ha)"),
-            alt.Y("region_name:N")
-                .title(None)
-                .sort(
-                    field="density_estimate",
-                    order="descending",
-                )
-                .axis(labelLimit=0),
-            alt.Color(
-                "country_name:N",
-                legend=alt.Legend(title="Country")
-            ),
-        ).transform_calculate(
-            region_name=f"{REGION_DICT}[datum.region].name_adj",
-            country_name=f"{REGION_DICT}[datum.region].country"
-        )
-
-        nearest = alt.selection_point(
-            nearest=True,
-            on="pointerover",
-            fields=["density_estimate"],
-            empty=False
-        )
-        when_near = alt.when(nearest)
-
-        highlight = points.mark_point(
-            size=50,
-            stroke="#153B40FF",
-        ).encode(
-            opacity=when_near.then(alt.value(1)).otherwise(alt.value(0))
-        )
-
-        rules = alt.Chart(df).mark_rule(
-            color="#153B40FF",
-        ).encode(
-            x="density_estimate:Q",
-            opacity=alt.when(nearest)
-                .then(alt.value(0.5))
-                .otherwise(alt.value(0)),
-            tooltip=[
-                alt.Tooltip("density_estimate:Q", title="Density Estimate"),
-                alt.Tooltip("density_lower:Q", title="Lower Estimate"),
-                alt.Tooltip("density_upper:Q", title="Upper Estimate"),
-            ]
-        ).add_params(nearest)
-
-        error_bars = points.mark_rule().encode(
-            x="density_lower:Q",
-            x2="density_upper:Q",
-        )
-
-        return (points + error_bars + rules + highlight).properties(
-            title=alt.Title(
-                f"Regional Density Estimates for {input.species_v5()}",
-                subtitle="Intervals represent 5th and 95th percentile of the bootstrap distribution"
-            ),
-            width="container", height=750
-        )
-
+        return density_altair(population_data(), input.species_v5())
 
     # ── COVARIATE FILTER & MARGINAL EFFECTS ───────────────────────────
 
+    @render.text
+    def covariate_desc() -> str:
+        """
+        [@render.text] Outputs simple text containing the covariate definition based on covariate filter.
+
+        Returns
+        -------
+        Text
+            Covariate Definition
+        """
+        req(input.covariate_filter())
+
+        cov_desc = covariates.filter(pl.col("variable") == input.covariate_filter()).item(0, "definition")
+
+        return f"Definition: {cov_desc}"
+
+
+    @render.data_frame
+    def importance_metrics() -> render.DataTable:
+        """
+        [@render.data_frame] Output sorted tabular records using an analytical grid component.
+
+        Returns
+        -------
+        DataGrid
+            Sorted metrics collection with active background rows highlighted.
+        """
+
+        req(covariates is not None and not covariates.is_empty())
+
+        importance_data = importance.filter(
+            pl.col("english") == input.species_v5()
+            ).sort(
+                "importance_mean", descending=True
+            ).select(
+                ["variable", "region", "importance_mean"]
+            ).head()
+        
+        importance_data = importance_data.with_columns(
+            pl.col("importance_mean").round(1)
+        )
+        
+        importance_data = importance_data.rename({
+            "variable": "Covariate",
+            "region": "BCR",
+            "importance_mean": "Score"
+        })
+
+
+        return render.DataTable(importance_data, height="210px")
+    
     @render.ui
-    def marginal_fx_filter()-> ui.Tag:
+    def marginal_fx_filter()-> ui.tags:
         """[@render.ui] Render variable select dropdown constraints for covariate analyses."""
-        cov_choices = sorted(covariates.get_column("name").unique().to_list())
-        # cov_choices.append("year")
+        
+        bird = current_bird_meta().item(0, "english")
+        cov_choices = sorted(covariates.get_column("variable").unique().to_list())
         res_choices = covariates.get_column("prediction_resolution").unique().to_list()
+        bcr_choices = [
+            "Alaska", "can10", "can11", "can12", "can13",
+            "can14", "can3", "can40", "can41", "can42",
+            "can5", "can60", "can61", "can70", "can71",
+            "can72", "can80", "can81", "can82", "can9",
+            "Canada", "Lower48", "usa11", "usa12", "usa13",
+            "usa14", "usa2", "usa23", "usa28", "usa30",
+            "usa40", "usa41423", "usa43", "usa5", "usa10",
+            "usa9",
+        ]
 
         return ui.layout_columns(
-            ui.input_select(
-                id="covariate_filter",
-                label="Select Covariate",
-                choices=cov_choices
+            ui.layout_columns(
+                ui.output_text("covariate_desc"),
+                ui.input_select(
+                    id="covariate_filter",
+                    label="Select Covariate",
+                    choices=cov_choices
+                ),
+                ui.input_select(
+                    id="bcr_filter",
+                    label="Select BCR (Multi-Select)",
+                    choices=bcr_choices,
+                    multiple=True,
+                ),
+                col_widths=(12, 12, 12)
             ),
-            ui.input_select(
-                id="resolution_filter",
-                label="Select Resolution",
-                choices=res_choices
+            ui.card(
+                ui.markdown(f"Top Influencers for {bird}"),
+                ui.output_data_frame("importance_metrics"),
+                fillable=True,
             ),
             col_widths=(12, 12)
         )
-
+    
     @render_altair
-    def marginal_fx_chart()-> alt.Chart:
+    def marginal_fx_chart()-> alt.Chart:     
+        return covariate_chart(
+            input.covariate_filter(),
+            input.species_v5(),
+            input.bcr_filter(),
+        )
+
+    # ── Download ───────────────────────────
+
+    @lru_cache(maxsize=1)
+    def get_workbook_bytes() -> bytes:
         """
-        [@render_altair] Plot binned marginal effect parameters across bird-co-variates.
+        Download the master workbook from the configured HTTPS endpoint.
+
+        The downloaded file is cached in memory to avoid repeated network
+        requests during the lifetime of the application process.
 
         Returns
         -------
-        Chart
-            An Altair regression plot charting density responses against covariates.
+        bytes
+            Raw binary contents of the Excel workbook.
         """
-        req(
-            input.covariate_filter(), 
-            input.resolution_filter(), 
-            input.species_v5()
-        )
-        
-        bird = current_bird_meta()
-        bird_code = bird.item(0, "id") if len(bird) > 0 else ""
-
-        cov_vars = covariates.filter(
-            (pl.col("name") == input.covariate_filter()) & 
-            (pl.col("prediction_resolution") == input.resolution_filter())
-        ).get_column("variable").to_list()
-
-        fx_df = get_cov_fx_data(cov_vars).filter(pl.col("species") == bird_code)
-        viz_df = fx_df.with_columns(pl.col("x").round(2)).group_by(["bcr", "x"]).agg(pl.col("y").mean().alias("mean_y"))
-
-        points = alt.Chart(viz_df).mark_point().encode(
-            alt.X("x:N")
-                .title(f"Covariate: {input.covariate_filter()}")
-                .bin(maxbins=20),
-            alt.Y("mean_y:Q")
-                .title("Marginal Effect on Density")
-                .axis(labelLimit=0),
-            alt.Color(
-                "bcr:N",
-                legend=alt.Legend(title="BCR")
-            ),
-        )
-
-        # trendline = points.transform_regression(
-        #     'x', 'y'
-        # ).mark_line(size=3)
-
-        return (points)
-
+        response = requests.get(V5_META_PATH, timeout=30,)
+        response.raise_for_status()
+        return response.content
 
     @render.download(filename=lambda: f"{date.today().isoformat()}_BAMV5-results.xlsx")
-    def downloadAll()-> str:
+    def downloadAll():
         """
-        [@render.download] Route requests straight to the monolithic master database file.
+        Stream the complete master workbook to the client.
 
-        Returns
-        -------
-        str
-            The absolute system file path targeting the complete global workbook.
-        """
-
-        return str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
-
-    @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
-    def downloadFiltered()-> Generator[bytes, None, None]:
-        """
-        [@render.download] Compile a multi-sheet filtered Excel workbook on-the-fly.
+        The workbook is retrieved from the configured HTTPS endpoint and served
+        directly to the user without creating a temporary file on the local
+        filesystem.
 
         Yields
         ------
         bytes
-            In-memory buffered string chunks containing the packed Excel workbook asset data.
+            Binary content of the Excel workbook.
+
+        Notes
+        -----
+        The underlying workbook download is cached by ``get_workbook_bytes()``,
+        reducing repeated network requests for subsequent downloads within the
+        same application process.
         """
-        model_results = str(Path(__file__).parent.parent.parent / "data" / "model_v5" / "12_BAMV5-results.xlsx")
-        metadata = pl.read_excel(model_results, sheet_name="metadata")
-        species = pl.read_excel(model_results, sheet_name="species").filter(pl.col("english") == input.species_v5())
-        regions = pl.read_excel(model_results, sheet_name="regions")
-        variables = pl.read_excel(model_results, sheet_name="variables")
-        importance = pl.read_excel(model_results, sheet_name="importance").filter(pl.col("english") == input.species_v5())
-        validation = pl.read_excel(model_results, sheet_name="validation").filter(pl.col("english") == input.species_v5())
-        abundances = pl.read_excel(model_results, sheet_name="abundances").filter(
-            (pl.col("english") == input.species_v5()) & (pl.col("year") == str(input.year_v5()))
+        yield get_workbook_bytes()
+
+    @render.download(filename=lambda: f"{date.today().isoformat()}_{input.species_v5()}_model-results.xlsx")
+    def downloadFiltered():
+        """
+        Generate a filtered multi-sheet workbook in memory.
+
+        The source workbook is downloaded from the configured HTTPS endpoint,
+        filtered according to the selected species and year inputs, and written
+        to a new Excel workbook without using intermediate files on disk.
+
+        Yields
+        ------
+        bytes
+            Binary content of the generated Excel workbook.
+
+        Notes
+        -----
+        The source workbook is cached in memory by ``get_workbook_bytes()`` to
+        avoid repeated network requests while the application process is active.
+        """
+
+        workbook_bytes = get_workbook_bytes()
+        metadata = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="metadata")
+        species = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="species").filter(
+            pl.col("english") == input.species_v5()
+        )
+        regions = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="regions")
+        variables = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="variables")
+        importance = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="importance").filter(
+            pl.col("english") == input.species_v5()
+        )
+        validation = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="validation").filter(
+            pl.col("english") == input.species_v5()
+        )
+        abundances = pl.read_excel(io.BytesIO(workbook_bytes), sheet_name="abundances").filter(
+            (pl.col("english") == input.species_v5())
+            & (pl.col("year") == str(input.year_v5()))
         )
 
         with io.BytesIO() as buffer:
@@ -955,7 +895,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
             yield buffer.getvalue()
 
     @render.ui
-    def download_filtered_btn()-> ui.Tag:
+    def download_filtered_btn()-> ui.tags:
         """[@render.ui] Render a custom contextual export execution trigger button for the bird model."""
         species = input.species_v5()
 

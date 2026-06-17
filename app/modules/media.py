@@ -7,7 +7,7 @@ engines for interactive photo lightboxes and audio spectrograms.
 from shiny import ui
 from pathlib import Path
 
-def get_sidebar_image_path(species_id: str, common_name: str) -> tuple[str, str] | None:
+def get_sidebar_image_path(species_id: str, common_name: str) -> tuple[str, str]:
     """
     Resolve the web asset path and directory name for a species sidebar image.
 
@@ -37,7 +37,7 @@ def lightbox_script()-> ui.HTML:
 
     Returns
     -------
-    HTML
+    shiny.ui.HTML
         A raw HTML tag containing the client-side modal and gallery navigation logic.
     """
     return ui.HTML("""
@@ -130,7 +130,7 @@ def sound_script(sounds_json: str)-> ui.HTML:
 
     Returns
     -------
-    HTML
+    shiny.ui.HTML
         A raw HTML tag containing the client-side WaveSurfer orchestration logic.
     """
     return ui.HTML(f"""
@@ -283,7 +283,7 @@ def sound_script(sounds_json: str)-> ui.HTML:
                 progressColor: '#153B40', cursorColor: '#ff4444', cursorWidth: 2,
                 height: 56, normalize: true,
                 plugins: [Spectrogram.create({{
-                    container: specEl, labels: true, height: 200,
+                    container: specEl, labels: false, height: 300,
                     frequencyMax: 20000, frequencyMin: 0, fftSamples: 2048,
                     scale: 'mel', windowFunc: 'hann', gainDB: 20, rangeDB: 80, colorMap: 'gray', labelsColor: '#000',
                 }})],

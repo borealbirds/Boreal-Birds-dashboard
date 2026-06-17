@@ -14,13 +14,13 @@ Main Capabilities
 from shiny import ui
 
 
-def website() -> ui.NavSetArg:
+def website() -> ui.nav_control:
     """
     Generate a dynamic navigation item linking to the core BAM project web portal.
 
     Returns
     -------
-    shiny.ui.NavSetArg
+    shiny.ui.nav_control
         A navigation controller containing an external anchor element configuration.
     """
     return ui.nav_control(
@@ -32,13 +32,13 @@ def website() -> ui.NavSetArg:
         )
 
 
-def website_contact() -> ui.NavSetArg:
+def website_contact() -> ui.nav_control:
     """
     Generate a navigation layout button mapping to the official team directory page.
 
     Returns
     -------
-    shiny.ui.NavSetArg
+    shiny.ui.nav_control
         A web component mapping directly to external communication infrastructure.
     """
     return ui.nav_control(
@@ -49,13 +49,13 @@ def website_contact() -> ui.NavSetArg:
             ),
         )
 
-def email() -> ui.NavSetArg:
+def email() -> ui.nav_control:
     """
     Generate an interface interaction gateway linking to default mail applications.
 
     Returns
     -------
-    shiny.ui.NavSetArg
+    shiny.ui.nav_control
         An operational interface anchor using mailto address routing actions.
     """
     return ui.nav_control(
@@ -67,13 +67,13 @@ def email() -> ui.NavSetArg:
         )
 
 
-def report_issue() -> ui.NavSetArg:
+def report_issue() -> ui.nav_control:
     """
     Generate an issue-tracking shortcut pointing to repository management layers.
 
     Returns
     -------
-    shiny.ui.NavSetArg
+    shiny.ui.nav_control
         A link asset to log defects, structural feature requests, or application bugs.
     """
     return ui.nav_control(
@@ -85,13 +85,13 @@ def report_issue() -> ui.NavSetArg:
         )
 
 
-def footer() -> ui.Tag:
+def footer() -> ui.tags:
     """
     Render the copyright disclosure and Creative Commons usage policy wrapper.
 
     Returns
     -------
-    shiny.ui.Tag
+    shiny.ui.tags
         A bottom-anchored content div element styled with appropriate CSS rules.
     """
     return ui.div(
@@ -105,7 +105,7 @@ def footer() -> ui.Tag:
     )
 
 
-def audio() -> ui.Tag:
+def audio() -> ui.tags:
     """
     Inject JavaScript pipelines for WaveSurfer audio and spectrogram rendering.
 
@@ -114,7 +114,7 @@ def audio() -> ui.Tag:
 
     Returns
     -------
-    Tag
+    shiny.ui.tags
         An HTML script block containing client-side audio runtime logic.
 
     Notes
@@ -155,7 +155,7 @@ def audio() -> ui.Tag:
                     plugins: [
                         Spectrogram.create({
                             container:    specEl,
-                            labels:       true,
+                            labels:       false,
                             height:       128,
                             frequencyMax: 8000,
                         })
