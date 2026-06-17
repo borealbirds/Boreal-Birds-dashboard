@@ -232,6 +232,26 @@ def load_abundance_data() -> pl.DataFrame:
     """
     return pl.read_excel(V5_META_PATH, sheet_name="abundances")
 
+def load_importance_data() -> pl.DataFrame:
+    """
+    Load importance data for each covariate from the Excel results summary file.
+
+    - species specific population size (million males) and density estimates (males / ha) by region (density = abundance / area)
+        - id:                   AOU code for the species
+        - scientific:           scientific name for the species
+        - english:              common name for the species in English
+        - region:               modelling region
+        - variable:             the covariate of interest, by id
+        - importance_mean:      mean importance score for the covariate
+        - importance_sd:        std deviation of the importance score for the selected covariate
+
+    Returns
+    -------
+    pl.DataFrame
+        A Polars DataFrame containing the 'importance' sheet metadata.
+    """
+    return pl.read_excel(V5_META_PATH, sheet_name="importance")
+
 def load_region_data() -> pl.DataFrame:
     """
     Load region data from the Excel results summary file.

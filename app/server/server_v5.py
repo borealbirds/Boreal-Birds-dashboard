@@ -54,6 +54,7 @@ print(f"\n\n\nTitiler API Health Status: \n\tTitiler is healthy: {tiler_is_healt
 birds = load_species_metadata()
 abundances = load_abundance_data()
 covariates = load_covariate_metadata()
+importance = load_importance_data()
 IMPOSSIBLE_TO_SEX = impossible_to_sex()
 
 # ── HELPER FUNCTIONS (Non-reactive) -----───────────────────────────
@@ -215,6 +216,38 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         """[@reactive.effect] Enforce default 'map' radio view selection on initial connection."""
         ui.update_radio_buttons("view_toggle", selected="map")
 
+    @reactive.effect
+    def update_bcr_filter() -> list:
+        """
+        Changes the selection of BCR's based on user selected covariate and bird species
+
+        Returns
+        -------
+        List
+            List of applicable BCR's for a selected bird species and covariate
+        """
+
+        req(input.covariate_filter())
+
+        covariate_code = input.covariate_filter()
+        bird_code = (
+            birds
+            .filter(pl.col("english") == input.species_v5())
+            .item(0, "id")
+        )
+
+        file_url, mode = select_covariate_file(covariate_code)
+
+        fx_df = pl.read_csv(file_url).filter(
+            (pl.col("species") == bird_code)
+        )
+
+        bcr_choices = fx_df.get_column("bcr").unique().to_list()
+
+        ui.update_select(
+            "bcr_filter",
+            choices=bcr_choices
+        )
 
     # Bird info UI
 
@@ -669,11 +702,63 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
     # ── COVARIATE FILTER & MARGINAL EFFECTS ───────────────────────────
 
+    @render.text
+    def covariate_desc() -> str:
+        """
+        [@render.text] Outputs simple text containing the covariate definition based on covariate filter.
+
+        Returns
+        -------
+        Text
+            Covariate Definition
+        """
+        req(input.covariate_filter())
+
+        cov_desc = covariates.filter(pl.col("variable") == input.covariate_filter()).item(0, "definition")
+
+        return f"Definition: {cov_desc}"
+
+
+    @render.data_frame
+    def importance_metrics() -> render.DataTable:
+        """
+        [@render.data_frame] Output sorted tabular records using an analytical grid component.
+
+        Returns
+        -------
+        DataGrid
+            Sorted metrics collection with active background rows highlighted.
+        """
+
+        req(covariates is not None and not covariates.is_empty())
+
+        importance_data = importance.filter(
+            pl.col("english") == input.species_v5()
+            ).sort(
+                "importance_mean", descending=True
+            ).select(
+                ["variable", "region", "importance_mean"]
+            ).head()
+        
+        importance_data = importance_data.with_columns(
+            pl.col("importance_mean").round(1)
+        )
+        
+        importance_data = importance_data.rename({
+            "variable": "Covariate",
+            "region": "BCR",
+            "importance_mean": "Score"
+        })
+
+
+        return render.DataTable(importance_data, height="210px")
+    
     @render.ui
     def marginal_fx_filter()-> ui.tags:
         """[@render.ui] Render variable select dropdown constraints for covariate analyses."""
-        cov_choices = sorted(covariates.get_column("name").unique().to_list())
-        # cov_choices.append("year")
+        
+        bird = current_bird_meta().item(0, "english")
+        cov_choices = sorted(covariates.get_column("variable").unique().to_list())
         res_choices = covariates.get_column("prediction_resolution").unique().to_list()
         bcr_choices = [
             "Alaska", "can10", "can11", "can12", "can13",
@@ -687,31 +772,35 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         ]
 
         return ui.layout_columns(
-            ui.input_select(
-                id="covariate_filter",
-                label="Select Covariate",
-                choices=cov_choices
+            ui.layout_columns(
+                ui.output_text("covariate_desc"),
+                ui.input_select(
+                    id="covariate_filter",
+                    label="Select Covariate",
+                    choices=cov_choices
+                ),
+                ui.input_select(
+                    id="bcr_filter",
+                    label="Select BCR (Multi-Select)",
+                    choices=bcr_choices,
+                    multiple=True,
+                ),
+                col_widths=(12, 12, 12)
             ),
-            ui.input_select(
-                id="resolution_filter",
-                label="Select Resolution",
-                choices=res_choices
-            ),
-            ui.input_select(
-                id="bcr_filter",
-                label="Select BCR",
-                choices=bcr_choices
+            ui.card(
+                ui.markdown(f"Top Influencers for {bird}"),
+                ui.output_data_frame("importance_metrics"),
+                fillable=True,
             ),
             col_widths=(12, 12)
         )
     
     @render_altair
-    def marginal_fx_chart()-> alt.Chart:
+    def marginal_fx_chart()-> alt.Chart:     
         return covariate_chart(
             input.covariate_filter(),
-            input.resolution_filter(),
             input.species_v5(),
-            input.bcr_filter()
+            input.bcr_filter(),
         )
 
     # ── Download ───────────────────────────
