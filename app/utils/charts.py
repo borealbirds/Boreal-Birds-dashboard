@@ -170,12 +170,15 @@ def density_altair(data, species)-> alt.Chart:
 
 def covariate_chart(
     covariate,
-    resolution,
     species,
     bcr
 ) -> alt.Chart:
 
-    req(covariate, resolution, species, bcr)
+    req(covariate, species, bcr) 
+
+    # --- convert bcr to list ---
+
+    bcr_selections = list(bcr)
 
     # --- lookup ---
     bird_code = (
@@ -185,12 +188,7 @@ def covariate_chart(
     )
 
     covariate_code = (
-        covariates
-        .filter(
-            (pl.col("name") == covariate) &
-            (pl.col("prediction_resolution") == resolution)
-        )
-        .item(0, "variable")
+        covariate
     )
 
     # --- file selection ---
@@ -199,21 +197,23 @@ def covariate_chart(
     # --- load data ---
     fx_df = pl.read_csv(file_url).filter(
         (pl.col("species") == bird_code) &
-        (pl.col("bcr") == bcr)
+        (pl.col("bcr").is_in(bcr_selections))
     )
 
     # --- discrete (errorbars) ---
     if mode == "discrete":
 
         bar = alt.Chart(fx_df).mark_bar().encode(
-            x=alt.X("mean:Q", title=f"Covariate: {covariate}"),
-            y=alt.Y("label:N", title=""),
+            y=alt.Y("mean:Q", title="Marginal Effect on Predictions"),
+            x=alt.X("label:N", title=f"Covariate: {covariate}"),
+            color="bcr"
         )
 
         error = alt.Chart(fx_df).mark_errorbar().encode(
-            y="label:N",
-            x="lwr:Q",
-            x2="upr:Q"
+            x="label:N",
+            y="lwr:Q",
+            y2="upr:Q",
+            color="bcr"
         )
 
         chart = bar + error
@@ -223,13 +223,15 @@ def covariate_chart(
 
         line = alt.Chart(fx_df).mark_line().encode(
             x=alt.X("x:Q", title=f"Covariate: {covariate}"),
-            y=alt.Y("fit:Q", title="Effect"),
+            y=alt.Y("fit:Q", title="Marginal Effect on Predictions"),
+            color="bcr"
         )
 
         band = alt.Chart(fx_df).mark_errorband().encode(
             x="x:Q",
             y="lwr:Q",
             y2="upr:Q",
+            color="bcr"
         )
 
         chart = band + line
