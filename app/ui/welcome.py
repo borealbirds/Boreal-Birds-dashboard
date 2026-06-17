@@ -10,7 +10,7 @@ from shiny import ui
 
 from shared import read_md
 
-def _announcement_card(display: bool = False, file: str = "announcements.md") -> ui.Card | None:
+def _announcement_card(display: bool = False, file: str = "announcements.md") -> ui.card:
     """
     Render a conditional UI card containing recent project announcements.
 
@@ -26,7 +26,7 @@ def _announcement_card(display: bool = False, file: str = "announcements.md") ->
 
     Returns
     -------
-    Card or None
+    shiny.ui.card or None
         A populated UI card container element, or None if conditions fail.
     """
     path = Path(__file__).parent.parent / "content" / file
@@ -42,13 +42,13 @@ def _announcement_card(display: bool = False, file: str = "announcements.md") ->
         return None
 
 
-def welcome_tab() -> ui.NavPanel:
+def welcome_tab() -> ui.nav_panel:
     """
     Build the primary interface landing tab panel layout view.
 
     Returns
     -------
-    NavPanel
+    shiny.ui.nav_panel
         The completed layout container housing cards and project briefs.
     """
     return ui.nav_panel(

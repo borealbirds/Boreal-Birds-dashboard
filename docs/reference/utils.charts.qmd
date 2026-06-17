@@ -1,0 +1,40 @@
+# utils.charts { #app.utils.charts }
+
+`utils.charts`
+
+The various chart functions used throughout the project.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [density_altair](#app.utils.charts.density_altair) | [@render_altair] Build a scatter plot mapping estimated male density indexes. |
+| [population_altair](#app.utils.charts.population_altair) | [@render_altair] Build a scatter plot of regional population totals with x-axis in symlog scale. |
+
+### density_altair { #app.utils.charts.density_altair }
+
+```python
+utils.charts.density_altair(data, species)
+```
+
+[@render_altair] Build a scatter plot mapping estimated male density indexes.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                               |
+|--------|--------|-----------------------------------------------------------|
+|        | Chart  | An Altair point graph displaying regional bird densities. |
+
+### population_altair { #app.utils.charts.population_altair }
+
+```python
+utils.charts.population_altair(data, species)
+```
+
+[@render_altair] Build a scatter plot of regional population totals with x-axis in symlog scale.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                           |
+|--------|--------|-----------------------------------------------------------------------|
+|        | Chart  | An Altair object plotting points alongside bootstrap variation bands. |

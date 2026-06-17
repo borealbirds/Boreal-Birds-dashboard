@@ -9,7 +9,7 @@ from shiny import ui
 from shared import load_species_metadata
 
 
-def sidebar(model_version: str) -> ui.Sidebar:
+def sidebar(model_version: str) -> ui.sidebar:
     """
     Initialize the standardized filtering sidebar layout for bird model views.
 
@@ -24,7 +24,7 @@ def sidebar(model_version: str) -> ui.Sidebar:
 
     Returns
     -------
-    Sidebar
+    shiny.ui.sidebar
         The configured layout panel object containing the filter controls.
     """
     species_choices = sorted(load_species_metadata().get_column("english").to_list())
@@ -40,7 +40,7 @@ def sidebar(model_version: str) -> ui.Sidebar:
         ui.input_select(
             f"region_{model_version}",
             "Region",
-            choices=[],
+            choices=["Canada", "Alaska", "Lower48"],
         ),
         ui.input_slider(
             f"year_{model_version}",

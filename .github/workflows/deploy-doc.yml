@@ -1,0 +1,60 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - documentation-workflow
+      - data-access-updates
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Quarto CLI
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 'pre-release'
+
+      - name: Set up Conda and Environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: environment.yml
+          activate-environment: bird
+          auto-activate-base: false
+
+      - name: Build Documentation via Makefile
+        # execute commands inside the active Conda environment shell loop
+        shell: bash -el {0}
+        run: |
+          make build-docs
+
+      - name: Setup GitHub Pages Environment
+        uses: actions/configure-pages@v5
+
+      - name: Upload Static Artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/_build'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

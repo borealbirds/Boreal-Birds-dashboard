@@ -1,6 +1,6 @@
-# components { #app.components }
+# utils.components { #app.utils.components }
 
-`components`
+`utils.components`
 
 UI layout components and global utilities for the BAM dashboard.
 
@@ -17,17 +17,17 @@ JavaScript hooks for dynamic audio playback.
 
 | Name | Description |
 | --- | --- |
-| [audio](#app.components.audio) | Inject JavaScript pipelines for WaveSurfer audio and spectrogram rendering. |
-| [email](#app.components.email) | Generate an interface interaction gateway linking to default mail applications. |
-| [footer](#app.components.footer) | Render the copyright disclosure and Creative Commons usage policy wrapper. |
-| [report_issue](#app.components.report_issue) | Generate an issue-tracking shortcut pointing to repository management layers. |
-| [website](#app.components.website) | Generate a dynamic navigation item linking to the core BAM project web portal. |
-| [website_contact](#app.components.website_contact) | Generate a navigation layout button mapping to the official team directory page. |
+| [audio](#app.utils.components.audio) | Inject JavaScript pipelines for WaveSurfer audio and spectrogram rendering. |
+| [email](#app.utils.components.email) | Generate an interface interaction gateway linking to default mail applications. |
+| [footer](#app.utils.components.footer) | Render the copyright disclosure and Creative Commons usage policy wrapper. |
+| [report_issue](#app.utils.components.report_issue) | Generate an issue-tracking shortcut pointing to repository management layers. |
+| [website](#app.utils.components.website) | Generate a dynamic navigation item linking to the core BAM project web portal. |
+| [website_contact](#app.utils.components.website_contact) | Generate a navigation layout button mapping to the official team directory page. |
 
-### audio { #app.components.audio }
+### audio { #app.utils.components.audio }
 
 ```python
-components.audio()
+utils.components.audio()
 ```
 
 Inject JavaScript pipelines for WaveSurfer audio and spectrogram rendering.
@@ -46,10 +46,10 @@ multi-instance audio players and visual timelines on the client side.
 Active WaveSurfer tracking instances are loaded via CDN and maintained 
 globally in the browser window scope under `window._wsInstances`.
 
-### email { #app.components.email }
+### email { #app.utils.components.email }
 
 ```python
-components.email()
+utils.components.email()
 ```
 
 Generate an interface interaction gateway linking to default mail applications.
@@ -58,12 +58,12 @@ Generate an interface interaction gateway linking to default mail applications.
 
 | Name   | Type               | Description                                                           |
 |--------|--------------------|-----------------------------------------------------------------------|
-|        | shiny.ui.NavSetArg | An operational interface anchor using mailto address routing actions. |
+|        | shiny.ui.nav_control | An operational interface anchor using mailto address routing actions. |
 
-### footer { #app.components.footer }
+### footer { #app.utils.components.footer }
 
 ```python
-components.footer()
+utils.components.footer()
 ```
 
 Render the copyright disclosure and Creative Commons usage policy wrapper.
@@ -74,10 +74,10 @@ Render the copyright disclosure and Creative Commons usage policy wrapper.
 |--------|--------------|--------------------------------------------------------------------------|
 |        | shiny.ui.Tag | A bottom-anchored content div element styled with appropriate CSS rules. |
 
-### report_issue { #app.components.report_issue }
+### report_issue { #app.utils.components.report_issue }
 
 ```python
-components.report_issue()
+utils.components.report_issue()
 ```
 
 Generate an issue-tracking shortcut pointing to repository management layers.
@@ -86,12 +86,12 @@ Generate an issue-tracking shortcut pointing to repository management layers.
 
 | Name   | Type               | Description                                                                    |
 |--------|--------------------|--------------------------------------------------------------------------------|
-|        | shiny.ui.NavSetArg | A link asset to log defects, structural feature requests, or application bugs. |
+|        | shiny.ui.nav_control | A link asset to log defects, structural feature requests, or application bugs. |
 
-### website { #app.components.website }
+### website { #app.utils.components.website }
 
 ```python
-components.website()
+utils.components.website()
 ```
 
 Generate a dynamic navigation item linking to the core BAM project web portal.
@@ -100,12 +100,12 @@ Generate a dynamic navigation item linking to the core BAM project web portal.
 
 | Name   | Type               | Description                                                                  |
 |--------|--------------------|------------------------------------------------------------------------------|
-|        | shiny.ui.NavSetArg | A navigation controller containing an external anchor element configuration. |
+|        | shiny.ui.nav_control | A navigation controller containing an external anchor element configuration. |
 
-### website_contact { #app.components.website_contact }
+### website_contact { #app.utils.components.website_contact }
 
 ```python
-components.website_contact()
+utils.components.website_contact()
 ```
 
 Generate a navigation layout button mapping to the official team directory page.
@@ -114,4 +114,4 @@ Generate a navigation layout button mapping to the official team directory page.
 
 | Name   | Type               | Description                                                                |
 |--------|--------------------|----------------------------------------------------------------------------|
-|        | shiny.ui.NavSetArg | A web component mapping directly to external communication infrastructure. |
+|        | shiny.ui.nav_control | A web component mapping directly to external communication infrastructure. |
