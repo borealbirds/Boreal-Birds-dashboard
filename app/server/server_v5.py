@@ -773,7 +773,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
         return ui.layout_columns(
             ui.layout_columns(
-                ui.output_text("covariate_desc"),
+                # ui.output_text("covariate_desc"),
                 ui.input_select(
                     id="covariate_filter",
                     label="Select Covariate",
