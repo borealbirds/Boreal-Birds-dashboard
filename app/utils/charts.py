@@ -206,14 +206,16 @@ def covariate_chart(
         bar = alt.Chart(fx_df).mark_bar().encode(
             y=alt.Y("mean:Q", title="Marginal Effect on Predictions"),
             x=alt.X("label:N", title=f"Covariate: {covariate}"),
-            color="bcr"
+            color="bcr",
+            xOffset="bcr"
         )
 
         error = alt.Chart(fx_df).mark_errorbar().encode(
             x="label:N",
             y="lwr:Q",
             y2="upr:Q",
-            color="bcr"
+            color="bcr",
+            xOffset="bcr"
         )
 
         chart = bar + error
