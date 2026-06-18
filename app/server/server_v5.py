@@ -243,10 +243,12 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
         )
 
         bcr_choices = fx_df.get_column("bcr").unique().to_list()
+        first_selected = bcr_choices[0]
 
         ui.update_select(
             "bcr_filter",
-            choices=bcr_choices
+            choices=bcr_choices,
+            selected=first_selected
         )
 
     # Bird info UI
