@@ -220,7 +220,7 @@ def covariate_chart(
         ).properties(
             title=alt.TitleParams(
                 text=f"{cov_name} vs Model Predictions",
-                subtitle=f"Marginal effects of {cov_description} ({covariate_code}) on predicted population for {bird_name}",
+                subtitle=f"Marginal effects of {cov_description} on predicted population for {bird_name}",
                 anchor="start" # Aligns title to the left
             )
         )
@@ -250,7 +250,7 @@ def covariate_chart(
         ).properties(
             title=alt.TitleParams(
                 text=f"{cov_name} vs Model Predictions",
-                subtitle=f"Marginal effects of {cov_description} ({covariate_code}) on predicted population for {bird_name}",
+                subtitle=f"Marginal effects of {cov_description} on predicted population for {bird_name}",
                 anchor="start" # Aligns title to the left
             )
         )
