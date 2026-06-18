@@ -176,15 +176,24 @@ def covariate_chart(
 
     req(covariate, species, bcr) 
 
-    # --- convert bcr to list ---
+    # --- preprocessing ---
 
     bcr_selections = list(bcr)
+    cov_name = covariates.filter(pl.col("variable") == covariate).item(0, "name")
+    cov_description = covariates.filter(pl.col("variable") == covariate).item(0, "definition")
+
 
     # --- lookup ---
     bird_code = (
         birds
         .filter(pl.col("english") == species)
         .item(0, "id")
+    )
+
+    bird_name = (
+        birds
+        .filter(pl.col("english") == species)
+        .item(0, "english")
     )
 
     covariate_code = (
@@ -205,9 +214,15 @@ def covariate_chart(
 
         bar = alt.Chart(fx_df).mark_bar().encode(
             y=alt.Y("mean:Q", title="Marginal Effect on Predictions"),
-            x=alt.X("label:N", title=f"Covariate: {covariate}"),
+            x=alt.X("label:N", title=f"Covariate: {cov_name} ({covariate_code})"),
             color="bcr",
             xOffset="bcr"
+        ).properties(
+            title=alt.TitleParams(
+                text=f"{cov_name} vs Model Predictions",
+                subtitle=f"Marginal effects of {cov_description} ({covariate_code}) on predicted population for {bird_name}",
+                anchor="start" # Aligns title to the left
+            )
         )
 
         error = alt.Chart(fx_df).mark_errorbar().encode(
@@ -218,15 +233,26 @@ def covariate_chart(
             xOffset="bcr"
         )
 
-        chart = bar + error
+        chart = (bar + error).configure_title(
+            fontSize=18,
+            color="black",
+            subtitleFontSize=12,
+            subtitleColor="gray"
+        )
 
     # --- continuous ---
     else:
 
         line = alt.Chart(fx_df).mark_line().encode(
-            x=alt.X("x:Q", title=f"Covariate: {covariate}"),
+            x=alt.X("x:Q", title=f"Covariate: {cov_name} ({covariate_code})"),
             y=alt.Y("fit:Q", title="Marginal Effect on Predictions"),
             color="bcr"
+        ).properties(
+            title=alt.TitleParams(
+                text=f"{cov_name} vs Model Predictions",
+                subtitle=f"Marginal effects of {cov_description} ({covariate_code}) on predicted population for {bird_name}",
+                anchor="start" # Aligns title to the left
+            )
         )
 
         band = alt.Chart(fx_df).mark_errorband().encode(
@@ -236,7 +262,12 @@ def covariate_chart(
             color="bcr"
         )
 
-        chart = band + line
+        chart = (band + line).configure_title(
+            fontSize=18,
+            color="black",
+            subtitleFontSize=12,
+            subtitleColor="gray"
+        )
 
     return chart.properties(
         width="container",
