@@ -80,7 +80,7 @@ def landbirds_v5_tab() -> ui.nav_panel:
                             ui.layout_columns(
                                 ui.card(output_widget("marginal_fx_chart"), full_screen=True),
                                 ui.card(ui.output_ui("marginal_fx_filter"), full_screen=True),
-                                col_widths=(9, 3)
+                                col_widths=(8, 4)
                             ),
                             col_widths=(12, 12),
                             row_heights=["auto", "1fr"],
