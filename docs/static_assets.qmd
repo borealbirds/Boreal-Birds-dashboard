@@ -1,9 +1,30 @@
 ---
 title: "Static Assets"
+page-layout: full
 ---
 
-# `img/`
+# General Contents
 
-# `audio/`
+::: {.list-table}
 
-# `vignettes/`
+- - Asset type
+  - Description
+  - Reference
+
+- - `audio`
+  - all bird sounds and metadata for each species
+  - `app/www/audio/`
+
+- - `images`
+  - all images served with the app including birds and layout-related
+  - `app/www/img/`
+
+- - `vignettes`
+  - HTML vignettes corresponding to the BAMexploreR package
+  - `app/www/vignettes/`
+
+- - `styles.css`
+  - CSS styling that is applied to the entire app
+  - `app/www/styles.css`
+
+:::
