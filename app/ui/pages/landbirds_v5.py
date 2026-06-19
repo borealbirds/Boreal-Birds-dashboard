@@ -25,7 +25,7 @@ def landbirds_v5_tab() -> ui.nav_panel:
 
     Returns
     -------
-    NavPanel
+    shiny.ui.nav_panel
         The operational grid environment mapping layout rows and view toggles.
     """
     return ui.nav_panel(
@@ -81,7 +81,7 @@ def landbirds_v5_tab() -> ui.nav_panel:
                             ui.layout_columns(
                                 ui.card(output_widget("marginal_fx_chart"), full_screen=True),
                                 ui.card(ui.output_ui("marginal_fx_filter")),
-                                col_widths=(9, 3)
+                                col_widths=(8, 4)
                             ),
                             col_widths=(12, 12),
                             row_heights=["auto", "1fr"],

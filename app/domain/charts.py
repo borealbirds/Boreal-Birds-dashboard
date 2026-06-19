@@ -21,7 +21,7 @@ def population_altair(data, species) -> alt.Chart:
 
     Returns
     -------
-    Chart
+    alt.Chart
         An Altair object plotting points alongside bootstrap variation bands.
     """
 
@@ -98,7 +98,7 @@ def density_altair(data, species)-> alt.Chart:
 
     Returns
     -------
-    Chart
+    alt.Chart
         An Altair point graph displaying regional bird densities.
     """
     df = data
@@ -175,15 +175,24 @@ def covariate_chart(
 
     req(covariate, species, bcr) 
 
-    # --- convert bcr to list ---
+    # --- preprocessing ---
 
     bcr_selections = list(bcr)
+    cov_name = covariates.filter(pl.col("variable") == covariate).item(0, "name")
+    cov_description = covariates.filter(pl.col("variable") == covariate).item(0, "definition")
+
 
     # --- lookup ---
     bird_code = (
         birds
         .filter(pl.col("english") == species)
         .item(0, "id")
+    )
+
+    bird_name = (
+        birds
+        .filter(pl.col("english") == species)
+        .item(0, "english")
     )
 
     covariate_code = (
@@ -207,12 +216,18 @@ def covariate_chart(
             y=alt.Y("label:N"),
             yOffset="bcr:N",
             color=alt.Color("bcr:N"),
+        ).properties(
+            title=alt.TitleParams(
+                text=f"{cov_name} vs Model Predictions",
+                subtitle=f"Marginal effects of {cov_description} on predicted population for {bird_name}",
+                anchor="start" # Aligns title to the left
+            )
         )
 
         error = alt.Chart(fx_df).mark_errorbar().encode(
             x=alt.X("lwr:Q", title="Marginal Effect on Predictions"),
             x2=alt.X2("upr:Q"),
-            y=alt.Y("label:N", title=f"Covariate: {covariate}"),
+            y=alt.Y("label:N", title=f"Covariate: {cov_name} {covariate}"),
             yOffset="bcr:N",
             color=alt.Color("bcr:N", title="BCR").legend(orient="top-right")
         )
@@ -224,15 +239,26 @@ def covariate_chart(
                 alt.Tooltip("upr:Q", title="Upper Estimate", format=".3f"),
                 alt.Tooltip("bcr:N", title="BCR"),
             ]
+        ).configure_title(
+            fontSize=18,
+            color="black",
+            subtitleFontSize=12,
+            subtitleColor="gray"
         )
 
     # --- continuous ---
     else:
 
         line = alt.Chart(fx_df).mark_line().encode(
-            x=alt.X("x:Q"),
-            y=alt.Y("fit:Q"),
+            x=alt.X("x:Q", title=f"Covariate: {cov_name} ({covariate_code})"),
+            y=alt.Y("fit:Q", title="Marginal Effect on Predictions"),
             color=alt.Color("bcr")
+        ).properties(
+            title=alt.TitleParams(
+                text=f"{cov_name} vs Model Predictions",
+                subtitle=f"Marginal effects of {cov_description} on predicted population for {bird_name}",
+                anchor="start" # Aligns title to the left
+            )
         )
 
         band = alt.Chart(fx_df).mark_errorband().encode(
@@ -250,6 +276,11 @@ def covariate_chart(
                 alt.Tooltip("upr:Q", title="Upper Estimate", format=".3f"),
                 alt.Tooltip("bcr:N", title="BCR"),
             ]
+        ).configure_title(
+            fontSize=18,
+            color="black",
+            subtitleFontSize=12,
+            subtitleColor="gray"
         )
 
     return chart.properties(

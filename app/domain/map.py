@@ -64,7 +64,7 @@ def load_subregion_boundaries() -> gpd.GeoDataFrame:
 
     Returns
     -------
-    GeoDataFrame
+    gpd.GeoDataFrame
         Simplified subregion boundary polygons projected to WGS84 (EPSG:4326).
     """
 
@@ -92,7 +92,7 @@ def get_region_gdf(region: str) -> gpd.GeoDataFrame:
 
     Returns
     -------
-    GeoDataFrame
+    gpd.GeoDataFrame
         The subset of subregion rows matching the regional filter.
     """
     gdf = subregions

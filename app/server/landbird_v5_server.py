@@ -320,7 +320,7 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
     }
 
     @render_widget
-    def map_widget()-> Map:
+    def map_widget() -> Map:
         """
         [@render_widget] Build an interactive Ipyleaflet Map map layout object.
 
@@ -458,7 +458,7 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
 
         Returns
         -------
-        DataGrid
+        shiny.render.DataGrid
             Sorted metrics collection with active background rows highlighted.
         """
         region = input.region_v5()
@@ -790,7 +790,7 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
                     label="Select Covariate",
                     choices=cov_choices,
                 ),
-                ui.output_text("covariate_desc"),
+                # ui.output_text("covariate_desc"),
                 ui.input_select(
                     id="bcr_filter",
                     label="Select BCR (Multi-Select)",
@@ -831,7 +831,7 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
         bytes
             Raw binary contents of the Excel workbook.
         """
-        response = requests.get(V5_META_PATH, timeout=30,)
+        response = requests.get(LANDBIRD_V5_RESULTS, timeout=30,)
         response.raise_for_status()
         return response.content
 
