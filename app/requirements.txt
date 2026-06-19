@@ -3,6 +3,7 @@ fastexcel
 geopandas
 ipyleaflet
 polars
+requests
 shiny
 shinywidgets
 xlsxwriter
