@@ -59,6 +59,7 @@ birds = load_species_metadata()
 abundances = load_abundance_data()
 covariates = load_covariate_metadata()
 importance = load_importance_data()
+regions = load_region_data()
 IMPOSSIBLE_TO_SEX = impossible_to_sex()
 
 # ── HELPER FUNCTIONS (Non-reactive) -----───────────────────────────
@@ -240,17 +241,25 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
             .item(0, "id")
         )
 
-        file_url, mode = select_covariate_file(covariate_code)
+        file_url, _ = select_covariate_file(covariate_code)
 
         fx_df = pl.read_csv(file_url).filter(
             (pl.col("species") == bird_code)
         )
 
-        bcr_choices = fx_df.get_column("bcr").unique().to_list()
+        bcr_list = fx_df.get_column("bcr").unique().to_list()
+
+        bcr_choices = dict(
+            regions.filter(pl.col("region").is_in(bcr_list))
+            .select("region", "name_adj")
+            .sort("name_adj")
+            .iter_rows()
+        )
 
         ui.update_select(
             "bcr_filter",
-            choices=bcr_choices
+            choices=bcr_choices,
+            selected=list(bcr_choices.keys())[0] if bcr_choices else None,
         )
 
     # Bird info UI
@@ -762,27 +771,26 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
         """[@render.ui] Render variable select dropdown constraints for covariate analyses."""
         
         bird = current_bird_meta().item(0, "english")
-        cov_choices = sorted(covariates.get_column("variable").unique().to_list())
-        res_choices = covariates.get_column("prediction_resolution").unique().to_list()
-        bcr_choices = [
-            "Alaska", "can10", "can11", "can12", "can13",
-            "can14", "can3", "can40", "can41", "can42",
-            "can5", "can60", "can61", "can70", "can71",
-            "can72", "can80", "can81", "can82", "can9",
-            "Canada", "Lower48", "usa11", "usa12", "usa13",
-            "usa14", "usa2", "usa23", "usa28", "usa30",
-            "usa40", "usa41423", "usa43", "usa5", "usa10",
-            "usa9",
-        ]
+        cov_choices = dict(
+            covariates.select(
+                key=pl.col("variable"),
+                value=pl.concat_str(
+                    [pl.col("name"), pl.lit(": "), pl.col("variable")]
+                )
+            )
+            .sort("value")
+            .iter_rows()
+        )
+        bcr_choices = []
 
         return ui.layout_columns(
             ui.layout_columns(
-                ui.output_text("covariate_desc"),
                 ui.input_select(
                     id="covariate_filter",
                     label="Select Covariate",
-                    choices=cov_choices
+                    choices=cov_choices,
                 ),
+                ui.output_text("covariate_desc"),
                 ui.input_select(
                     id="bcr_filter",
                     label="Select BCR (Multi-Select)",
@@ -795,6 +803,7 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
                 ui.markdown(f"Top Influencers for {bird}"),
                 ui.output_data_frame("importance_metrics"),
                 fillable=True,
+                full_screen=True
             ),
             col_widths=(12, 12)
         )

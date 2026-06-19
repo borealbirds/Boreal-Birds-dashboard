@@ -203,37 +203,54 @@ def covariate_chart(
     if mode == "discrete":
 
         bar = alt.Chart(fx_df).mark_bar().encode(
-            y=alt.Y("mean:Q", title="Marginal Effect on Predictions"),
-            x=alt.X("label:N", title=f"Covariate: {covariate}"),
-            color="bcr"
+            x=alt.X("mean:Q"),
+            y=alt.Y("label:N"),
+            yOffset="bcr:N",
+            color=alt.Color("bcr:N"),
         )
 
         error = alt.Chart(fx_df).mark_errorbar().encode(
-            x="label:N",
-            y="lwr:Q",
-            y2="upr:Q",
-            color="bcr"
+            x=alt.X("lwr:Q", title="Marginal Effect on Predictions"),
+            x2=alt.X2("upr:Q"),
+            y=alt.Y("label:N", title=f"Covariate: {covariate}"),
+            yOffset="bcr:N",
+            color=alt.Color("bcr:N", title="BCR").legend(orient="top-right")
         )
 
-        chart = bar + error
+        chart = (bar + error).encode(
+            tooltip=[
+                alt.Tooltip("mean:Q", title="Marginal Effect", format=".3f"),
+                alt.Tooltip("lwr:Q", title="Lower Estimate", format=".3f"),
+                alt.Tooltip("upr:Q", title="Upper Estimate", format=".3f"),
+                alt.Tooltip("bcr:N", title="BCR"),
+            ]
+        )
 
     # --- continuous ---
     else:
 
         line = alt.Chart(fx_df).mark_line().encode(
-            x=alt.X("x:Q", title=f"Covariate: {covariate}"),
-            y=alt.Y("fit:Q", title="Marginal Effect on Predictions"),
-            color="bcr"
+            x=alt.X("x:Q"),
+            y=alt.Y("fit:Q"),
+            color=alt.Color("bcr")
         )
 
         band = alt.Chart(fx_df).mark_errorband().encode(
-            x="x:Q",
-            y="lwr:Q",
-            y2="upr:Q",
-            color="bcr"
+            x=alt.X("x:Q", title=f"Covariate: {covariate}"),
+            y=alt.Y("lwr:Q", title="Marginal Effect on Predictions"),
+            y2=alt.Y2("upr:Q"),
+            color=alt.Color("bcr", title="BCR").legend(orient="top-right")
         )
 
-        chart = band + line
+        chart = (band + line).encode(
+            tooltip=[
+                alt.Tooltip("x:Q", title="Marginal Effect", format=".3f"),
+                alt.Tooltip("fit:Q", title="Fit", format=".3f"),
+                alt.Tooltip("lwr:Q", title="Lower Estimate", format=".3f"),
+                alt.Tooltip("upr:Q", title="Upper Estimate", format=".3f"),
+                alt.Tooltip("bcr:N", title="BCR"),
+            ]
+        )
 
     return chart.properties(
         width="container",
