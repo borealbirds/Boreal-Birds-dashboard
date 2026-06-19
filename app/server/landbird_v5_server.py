@@ -473,7 +473,7 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
 
         df = df.with_columns(
             (pl.col("region") == region).alias("selected_region")
-        ).sort("population_estimate", "selected_region", descending=[True, True])
+        ).sort("selected_region", "population_estimate", descending=[True, True])
 
         region_row_number = df.select(pl.arg_where(pl.col("region") == region)).to_series().to_list()
 
