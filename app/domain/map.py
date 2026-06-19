@@ -14,9 +14,9 @@ from ipywidgets import HTML, Layout
 from ipyleaflet import GeoJSON, WidgetControl
 
 from shared.data_loading import load_region_data
-from shared.paths import boundaries_path
+from shared.paths import BOUNDARIES_PATH
 
-BOUNDARIES_PATH = boundaries_path()
+
 
 # Hardcoded fallback center metrics for geographic bounding contexts
 REGION_CENTERS = {

@@ -18,7 +18,7 @@ from shiny import App, Inputs, Outputs, Session, ui
 
 from assets.sounds import audio
 from server.landbird_v5_server import landbird_v5_server
-from shared.paths import www_dir
+from shared.paths import WWW_DIR
 
 from ui.components.contact import website, website_contact
 from ui.components.layout import footer
@@ -32,7 +32,7 @@ from ui.pages.welcome import welcome_tab
 
 app_ui = ui.page_navbar(
     ui.head_content(
-        ui.include_css(str(www_dir() / "styles.css")),
+        ui.include_css(str(WWW_DIR / "styles.css")),
         ui.tags.link(rel="icon", href="img/favicon.png", type="image/x-icon"),
         audio(),
     ),
@@ -91,4 +91,4 @@ def server(input: Inputs, output: Outputs, session: Session) -> None:
     landbird_v5_server(input, output, session)
 
 
-app = App(app_ui, server, static_assets=www_dir())
+app = App(app_ui, server, static_assets=WWW_DIR)

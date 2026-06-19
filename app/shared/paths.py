@@ -7,58 +7,35 @@ from pathlib import Path
 import requests
 
 # Paths to folders and files located within the app structure
-def app_dir():
-    return Path(__file__).parent.parent
+APP_DIR = Path(__file__).parent.parent
 
+CONTENT_DIR = APP_DIR / "content"
 
-def content_dir():
-    return app_dir() / "content"
-
-
-def www_dir():
-    return app_dir() / "www"
+WWW_DIR = APP_DIR / "www"
 
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
-def production_tiler_base():
-    return "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
+PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
 
 
 # Paths to folders and files located on DRAC
-def _remote_url():
-    return "https://cloud.borealbirds.ca/"
+REMOTE_URL = "https://cloud.borealbirds.ca/"
 
+DASHBOARD_FOLDER_URL = f"{REMOTE_URL}dashboard/"
 
-def dashboard_folder_url():
-    return f"{_remote_url()}/dashboard/"
+COG_FOLDER = f"{DASHBOARD_FOLDER_URL}cog_species/"
 
+PREDICTORS_FOLDER = f"{DASHBOARD_FOLDER_URL}Predictors/"
 
-def cog_folder():
-    return f"{dashboard_folder_url()}cog_species/"
+LANDBIRD_V5_RESULTS = f"{DASHBOARD_FOLDER_URL}BAMV5-results.xlsx"
 
+PREDICTOR_INFLUENCE = f"{DASHBOARD_FOLDER_URL}PredictorInfluence.csv"
 
-def predictors_folder():
-    return f"{dashboard_folder_url()}Predictors/"
+SPECIES_DATA_PATH = f"{DASHBOARD_FOLDER_URL}SpeciesData_Rounded.csv"
 
+BOUNDARIES_PATH = f"{DASHBOARD_FOLDER_URL}gisdata/Subregions_Mosaics_EPSG4326.shp"
 
-def landbird_v5_results():
-    return f"{dashboard_folder_url()}BAMV5-results.xlsx"
-
-
-def predictor_influence():
-    return f"{dashboard_folder_url()}PredictorInfluence.csv"
-
-
-def species_data_path():
-    return f"{dashboard_folder_url()}SpeciesData_Rounded.csv"
-
-
-def boundaries_path():
-    return f"{dashboard_folder_url()}gisdata/Subregions_Mosaics_EPSG4326.shp"
-
-
-def covariate_metadata():
-    return f"{dashboard_folder_url()}covariate_metadata_modelevaluation.csv"
+COVARIATE_METADATA = f"{DASHBOARD_FOLDER_URL}covariate_metadata_modelevaluation.csv"
 
 
 def get_tif_path(species_id: str, region: str, year: int) -> str:
@@ -80,7 +57,7 @@ def get_tif_path(species_id: str, region: str, year: int) -> str:
         The absolute concatenated URL address location pointing to the raster file.
     """
 
-    return f"{cog_folder()}{species_id}/{region}/{species_id}_{region}_{year}.tif"
+    return f"{COG_FOLDER}{species_id}/{region}/{species_id}_{region}_{year}.tif"
 
 
 # assistants

@@ -9,7 +9,7 @@ Main Capabilities
 import requests
 import time
 
-from shared.paths import production_tiler_base
+from shared.paths import PRODUCTION_TILER_BASE
 
 # cache to check titiler API health status
 TILER_HEALTH_TTL = 30
@@ -45,7 +45,7 @@ def tiler_is_healthy() -> bool:
 
     try:
         r = requests.get(
-            f"{production_tiler_base()}/health",
+            f"{PRODUCTION_TILER_BASE}/health",
             timeout=3
         )
 

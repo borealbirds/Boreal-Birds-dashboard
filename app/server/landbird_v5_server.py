@@ -194,7 +194,7 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
 
         try:
             encoded_cog = requests.utils.quote(url, safe="")
-            stats_url = f"{production_tiler_base()}/cog/statistics?url={encoded_cog}"
+            stats_url = f"{PRODUCTION_TILER_BASE}/cog/statistics?url={encoded_cog}"
             res = requests.get(stats_url, timeout=5)
             res.raise_for_status()
 
@@ -370,7 +370,7 @@ def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
 
         # request tiles from the titiler API gateway
         tile_string = (
-            f"{production_tiler_base()}"
+            f"{PRODUCTION_TILER_BASE}"
             f"/cog/tiles/{{z}}/{{x}}/{{y}}.png"
             f"?url={encoded_cog}"
             f"&colormap_name=ylgn"

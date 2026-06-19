@@ -20,17 +20,12 @@ import requests
 import polars as pl
 import yaml
 
-from shared.paths import (
-    content_dir,
-    landbird_v5_results,
-    covariate_metadata,
-    predictors_folder
-)
+from shared.paths import *
 
 
 def select_covariate_file(covariate_code: str) -> tuple[str, str]:
 
-    base = f"{predictors_folder()}{covariate_code}"
+    base = f"{PREDICTORS_FOLDER}{covariate_code}"
 
     continuous_url = f"{base}_gampredictions.csv"
     discrete_url = f"{base}_errorbars.csv"
@@ -61,7 +56,7 @@ def load_species_metadata() -> pl.DataFrame:
     pl.DataFrame
         A Polars DataFrame containing the 'species' sheet metadata.
     """
-    return pl.read_excel(landbird_v5_results(), sheet_name="species")
+    return pl.read_excel(LANDBIRD_V5_RESULTS, sheet_name="species")
 
 
 def load_covariate_metadata() -> pl.DataFrame:
@@ -73,7 +68,7 @@ def load_covariate_metadata() -> pl.DataFrame:
     pl.DataFrame
         A Polars DataFrame containing the Covariate metadata.
     """
-    return pl.read_csv(covariate_metadata())
+    return pl.read_csv(COVARIATE_METADATA)
 
 
 def load_abundance_data() -> pl.DataFrame:
@@ -98,7 +93,7 @@ def load_abundance_data() -> pl.DataFrame:
     pl.DataFrame
         A Polars DataFrame containing the 'abundances' sheet metadata.
     """
-    return pl.read_excel(landbird_v5_results(), sheet_name="abundances")
+    return pl.read_excel(LANDBIRD_V5_RESULTS, sheet_name="abundances")
 
 
 def load_importance_data() -> pl.DataFrame:
@@ -119,7 +114,7 @@ def load_importance_data() -> pl.DataFrame:
     pl.DataFrame
         A Polars DataFrame containing the 'importance' sheet metadata.
     """
-    return pl.read_excel(landbird_v5_results(), sheet_name="importance")
+    return pl.read_excel(LANDBIRD_V5_RESULTS, sheet_name="importance")
 
 
 def load_region_data() -> pl.DataFrame:
@@ -142,7 +137,7 @@ def load_region_data() -> pl.DataFrame:
     """
 
     regions = pl.read_excel(
-    landbird_v5_results(),
+    LANDBIRD_V5_RESULTS,
     sheet_name="regions",
     columns=["region", "type", "country", "name", "area_km2", "total_surveys", "bootstrap_surveys"]
     )
@@ -168,7 +163,7 @@ def read_md(filename) -> str:
     str
         The unparsed text content block encoded via UTF-8 rules.
     """
-    path = content_dir() / filename
+    path = CONTENT_DIR / filename
     return path.read_text(encoding="utf-8")
 
 
@@ -186,5 +181,5 @@ def read_yaml(filename) -> dict:
     dict
         A dictionary representation of the parsed YAML document structure.
     """
-    path = content_dir() / filename
+    path = CONTENT_DIR / filename
     return yaml.safe_load(path.read_text(encoding="utf-8"))

@@ -7,7 +7,7 @@ Generates a card that can be turned on or off.
 from shiny import ui
 
 from shared.data_loading import read_md
-from shared.paths import content_dir
+from shared.paths import CONTENT_DIR
 
 
 def announcements_card(display: bool = False, file: str = "announcements.md") -> ui.card:
@@ -29,7 +29,7 @@ def announcements_card(display: bool = False, file: str = "announcements.md") ->
     Card or None
         A populated UI card container element, or None if conditions fail.
     """
-    path = content_dir() / file
+    path = CONTENT_DIR / file
 
     if display & path.exists() & bool(path.read_text(encoding="utf-8").strip()):
         return ui.card(
