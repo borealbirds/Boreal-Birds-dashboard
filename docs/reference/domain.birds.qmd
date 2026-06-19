@@ -1,6 +1,6 @@
-# utils.birds { #app.utils.birds }
+# domain.birds { #app.domain.birds }
 
-`utils.birds`
+`domain.birds`
 
 Helper functions related to bird details.
 
@@ -12,12 +12,12 @@ Helper functions related to bird details.
 
 | Name | Description |
 | --- | --- |
-| [impossible_to_sex](#app.utils.birds.impossible_to_sex) | The bird species that are near impossible to sex in the field. |
+| [impossible_to_sex](#app.domain.birds.impossible_to_sex) | The bird species that are near impossible to sex in the field. |
 
-### impossible_to_sex { #app.utils.birds.impossible_to_sex }
+### impossible_to_sex { #app.domain.birds.impossible_to_sex }
 
 ```python
-utils.birds.impossible_to_sex()
+domain.birds.impossible_to_sex()
 ```
 
 The bird species that are near impossible to sex in the field.

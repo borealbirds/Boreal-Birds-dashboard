@@ -1,6 +1,6 @@
-# ui.sidebar { #app.ui.sidebar }
+# ui.layout.sidebar { #app.ui.layout.sidebar }
 
-`ui.sidebar`
+`ui.layout.sidebar`
 
 Sidebar navigation controls and reactive inputs for model tabs.
 
@@ -11,12 +11,12 @@ consistent dashboard filtering sidebars across distinct framework versions.
 
 | Name | Description |
 | --- | --- |
-| [sidebar](#app.ui.sidebar.sidebar) | Initialize the standardized filtering sidebar layout for bird model views. |
+| [sidebar](#app.ui.layout.sidebar.sidebar) | Initialize the standardized filtering sidebar layout for bird model views. |
 
-### sidebar { #app.ui.sidebar.sidebar }
+### sidebar { #app.ui.layout.sidebar.sidebar }
 
 ```python
-ui.sidebar.sidebar(model_version)
+ui.layout.sidebar.sidebar(model_version)
 ```
 
 Initialize the standardized filtering sidebar layout for bird model views.
@@ -32,6 +32,6 @@ sourced directly from active species metadata collections.
 
 #### Returns {.doc-section .doc-section-returns}
 
-| Name   | Type    | Description                                                        |
-|--------|---------|--------------------------------------------------------------------|
-|        | Sidebar | The configured layout panel object containing the filter controls. |
+| Name   | Type             | Description                                                        |
+|--------|------------------|--------------------------------------------------------------------|
+|        | shiny.ui.sidebar | The configured layout panel object containing the filter controls. |

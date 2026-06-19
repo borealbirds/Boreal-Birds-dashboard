@@ -2,51 +2,53 @@
 
 ## Core Modules
 
-Main application entry points, helper functions for map, medias, charts, static configuration assets, and global system icons.
+Main application entry points, helper functions for map, assets, domain-based components, and global configuration.
 
 | | |
 | --- | --- |
 | [app](app.qmd#app.app) | Main entry point and UI layout for the BAM Shiny Dashboard. |
-| [modules.map](modules.map.qmd#app.modules.map) | Geospatial map helper utilities and vector boundary processing. |
-| [modules.media](modules.media.qmd#app.modules.media) | Media utility assets and client-side JavaScript injection pipelines. |
-| [utils.charts](utils.charts.qmd#app.utils.charts) | The various chart functions used throughout the project. |
-| [utils.data](utils.data.qmd#app.utils.data) |  |
+| [assets](assets.qmd#app.assets) |  |
+| [domain.map](domain.map.qmd#app.domain.map) | Geospatial map helper utilities and vector boundary processing. |
+| [domain.charts](domain.charts.qmd#app.domain.charts) | The various chart functions used throughout the project. |
+| [domain.birds](domain.birds.qmd#app.domain.birds) | Helper functions related to bird details. |
 
 ## Data Loading
 
-Unified data access layer for high-performance Polars pipelines, remote DRAC servers, and TiTiler API gateways.
+Unified data access layer for high-performance Polars pipelines and remote DRAC servers.
 
 | | |
 | --- | --- |
-| [shared](shared.qmd#app.shared) | Data access layer for the BAM dashboard backend. |
+| [shared.data_loading](shared.data_loading.qmd#app.shared.data_loading) | Data access layer for the BAM dashboard backend. |
+| [shared.paths](shared.paths.qmd#app.shared.paths) | Paths to files and folders located in the app directory and remote server. |
 
 ## Server Logic
 
-Backend server logic, and reactive workflow execution routing.
+Backend server logic and reactive workflow execution routing.
 
 | | |
 | --- | --- |
-| [server.server_v5](server.server_v5.qmd#app.server.server_v5) | Backend analytical server coordination engine for Landbirds Version 5 models. |
+| [server.landbird_v5_server](server.landbird_v5_server.qmd#app.server.landbird_v5_server) | Backend analytical server coordination engine for Landbirds Version 5 models. |
 
 ## UI Components
 
-Modular frontend interface layouts, navigation controls, responsive panels, and view toggle containers.
+Modular frontend interface elements, page layouts, navigation controls, and view toggle containers.
 
 | | |
 | --- | --- |
-| [ui.sidebar](ui.sidebar.qmd#app.ui.sidebar) | Sidebar navigation controls and reactive inputs for model tabs. |
-| [ui.welcome](ui.welcome.qmd#app.ui.welcome) | Welcome tab layout and announcement sub-components for the dashboard. |
-| [ui.methods](ui.methods.qmd#app.ui.methods) | Methods and modeling methodologies layout views. |
-| [ui.landbirds_v4](ui.landbirds_v4.qmd#app.ui.landbirds_v4) | Landbirds Version 4 historical model placeholder view template. |
-| [ui.landbirds_v5](ui.landbirds_v5.qmd#app.ui.landbirds_v5) | Landbirds Version 5 model layout view. |
-| [ui.model_access](ui.model_access.qmd#app.ui.model_access) | Model access layout views, R package vignettes, and citation components. |
+| [ui.components.announcements](ui.components.announcements.qmd#app.ui.components.announcements) | Announcements that are be displayed only when necessary. |
+| [ui.components.contact](ui.components.contact.qmd#app.ui.components.contact) | UI contact components for the BAM dashboard. |
+| [ui.components.layout](ui.components.layout.qmd#app.ui.components.layout) | UI layout components for the BAM dashboard. |
+| [ui.layout.sidebar](ui.layout.sidebar.qmd#app.ui.layout.sidebar) | Sidebar navigation controls and reactive inputs for model tabs. |
+| [ui.pages.welcome](ui.pages.welcome.qmd#app.ui.pages.welcome) | Welcome tab layout and announcement sub-components for the dashboard. |
+| [ui.pages.methods](ui.pages.methods.qmd#app.ui.pages.methods) | Methods and modeling methodologies layout views. |
+| [ui.pages.landbirds_v4](ui.pages.landbirds_v4.qmd#app.ui.pages.landbirds_v4) | Landbirds Version 4 historical model placeholder view template. |
+| [ui.pages.landbirds_v5](ui.pages.landbirds_v5.qmd#app.ui.pages.landbirds_v5) | Landbirds Version 5 model layout view. |
+| [ui.pages.model_access](ui.pages.model_access.qmd#app.ui.pages.model_access) | Model access layout views, R package vignettes, and citation components. |
 
 ## Utilities
 
-Other utility modules
+Other utility modules including the TiTiler API gateways.
 
 | | |
 | --- | --- |
-| [utils.birds](utils.birds.qmd#app.utils.birds) | Helper functions related to bird details. |
-| [utils.components](utils.components.qmd#app.utils.components) | UI layout components and global utilities for the BAM dashboard. |
-| [utils.icons](utils.icons.qmd#app.utils.icons) | UI Asset Icon Library Module. |
+| [utils.titiler](utils.titiler.qmd#app.utils.titiler) | The TiTiler mapping gateway: part of the data access layer for the BAM dashboard backend. |

@@ -1,0 +1,72 @@
+# ui.components.contact { #app.ui.components.contact }
+
+`ui.components.contact`
+
+UI contact components for the BAM dashboard.
+
+Provides reusable contact components including website, email, and issues.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [email](#app.ui.components.contact.email) | Generate an interface interaction gateway linking to default mail applications. |
+| [report_issue](#app.ui.components.contact.report_issue) | Generate an issue-tracking shortcut pointing to repository management layers. |
+| [website](#app.ui.components.contact.website) | Generate a dynamic navigation item linking to the core BAM project web portal. |
+| [website_contact](#app.ui.components.contact.website_contact) | Generate a navigation layout button mapping to the official team directory page. |
+
+### email { #app.ui.components.contact.email }
+
+```python
+ui.components.contact.email()
+```
+
+Generate an interface interaction gateway linking to default mail applications.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                 | Description                                                           |
+|--------|----------------------|-----------------------------------------------------------------------|
+|        | shiny.ui.nav_control | An operational interface anchor using mailto address routing actions. |
+
+### report_issue { #app.ui.components.contact.report_issue }
+
+```python
+ui.components.contact.report_issue()
+```
+
+Generate an issue-tracking shortcut pointing to repository management layers.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                 | Description                                                                    |
+|--------|----------------------|--------------------------------------------------------------------------------|
+|        | shiny.ui.nav_control | A link asset to log defects, structural feature requests, or application bugs. |
+
+### website { #app.ui.components.contact.website }
+
+```python
+ui.components.contact.website()
+```
+
+Generate a dynamic navigation item linking to the core BAM project web portal.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                 | Description                                                                  |
+|--------|----------------------|------------------------------------------------------------------------------|
+|        | shiny.ui.nav_control | A navigation controller containing an external anchor element configuration. |
+
+### website_contact { #app.ui.components.contact.website_contact }
+
+```python
+ui.components.contact.website_contact()
+```
+
+Generate a navigation layout button mapping to the official team directory page.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                 | Description                                                                |
+|--------|----------------------|----------------------------------------------------------------------------|
+|        | shiny.ui.nav_control | A web component mapping directly to external communication infrastructure. |

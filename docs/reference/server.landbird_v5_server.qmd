@@ -1,6 +1,6 @@
-# server.server_v5 { #app.server.server_v5 }
+# server.landbird_v5_server { #app.server.landbird_v5_server }
 
-`server.server_v5`
+`server.landbird_v5_server`
 
 Backend analytical server coordination engine for Landbirds Version 5 models.
 
@@ -12,12 +12,12 @@ renders localized chart widgets, audio tracks, image grids, and datasets.
 
 | Name | Description |
 | --- | --- |
-| [server_v5](#app.server.server_v5.server_v5) | Execute reactive data flow state logic for the Version 5 model panel. |
+| [landbird_v5_server](#app.server.landbird_v5_server.landbird_v5_server) | Execute reactive data flow state logic for the Version 5 model panel. |
 
-### server_v5 { #app.server.server_v5.server_v5 }
+### landbird_v5_server { #app.server.landbird_v5_server.landbird_v5_server }
 
 ```python
-server.server_v5.server_v5(input, output, session)
+server.landbird_v5_server.landbird_v5_server(input, output, session)
 ```
 
 Execute reactive data flow state logic for the Version 5 model panel.

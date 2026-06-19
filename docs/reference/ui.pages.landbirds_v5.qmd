@@ -1,6 +1,6 @@
-# ui.landbirds_v5 { #app.ui.landbirds_v5 }
+# ui.pages.landbirds_v5 { #app.ui.pages.landbirds_v5 }
 
-`ui.landbirds_v5`
+`ui.pages.landbirds_v5`
 
 Landbirds Version 5 model layout view.
 
@@ -11,12 +11,12 @@ to alternate between geospatial model output mappings and qualitative species br
 
 | Name | Description |
 | --- | --- |
-| [landbirds_v5_tab](#app.ui.landbirds_v5.landbirds_v5_tab) | This function constructs a navigation panel containing a bird information  |
+| [landbirds_v5_tab](#app.ui.pages.landbirds_v5.landbirds_v5_tab) | This function constructs a navigation panel containing a bird information  |
 
-### landbirds_v5_tab { #app.ui.landbirds_v5.landbirds_v5_tab }
+### landbirds_v5_tab { #app.ui.pages.landbirds_v5.landbirds_v5_tab }
 
 ```python
-ui.landbirds_v5.landbirds_v5_tab()
+ui.pages.landbirds_v5.landbirds_v5_tab()
 ```
 
 This function constructs a navigation panel containing a bird information 
@@ -30,6 +30,6 @@ INFO view: species info, photo gallery, sounds.
 
 #### Returns {.doc-section .doc-section-returns}
 
-| Name   | Type     | Description                                                            |
-|--------|----------|------------------------------------------------------------------------|
-|        | NavPanel | The operational grid environment mapping layout rows and view toggles. |
+| Name   | Type               | Description                                                            |
+|--------|--------------------|------------------------------------------------------------------------|
+|        | shiny.ui.nav_panel | The operational grid environment mapping layout rows and view toggles. |

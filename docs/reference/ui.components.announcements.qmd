@@ -1,0 +1,40 @@
+# ui.components.announcements { #app.ui.components.announcements }
+
+`ui.components.announcements`
+
+Announcements that are be displayed only when necessary.
+
+Generates a card that can be turned on or off.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [announcements_card](#app.ui.components.announcements.announcements_card) | Render a conditional UI card containing recent project announcements. |
+
+### announcements_card { #app.ui.components.announcements.announcements_card }
+
+```python
+ui.components.announcements.announcements_card(
+    display=False,
+    file='announcements.md',
+)
+```
+
+Render a conditional UI card containing recent project announcements.
+
+Verifies the toggle state, confirms file existence, and checks that 
+the text payload is not empty before rendering.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name    | Type   | Description                                                    | Default              |
+|---------|--------|----------------------------------------------------------------|----------------------|
+| display | bool   | Global toggle switch to show (True) or hide (False) the block. | `False`              |
+| file    | str    | Target file name located within the app content directory.     | `"announcements.md"` |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                        |
+|--------|--------------|--------------------------------------------------------------------|
+|        | Card or None | A populated UI card container element, or None if conditions fail. |

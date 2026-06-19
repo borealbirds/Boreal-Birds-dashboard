@@ -1,6 +1,6 @@
-# ui.welcome { #app.ui.welcome }
+# ui.pages.welcome { #app.ui.pages.welcome }
 
-`ui.welcome`
+`ui.pages.welcome`
 
 Welcome tab layout and announcement sub-components for the dashboard.
 
@@ -11,12 +11,12 @@ updates out of localized markdown utility assets.
 
 | Name | Description |
 | --- | --- |
-| [welcome_tab](#app.ui.welcome.welcome_tab) | Build the primary interface landing tab panel layout view. |
+| [welcome_tab](#app.ui.pages.welcome.welcome_tab) | Build the primary interface landing tab panel layout view. |
 
-### welcome_tab { #app.ui.welcome.welcome_tab }
+### welcome_tab { #app.ui.pages.welcome.welcome_tab }
 
 ```python
-ui.welcome.welcome_tab()
+ui.pages.welcome.welcome_tab()
 ```
 
 Build the primary interface landing tab panel layout view.
