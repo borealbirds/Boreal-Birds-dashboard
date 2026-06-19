@@ -22,7 +22,6 @@ from ipyleaflet import (
     basemap_to_tiles,
     basemaps,
     FullScreenControl,
-    GeoJSON,
     LayersControl,
     Map,
     ScaleControl,
@@ -33,12 +32,17 @@ from ipyleaflet import (
 from shiny import Inputs, Outputs, Session, reactive, render, ui, req
 from shinywidgets import render_altair, render_widget
 
-from shared import *
-from modules.map import *
-from modules.media import *
-from utils.birds import *
-from utils.charts import *
-from utils.icons import *
+from assets.images import *
+from assets.icons import *
+from assets.sounds import *
+
+from domain.birds import *
+from domain.charts import *
+from domain.map import *
+
+from shared.data_loading import *
+from shared.paths import url_exists, get_tif_path
+from utils.titiler import *
 
 # alt.data_transformers.enable("vegafusion")
 
@@ -82,7 +86,7 @@ def _format_population_value(pop_df: pl.DataFrame) -> str:
 
 # ── MAIN SERVER LOGIC ──────────────────────────────────────────────
 
-def server_v5(input: Inputs, output: Outputs, session: Session):
+def landbird_v5_server(input: Inputs, output: Outputs, session: Session):
     """
     Execute reactive data flow state logic for the Version 5 model panel.
 
@@ -189,7 +193,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
         try:
             encoded_cog = requests.utils.quote(url, safe="")
-            stats_url = f"{PRODUCTION_TILER_BASE}/cog/statistics?url={encoded_cog}"
+            stats_url = f"{production_tiler_base()}/cog/statistics?url={encoded_cog}"
             res = requests.get(stats_url, timeout=5)
             res.raise_for_status()
 
@@ -357,7 +361,7 @@ def server_v5(input: Inputs, output: Outputs, session: Session):
 
         # request tiles from the titiler API gateway
         tile_string = (
-            f"{PRODUCTION_TILER_BASE}"
+            f"{production_tiler_base()}"
             f"/cog/tiles/{{z}}/{{x}}/{{y}}.png"
             f"?url={encoded_cog}"
             f"&colormap_name=ylgn"

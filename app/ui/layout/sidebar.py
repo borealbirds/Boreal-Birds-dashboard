@@ -6,7 +6,7 @@ consistent dashboard filtering sidebars across distinct framework versions.
 """
 
 from shiny import ui
-from shared import load_species_metadata
+from shared.data_loading import load_species_metadata
 
 
 def sidebar(model_version: str) -> ui.sidebar:

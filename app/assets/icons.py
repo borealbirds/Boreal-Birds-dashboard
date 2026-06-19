@@ -7,7 +7,9 @@ question_circle_fill : shiny.ui.HTML
     Bootstrap question-circle-fill inline SVG icon wrapper element used 
     extensively to trigger info tooltips on application headers.
 """
+
 from shiny import ui
+
 
 question_circle_fill = ui.HTML(
     """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle-fill" viewBox="0 0 16 16">

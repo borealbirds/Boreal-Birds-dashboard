@@ -3,18 +3,17 @@ The various chart functions used throughout the project.
 """
 
 import altair as alt
-import requests
 import polars as pl
 from shiny import req
 
-from shared import load_region_data, load_species_metadata, load_covariate_metadata, load_importance_data
-from utils.data import select_covariate_file
+from shared.data_loading import load_region_data, load_species_metadata, load_covariate_metadata, load_importance_data, select_covariate_file
 
 REGION_DICT = load_region_data().rows_by_key(key="region", named=True, unique=True)
 
 birds = load_species_metadata()
 covariates = load_covariate_metadata()
 importance = load_importance_data()
+
 
 def population_altair(data, species) -> alt.Chart:
     """

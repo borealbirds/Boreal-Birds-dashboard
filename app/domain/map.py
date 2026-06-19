@@ -13,7 +13,10 @@ from shapely.geometry import shape
 from ipywidgets import HTML, Layout
 from ipyleaflet import GeoJSON, WidgetControl
 
-from shared import BOUNDARIES_PATH, load_region_data
+from shared.data_loading import load_region_data
+from shared.paths import boundaries_path
+
+BOUNDARIES_PATH = boundaries_path()
 
 # Hardcoded fallback center metrics for geographic bounding contexts
 REGION_CENTERS = {
@@ -23,6 +26,7 @@ REGION_CENTERS = {
 }
 
 REGION_DICT = load_region_data().rows_by_key(key="region", named=True, unique=True)
+
 
 def get_map_error_html(status: str) -> HTML:
     """
@@ -52,6 +56,7 @@ def get_map_error_html(status: str) -> HTML:
         </div>
     """)
 
+
 @lru_cache(maxsize=1)
 def load_subregion_boundaries() -> gpd.GeoDataFrame:
     """
@@ -74,6 +79,7 @@ def load_subregion_boundaries() -> gpd.GeoDataFrame:
     return gdf
 
 subregions = load_subregion_boundaries()
+
 
 def get_region_gdf(region: str) -> gpd.GeoDataFrame:
     """
@@ -105,6 +111,7 @@ def get_region_gdf(region: str) -> gpd.GeoDataFrame:
         return gdf[gdf["bcr"].isin(alaska_bcr)]
 
     return gdf
+
 
 def build_region_layer(region_name: str) -> tuple[GeoJSON, HTML, WidgetControl]:
     """
@@ -162,7 +169,7 @@ def build_region_layer(region_name: str) -> tuple[GeoJSON, HTML, WidgetControl]:
         },
         hover_style={
             "color": "#0F7279FF",
-            "weight": 3,
+            "weight": 2,
             "fillColor": "white", 
             "fillOpacity": 0, 
             "opacity": 1, 
@@ -193,6 +200,7 @@ def build_region_layer(region_name: str) -> tuple[GeoJSON, HTML, WidgetControl]:
     )
 
     return layer, hover_card, hover_control
+
 
 def zoom_from_span(span_x, span_y):
     """

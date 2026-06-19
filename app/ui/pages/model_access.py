@@ -7,7 +7,7 @@ vignette HTML files via iframe modules and parsing reference citations.
 
 from shiny import ui
 
-from shared import read_md
+from shared.data_loading import read_md
 
 
 def _vignette_panel(title: str, src: str) -> ui.nav_panel:

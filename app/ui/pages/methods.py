@@ -7,7 +7,7 @@ dynamically assemble an interactive user interface layout panel.
 
 from shiny import ui
 
-from shared import read_md, read_yaml
+from shared.data_loading import read_md, read_yaml
 
 methods_sections = read_yaml("methods/methods-sections.yaml")
 
@@ -21,6 +21,7 @@ methods_accordion = ui.accordion(
     ],
     open=None # opens the first section by default
 )
+
 
 def methods_tab() -> ui.nav_panel:
     """
