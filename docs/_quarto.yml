@@ -35,7 +35,9 @@ quartodoc:
       desc: Main application entry points, helper functions for map, assets, domain-based components, and global configuration.
       contents:
         - app
-        - assets
+        - assets.icons
+        - assets.images
+        - assets.sounds
         - domain.map
         - domain.charts
         - domain.birds

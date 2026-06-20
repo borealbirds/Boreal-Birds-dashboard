@@ -1,0 +1,50 @@
+# assets.images { #app.assets.images }
+
+`assets.images`
+
+Media utility assets and client-side JavaScript injection pipelines.
+
+Resolves local storage paths for bird imagery and injects HTML/JavaScript 
+engines for interactive photo lightboxes and audio spectrograms.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [get_sidebar_image_path](#app.assets.images.get_sidebar_image_path) | Resolve the web asset path and directory name for a species sidebar image. |
+| [lightbox_script](#app.assets.images.lightbox_script) | Generate the HTML and JavaScript script block for the image gallery lightbox. |
+
+### get_sidebar_image_path { #app.assets.images.get_sidebar_image_path }
+
+```python
+assets.images.get_sidebar_image_path(species_id, common_name)
+```
+
+Resolve the web asset path and directory name for a species sidebar image.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type   | Description                                       | Default    |
+|-------------|--------|---------------------------------------------------|------------|
+| species_id  | str    | The unique species alpha-numeric identifier code. | _required_ |
+| common_name | str    | The English common name of the bird species.      | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                        | Description                                                               |
+|--------|-----------------------------|---------------------------------------------------------------------------|
+|        | tuple of (str, str) or None | A tuple of (relative_web_url, folder_name) if an image exists, else None. |
+
+### lightbox_script { #app.assets.images.lightbox_script }
+
+```python
+assets.images.lightbox_script()
+```
+
+Generate the HTML and JavaScript script block for the image gallery lightbox.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                   |
+|--------|--------|-------------------------------------------------------------------------------|
+|        | HTML   | A raw HTML tag containing the client-side modal and gallery navigation logic. |

@@ -7,7 +7,9 @@ Main application entry points, helper functions for map, assets, domain-based co
 | | |
 | --- | --- |
 | [app](app.qmd#app.app) | Main entry point and UI layout for the BAM Shiny Dashboard. |
-| [assets](assets.qmd#app.assets) |  |
+| [assets.icons](assets.icons.qmd#app.assets.icons) | UI Asset Icon Library Module. |
+| [assets.images](assets.images.qmd#app.assets.images) | Media utility assets and client-side JavaScript injection pipelines. |
+| [assets.sounds](assets.sounds.qmd#app.assets.sounds) | Media utility assets and client-side JavaScript injection pipelines. |
 | [domain.map](domain.map.qmd#app.domain.map) | Geospatial map helper utilities and vector boundary processing. |
 | [domain.charts](domain.charts.qmd#app.domain.charts) | The various chart functions used throughout the project. |
 | [domain.birds](domain.birds.qmd#app.domain.birds) | Helper functions related to bird details. |

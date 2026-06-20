@@ -24,7 +24,17 @@ from shared.paths import *
 
 
 def select_covariate_file(covariate_code: str) -> tuple[str, str]:
+    """
+    Select csv file for the corresponding covariate code
 
+    Returns
+    -------
+    tuple of (str, str)
+        A tuple of (
+            file_url: url linked to the selected covariate file on DRAC, 
+            label: continuous/discrete
+        )
+    """
     base = f"{PREDICTORS_FOLDER}{covariate_code}"
 
     continuous_url = f"{base}_gampredictions.csv"

@@ -1,0 +1,63 @@
+# assets.sounds { #app.assets.sounds }
+
+`assets.sounds`
+
+Media utility assets and client-side JavaScript injection pipelines.
+
+Provides reusable front-end JavaScript hooks for dynamic audio playback.
+
+## Main Capabilities {.doc-section .doc-section-main-capabilities}
+
+* Binds client-side audio pipelines dynamically using WaveSurfer.js.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [audio](#app.assets.sounds.audio) | Inject JavaScript pipelines for WaveSurfer audio and spectrogram rendering. |
+| [sound_script](#app.assets.sounds.sound_script) | Generate the HTML and JavaScript script block for WaveSurfer audio players. |
+
+### audio { #app.assets.sounds.audio }
+
+```python
+assets.sounds.audio()
+```
+
+Inject JavaScript pipelines for WaveSurfer audio and spectrogram rendering.
+
+Registers a custom Shiny message handler to initialize and synchronize 
+multi-instance audio players and visual timelines on the client side.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                      |
+|--------|--------|------------------------------------------------------------------|
+|        | Tag    | An HTML script block containing client-side audio runtime logic. |
+
+#### Notes {.doc-section .doc-section-notes}
+
+Active WaveSurfer tracking instances are loaded via CDN and maintained 
+globally in the browser window scope under `window._wsInstances`.
+
+### sound_script { #app.assets.sounds.sound_script }
+
+```python
+assets.sounds.sound_script(sounds_json)
+```
+
+Generate the HTML and JavaScript script block for WaveSurfer audio players.
+
+Initializes client-side audio waveforms, mel-scale spectrograms, color themes, 
+and full-screen audio inspection modals.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type   | Description                                                           | Default    |
+|-------------|--------|-----------------------------------------------------------------------|------------|
+| sounds_json | str    | A JSON-serialized string containing audio paths and metadata records. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                               |
+|--------|--------|---------------------------------------------------------------------------|
+|        | HTML   | A raw HTML tag containing the client-side WaveSurfer orchestration logic. |

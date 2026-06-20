@@ -29,6 +29,7 @@ All tabular data workflows utilize the high-performance `polars` engine.
 | [load_species_metadata](#app.shared.data_loading.load_species_metadata) | Load species taxonomic and descriptive data from the Excel results summary file. |
 | [read_md](#app.shared.data_loading.read_md) | Extract raw text contents out of a localized target Markdown document. |
 | [read_yaml](#app.shared.data_loading.read_yaml) | Load and parse a localized target YAML configuration layout file. |
+| [select_covariate_file](#app.shared.data_loading.select_covariate_file) | Select csv file for the corresponding covariate code |
 
 ### load_abundance_data { #app.shared.data_loading.load_abundance_data }
 
@@ -177,3 +178,17 @@ Load and parse a localized target YAML configuration layout file.
 | Name   | Type   | Description                                                        |
 |--------|--------|--------------------------------------------------------------------|
 |        | dict   | A dictionary representation of the parsed YAML document structure. |
+
+### select_covariate_file { #app.shared.data_loading.select_covariate_file }
+
+```python
+shared.data_loading.select_covariate_file(covariate_code)
+```
+
+Select csv file for the corresponding covariate code
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                | Description                                                                                                     |
+|--------|---------------------|-----------------------------------------------------------------------------------------------------------------|
+|        | tuple of (str, str) | A tuple of (     file_url: url linked to the selected covariate file on DRAC,      label: continuous/discrete ) |
