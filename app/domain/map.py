@@ -60,18 +60,15 @@ def get_map_error_html(status: str) -> HTML:
 @lru_cache(maxsize=1)
 def load_subregion_boundaries() -> gpd.GeoDataFrame:
     """
-    Load, reproject, and simplify ecological shapefile data.
+    Load and simplify ecological shapefile data in WGS84 (EPSG:4326).
 
     Returns
     -------
     gpd.GeoDataFrame
-        Simplified subregion boundary polygons projected to WGS84 (EPSG:4326).
+        Simplified subregion boundary polygons.
     """
 
     gdf = gpd.read_file(BOUNDARIES_PATH)
-
-    # convert from EPSG:3978 to EPSG:4326
-    gdf = gdf.to_crs(epsg=4326)
 
     # simplify boundaries to load faster
     gdf["geometry"] = gdf.geometry.simplify(0.001)
