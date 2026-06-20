@@ -54,7 +54,7 @@ app_ui = ui.page_navbar(
         website(),
         website_contact(),
     ),
-    selected="Landbirds v5",
+    selected="Welcome",
     id="tabs",
     title=ui.tags.a(
         ui.tags.img(
