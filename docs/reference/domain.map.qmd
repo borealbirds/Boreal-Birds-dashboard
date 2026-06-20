@@ -15,7 +15,7 @@ GeoJSON layout layers.
 | [build_region_layer](#app.domain.map.build_region_layer) | Build an interactive vector boundary layout layer for a specific region. |
 | [get_map_error_html](#app.domain.map.get_map_error_html) | Generate fallback HTML widgets based on active raster tiler states from TiTiler API. |
 | [get_region_gdf](#app.domain.map.get_region_gdf) | Filter the global subregions layer by specified geographic regions. |
-| [load_subregion_boundaries](#app.domain.map.load_subregion_boundaries) | Load, reproject, and simplify ecological shapefile data. |
+| [load_subregion_boundaries](#app.domain.map.load_subregion_boundaries) | Load and simplify ecological shapefile data in WGS84 (EPSG:4326). |
 | [zoom_from_span](#app.domain.map.zoom_from_span) | Calculate an ideal interactive map zoom factor using geographic coordinate spans. |
 
 ### build_region_layer { #app.domain.map.build_region_layer }
@@ -89,13 +89,13 @@ Filter the global subregions layer by specified geographic regions.
 domain.map.load_subregion_boundaries()
 ```
 
-Load, reproject, and simplify ecological shapefile data.
+Load and simplify ecological shapefile data in WGS84 (EPSG:4326).
 
 #### Returns {.doc-section .doc-section-returns}
 
-| Name   | Type             | Description                                                            |
-|--------|------------------|------------------------------------------------------------------------|
-|        | gpd.GeoDataFrame | Simplified subregion boundary polygons projected to WGS84 (EPSG:4326). |
+| Name   | Type             | Description                             |
+|--------|------------------|-----------------------------------------|
+|        | gpd.GeoDataFrame | Simplified subregion boundary polygons. |
 
 ### zoom_from_span { #app.domain.map.zoom_from_span }
 
