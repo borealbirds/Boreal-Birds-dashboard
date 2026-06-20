@@ -13,11 +13,6 @@ CONTENT_DIR = APP_DIR / "content"
 
 WWW_DIR = APP_DIR / "www"
 
-
-# Live Posit Connect Cloud dynamic map tiler base domain address
-PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
-
-
 # Paths to folders and files located on DRAC
 REMOTE_URL = "https://cloud.borealbirds.ca/"
 

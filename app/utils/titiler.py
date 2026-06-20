@@ -9,7 +9,8 @@ Main Capabilities
 import requests
 import time
 
-from shared.paths import PRODUCTION_TILER_BASE
+# Live Posit Connect Cloud dynamic map tiler base domain address
+PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
 
 # cache to check titiler API health status
 TILER_HEALTH_TTL = 30

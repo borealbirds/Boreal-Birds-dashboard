@@ -17,7 +17,7 @@ This is a general guideline to deploy the dashboard on to posit connect cloud. W
 2. Deploy the Titiler API on Posit Connect Cloud
 3. Copy the link of the deployed Titiler API
 ![](img/maptiler-posit.png)
-4. Update `PRODUCTION_TILER_BASE` in the Main Dashboard located in `app/shared.py` to the link of the deployed app obtained from the previous step.
+4. Update `PRODUCTION_TILER_BASE` in the Main Dashboard located in `app/utils/titiler.py` to the link of the deployed app obtained from the previous step.
 ![](img/update-tiler-link.png)
 5. Commit/Push the updated link to the Main Dashboard repository
 6. Deploy the Main Dashboard on Posit Connect Cloud
