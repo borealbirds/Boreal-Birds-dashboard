@@ -1,0 +1,41 @@
+# server.landbird_v5_server { #app.server.landbird_v5_server }
+
+`server.landbird_v5_server`
+
+Backend analytical server coordination engine for Landbirds Version 5 models.
+
+Orchestrates reactive pipeline computations, updates filtering ranges, 
+handles asynchronous TiTiler spatial metadata statistics collections, and 
+renders localized chart widgets, audio tracks, image grids, and datasets.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [landbird_v5_server](#app.server.landbird_v5_server.landbird_v5_server) | Execute reactive data flow state logic for the Version 5 model panel. |
+
+### landbird_v5_server { #app.server.landbird_v5_server.landbird_v5_server }
+
+```python
+server.landbird_v5_server.landbird_v5_server(input, output, session)
+```
+
+Execute reactive data flow state logic for the Version 5 model panel.
+
+Manages calculations across distinct application pipelines including Leaflet 
+map view instances, dynamic dataset slicing using Polars, reactive chart rendering 
+via Altair, media galleries, and workbook extraction routines.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name    | Type    | Description                                                                      | Default    |
+|---------|---------|----------------------------------------------------------------------------------|------------|
+| input   | Inputs  | Reactive session input dictionary container mapping active interface selections. | _required_ |
+| output  | Outputs | Reactive renderer object registry controlling interface output nodes.            | _required_ |
+| session | Session | The current active browser runtime and communication link execution loop.        | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description   |
+|--------|--------|---------------|
+|        | None   |               |

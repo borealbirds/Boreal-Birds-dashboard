@@ -16,6 +16,8 @@ website:
         text: Markdown Contents
       - href: static_assets.qmd
         text: Static Assets
+      - href: troubleshooting.qmd
+        text: Troubleshooting
       - section: "Reference"
         contents:
           - reference/index.qmd
@@ -32,37 +34,41 @@ quartodoc:
   
   sections:
     - title: Core Modules
-      desc: Main application entry points, helper functions for map, medias, charts, static configuration assets, and global system icons.
+      desc: Main application entry points, helper functions for map, assets, domain-based components, and global configuration.
       contents:
         - app
-        - modules.map
-        - modules.media
-        - utils.charts
-        - utils.data
+        - assets.icons
+        - assets.images
+        - assets.sounds
+        - domain.map
+        - domain.charts
+        - domain.birds
 
     - title: Data Loading
-      desc: Unified data access layer for high-performance Polars pipelines, remote DRAC servers, and TiTiler API gateways.
+      desc: Unified data access layer for high-performance Polars pipelines and remote DRAC servers.
       contents:
-        - shared
+        - shared.data_loading
+        - shared.paths
         
     - title: Server Logic
-      desc: Backend server logic, and reactive workflow execution routing.
+      desc: Backend server logic and reactive workflow execution routing.
       contents:
-        - server.server_v5
+        - server.landbird_v5_server
         
     - title: UI Components
-      desc: Modular frontend interface layouts, navigation controls, responsive panels, and view toggle containers.
+      desc: Modular frontend interface elements, page layouts, navigation controls, and view toggle containers.
       contents:
-        - ui.sidebar
-        - ui.welcome
-        - ui.methods
-        - ui.landbirds_v4
-        - ui.landbirds_v5
-        - ui.model_access
+        - ui.components.announcements
+        - ui.components.contact
+        - ui.components.layout
+        - ui.layout.sidebar
+        - ui.pages.welcome
+        - ui.pages.methods
+        - ui.pages.landbirds_v4
+        - ui.pages.landbirds_v5
+        - ui.pages.model_access
 
     - title: Utilities
-      desc: Other utility modules
+      desc: Other utility modules including the TiTiler API gateways.
       contents:
-        - utils.birds
-        - utils.components
-        - utils.icons
+        - utils.titiler

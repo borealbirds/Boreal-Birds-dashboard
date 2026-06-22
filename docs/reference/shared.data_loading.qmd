@@ -1,0 +1,194 @@
+# shared.data_loading { #app.shared.data_loading }
+
+`shared.data_loading`
+
+Data access layer for the BAM dashboard backend.
+
+Orchestrates data flow between remote data servers, the TiTiler mapping 
+gateway, and local disk-backed fallback caches for rasters and tabular files.
+
+## Main Capabilities {.doc-section .doc-section-main-capabilities}
+
+* Monitors the dynamic cloud raster tiler API health status.
+* Resolves HTTP URLs for remote Cloud Optimized GeoTIFFs (COGs).
+* Extracts and aggregates data tables efficiently using Polars.
+* Parses Apache directory listings to scan for available assets.
+
+## Notes {.doc-section .doc-section-notes}
+
+All tabular data workflows utilize the high-performance `polars` engine.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [load_abundance_data](#app.shared.data_loading.load_abundance_data) | Load population density estimates from the Excel results summary file. |
+| [load_covariate_metadata](#app.shared.data_loading.load_covariate_metadata) | Load Covariate metadata and full-form names from the csv file. |
+| [load_importance_data](#app.shared.data_loading.load_importance_data) | Load importance data for each covariate from the Excel results summary file. |
+| [load_region_data](#app.shared.data_loading.load_region_data) | Load region data from the Excel results summary file. |
+| [load_species_metadata](#app.shared.data_loading.load_species_metadata) | Load species taxonomic and descriptive data from the Excel results summary file. |
+| [read_md](#app.shared.data_loading.read_md) | Extract raw text contents out of a localized target Markdown document. |
+| [read_yaml](#app.shared.data_loading.read_yaml) | Load and parse a localized target YAML configuration layout file. |
+| [select_covariate_file](#app.shared.data_loading.select_covariate_file) | Select csv file for the corresponding covariate code |
+
+### load_abundance_data { #app.shared.data_loading.load_abundance_data }
+
+```python
+shared.data_loading.load_abundance_data()
+```
+
+Load population density estimates from the Excel results summary file.
+
+- species specific population size (million males) and density estimates (males / ha) by region (density = abundance / area)
+    - id:                   AOU code for the species
+    - scientific:           scientific name for the species
+    - english:              common name for the species in English
+    - region:               modelling region
+    - year:                 year of prediction, determined by year of covariate prediction layers used
+    - population_estimate:  mean population estimate
+    - population_lower:     5th percentile of 32 bootstrap population estimate
+    - population_upper:     95th percentile of 32 bootstrap population estimate
+    - density_estimate:     mean density estimate
+    - density_lower:        5th percentile of 32 bootstrap density estimate
+    - density_upper:        5th percentile of 32 bootstrap density estimate
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                    |
+|--------|--------------|----------------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'abundances' sheet metadata. |
+
+### load_covariate_metadata { #app.shared.data_loading.load_covariate_metadata }
+
+```python
+shared.data_loading.load_covariate_metadata()
+```
+
+Load Covariate metadata and full-form names from the csv file.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                           |
+|--------|--------------|-------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the Covariate metadata. |
+
+### load_importance_data { #app.shared.data_loading.load_importance_data }
+
+```python
+shared.data_loading.load_importance_data()
+```
+
+Load importance data for each covariate from the Excel results summary file.
+
+- species specific population size (million males) and density estimates (males / ha) by region (density = abundance / area)
+    - id:                   AOU code for the species
+    - scientific:           scientific name for the species
+    - english:              common name for the species in English
+    - region:               modelling region
+    - variable:             the covariate of interest, by id
+    - importance_mean:      mean importance score for the covariate
+    - importance_sd:        std deviation of the importance score for the selected covariate
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                    |
+|--------|--------------|----------------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'importance' sheet metadata. |
+
+### load_region_data { #app.shared.data_loading.load_region_data }
+
+```python
+shared.data_loading.load_region_data()
+```
+
+Load region data from the Excel results summary file.
+
+- lists the individual modelling regions and the mosaiced model regions
+    - region:               code for the region (country and bird conservation region number for single model regions)
+    - type:                 type of model region (single model vs mosaic of multiple single models)
+    - country:              country of the region
+    - bcr:                  Bird conservation region (BCR) name
+    - area_km2:             area of the region (km2)
+    - total_surveys:        total surveys available for the modelling region (including 100km buffer)
+    - bootstrap_surveys:    total surveys used for model training per bootsstrap (including 100 km buffer)
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                             |
+|--------|--------------|---------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'regions' sheet data. |
+
+### load_species_metadata { #app.shared.data_loading.load_species_metadata }
+
+```python
+shared.data_loading.load_species_metadata()
+```
+
+Load species taxonomic and descriptive data from the Excel results summary file.
+
+- lists the species for which results are available
+    - id:                   AOU code for the species
+    - scientific:           scientific name for the species
+    - english:              common name for the species in English
+    - french:               common name for the species in French
+    - family:               family for the species
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                 |
+|--------|--------------|-------------------------------------------------------------|
+|        | pl.DataFrame | A Polars DataFrame containing the 'species' sheet metadata. |
+
+### read_md { #app.shared.data_loading.read_md }
+
+```python
+shared.data_loading.read_md(filename)
+```
+
+Extract raw text contents out of a localized target Markdown document.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name     | Type   | Description                                             | Default    |
+|----------|--------|---------------------------------------------------------|------------|
+| filename | str    | The name of the target file stored under `CONTENT_DIR`. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                              |
+|--------|--------|----------------------------------------------------------|
+|        | str    | The unparsed text content block encoded via UTF-8 rules. |
+
+### read_yaml { #app.shared.data_loading.read_yaml }
+
+```python
+shared.data_loading.read_yaml(filename)
+```
+
+Load and parse a localized target YAML configuration layout file.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name     | Type   | Description                                                     | Default    |
+|----------|--------|-----------------------------------------------------------------|------------|
+| filename | str    | The name of the configuration asset stored under `CONTENT_DIR`. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                        |
+|--------|--------|--------------------------------------------------------------------|
+|        | dict   | A dictionary representation of the parsed YAML document structure. |
+
+### select_covariate_file { #app.shared.data_loading.select_covariate_file }
+
+```python
+shared.data_loading.select_covariate_file(covariate_code)
+```
+
+Select csv file for the corresponding covariate code
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type                | Description                                                                                                     |
+|--------|---------------------|-----------------------------------------------------------------------------------------------------------------|
+|        | tuple of (str, str) | A tuple of (     file_url: url linked to the selected covariate file on DRAC,      label: continuous/discrete ) |

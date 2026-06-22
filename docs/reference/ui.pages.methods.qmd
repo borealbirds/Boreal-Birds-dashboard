@@ -1,0 +1,31 @@
+# ui.pages.methods { #app.ui.pages.methods }
+
+`ui.pages.methods`
+
+Methods and modeling methodologies layout views.
+
+Loads statistical methodology disclosures from an external YAML manifest to 
+dynamically assemble an interactive user interface layout panel.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [methods_tab](#app.ui.pages.methods.methods_tab) | Build the methods interface container layout. |
+
+### methods_tab { #app.ui.pages.methods.methods_tab }
+
+```python
+ui.pages.methods.methods_tab()
+```
+
+Build the methods interface container layout.
+
+Arranges introductory markdown sheets alongside an interactive accordion grid
+with responsive grid-column widths optimized for varying viewport break-points.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type               | Description                                                         |
+|--------|--------------------|---------------------------------------------------------------------|
+|        | shiny.ui.nav_panel | The completed user interface tab panel holding methodology records. |

@@ -1,9 +1,82 @@
 ---
 title: "Static Assets"
+page-layout: full
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
-# `img/`
+# Bird Media Structure
 
-# `audio/`
+Bird photos (`img/`) and sounds (`audio/`) are organized into **one
+folder per species**, named `{species_id}_{Common_Name}` (spaces
+replaced with underscores). This matches how the app resolves assets at
+runtime:
 
-# `vignettes/`
+``` python
+folder_name = f"{species_id}_{common_name.replace(' ', '_')}"
+```
+
+App-level layout images (logo, favicon, etc.) live at the top level of
+`img/`, *outside* any species folder.
+
+## Images — `app/www/img/`
+
+```         
+app/www/img/
+├── favicon.png                       # app-level layout assets (top level)
+├── BAM-Logo-WhiteText.svg
+├── DOWO_Downy_Woodpecker/            # {species_id}_{Common_Name}
+│   ├── 1_667108186.jpg               # {index}_{iNaturalist_photo_id}.jpg
+│   ├── 1_667108186_metadata.json     # sidecar: <image_stem>_metadata.json
+│   ├── 2_666466435.jpg
+│   ├── 2_666466435_metadata.json
+│   └── ...                           # up to 12 photos per species
+└── .../
+```
+
+**Naming conventions**
+
+- **Photo:** `{index}_{photo_id}.jpg` — `index` is 1…N in display order;
+  `photo_id` is the source iNaturalist photo ID.
+- **Metadata sidecar:** the image stem + `_metadata.json` (e.g.
+  `1_667108186.jpg` → `1_667108186_metadata.json`). The app pairs each
+  image to its metadata by exact filename stem.
+- **Per species:** up to **12** photos — **6 male + 6 female** for
+  sexually distinguishable species, or **12 unlabelled** where sex can't
+  be determined.
+
+**Image metadata fields**
+
+| Field | Type | Description |
+|--------------|--------------|--------------------------------------------|
+| `common_name` | string | English common name |
+| `scientific_name` | string | Scientific name |
+| `sex` | string | `"male"`, `"female"`, or `"unknown"` — drives the ♂/♀ badge |
+| `life_stage` | string | e.g. `"adult"` |
+| `captive` | bool | `false` for wild observations |
+| `photo_id` | int | iNaturalist photo ID |
+| `attribution` | string | Photographer / rights string for display |
+| `license` | string | License code (e.g. `cc-by-nc`, `cc0`) |
+| `obs_url` | string | Link to the source iNaturalist observation |
+| `obs_date` | string | Observation date (`YYYY-MM-DD`) |
+| `recorded_by` | string | iNaturalist user login of the observer |
+| `download_url` | string | Source URL the image was fetched from |
+| `size_kb` | float | Approximate file size in KB |
+| `local_file` | string | The image filename (mirrors the `.jpg` name) |
+
+## Sounds — `app/www/audio/`
+
+```         
+app/www/audio/
+└── DOWO_Downy_Woodpecker/            # same {species_id}_{Common_Name} convention
+    ├── 1_<source_id>.mp3             # {index}_{source_id}.mp3
+    ├── 1_<source_id>_metadata.json   # sidecar, keyed by leading index
+    └── ...                           # app plays up to 5 clips per species
+```
+
+Audio clips are sourced from Xeno-Canto. The app loads up to **5**
+`.mp3` files per species (sorted by filename) and pairs each with its
+metadata by the leading index of the filename. The player consumes the
+following metadata fields: `recordist`, `country`, `date`, `quality`,
+`license`, and `xeno_canto_url` (falling back to `obs_url`).

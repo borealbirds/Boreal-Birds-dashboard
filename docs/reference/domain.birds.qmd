@@ -1,0 +1,29 @@
+# domain.birds { #app.domain.birds }
+
+`domain.birds`
+
+Helper functions related to bird details.
+
+## Main Capabilities {.doc-section .doc-section-main-capabilities}
+
+* Provides a set of the birds that are challenging to sex in the field.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [impossible_to_sex](#app.domain.birds.impossible_to_sex) | The bird species that are near impossible to sex in the field. |
+
+### impossible_to_sex { #app.domain.birds.impossible_to_sex }
+
+```python
+domain.birds.impossible_to_sex()
+```
+
+The bird species that are near impossible to sex in the field.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                               |
+|--------|--------|-----------------------------------------------------------|
+|        | set    | A set of all bird species not to include sex details for. |

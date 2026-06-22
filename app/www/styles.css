@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 :root {
   --bg-primary: #FFFFFF;
   --bg-secondary: #F4F7F6FF;
@@ -29,7 +29,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: Poppins, sans-serif;
-  background-color: rgb(211, 211, 211, 0.5);
+  background-color: rgba(211, 211, 211, 0.5);
   color: var(--text-primary);
 }
 .container-fluid {
@@ -41,7 +41,7 @@ body {
 .tab-pane[data-value="Citing Results"],
 .tab-pane[data-value="Tools"] {
   background-image: 
-    linear-gradient(to bottom, rgb(21, 59, 64, 0.4), rgb(21, 59, 64, 0.4)),
+    linear-gradient(to bottom, rgba(21, 59, 64, 0.4), rgba(21, 59, 64, 0.4)),
     url('/img/BAM-OurWork-BaltimoreOriole.jpg');
   background-size: cover;
   background-position: center;
@@ -114,7 +114,7 @@ body {
 
 #tools_navset .nav-link {
   color: var(--secondary);
-  font-weight: 550;
+  font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -206,9 +206,9 @@ body {
   padding: 10px;
 }
 
-
 /* ── Bird header row ──────────────────────────────────────────────── */
-.bird-header-row {
+.bird-header-row,
+.bird-header-row.html-fill-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -220,10 +220,6 @@ body {
   min-height: 64px;
   margin-bottom: 0.4rem;
   width: 100% !important;
-}
-
-.bird-header-row,
-.bird-header-row.html-fill-item {
   flex: 0 0 auto !important;
   height: auto !important;
   min-height: 64px !important;
@@ -272,32 +268,6 @@ body {
 .bird-region-label { font-weight: 700; color: var(--primary); }
 
 .bird-pop-value { font-weight: 600; color: var(--text-primary); }
-
-/* bird information card — legacy, kept for compatibility */
-/* .bird-image {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.bird-card {
-  padding: 0.4rem 0.75rem;
-  background-color: var(--bg-primary);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-soft);
-  height: 120px;
-}
-
-.bird-card .card-body {
-  height: 100%;
-}
-
-.bird-card .col-sm-2 {
-  margin-right: 0.75rem;
-} */
 
 /* ── MAP / INFO toggle ────────────────────────────────────────────── */
 .toggle-wrapper {
@@ -475,17 +445,6 @@ body {
 
 .info-value { font-size: 0.9rem; color: var(--text-primary); }
 
-.info-link {
-  display: inline-block;
-  margin-top: 0.5rem;
-  margin-right: 1rem;
-  font-size: 0.85rem;
-  color: var(--medium-blue);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.info-link:hover { color: var(--primary); text-decoration: underline; }
 
 /* ── Species Images tab ───────────────────────────────────────────── */
 .species-images-container { padding: 0.75rem; }
@@ -508,7 +467,7 @@ body {
 
 .photo-cell:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
 
-.species-photo { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.species-photo { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; cursor: pointer; }
 
 .sex-badge {
   display: none;
@@ -524,7 +483,6 @@ body {
   line-height: 1;
 }
 
-.show-sex-tags .sex-badge { display: block; }
 
 /* ── Species Songs tab ────────────────────────────────────────────── */
 .songs-container { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
@@ -559,6 +517,7 @@ body {
 .spec-btn:hover { background: var(--primary); color: var(--text-light); }
 
 .spectrogram-panel { width: 100%; }
+
 .spectrogram-panel.hidden { display: none; }
 
 /* ── Songs: WaveSurfer layout ─────────────────────────────────────── */
@@ -797,11 +756,13 @@ body {
 
 /* ── Spectrogram: inline (clickable, canvas must be first child) ──── */
 .spectrogram-container {
+  width: 100%;
   height: 300px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
   background: #111;
+  border-radius: var(--radius-sm);
   transition: height 0.3s ease;
 }
 
@@ -943,6 +904,9 @@ body {
 }
 
 .info-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  margin-right: 1rem;
   font-size: 0.8rem;
   color: var(--medium-blue);
   text-decoration: none;
@@ -951,6 +915,7 @@ body {
 }
 
 .info-link:hover { color: var(--primary); text-decoration: underline; }
+
 /* ── Dynamic Fill Remaining Vertical Space for Model Results ───────── */
 
 /* Target the main content area inside the sidebar layout */
@@ -998,18 +963,8 @@ body {
 
 /* Accordion styling */
 
-  /* background: rgba(255, 255, 255, 0.65); 
-  backdrop-filter: blur(10px); 
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  padding: 10px; */
-
-
 /* Each panel */
 .accordion-item {
-  /* border: 1px solid var(--border-light); */
   margin-right: 1.5rem;
   margin-bottom: 1rem;
   overflow: hidden;
@@ -1049,7 +1004,7 @@ body {
 /* Content area */
 .accordion-body {
   padding: 1.25rem 1.5rem 1.5rem 1.5rem;
-  color: var(--text-dark);
+  color: var(--text-primary);
   line-height: 1.7;
   font-size: 0.98rem;
 }

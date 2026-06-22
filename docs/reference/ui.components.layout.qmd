@@ -1,0 +1,28 @@
+# ui.components.layout { #app.ui.components.layout }
+
+`ui.components.layout`
+
+UI layout components for the BAM dashboard.
+
+Provides reusable navigation controls, footer licensing blocks, and other
+future layout components.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [footer](#app.ui.components.layout.footer) | Render the copyright disclosure and Creative Commons usage policy wrapper. |
+
+### footer { #app.ui.components.layout.footer }
+
+```python
+ui.components.layout.footer()
+```
+
+Render the copyright disclosure and Creative Commons usage policy wrapper.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type         | Description                                                              |
+|--------|--------------|--------------------------------------------------------------------------|
+|        | shiny.ui.Tag | A bottom-anchored content div element styled with appropriate CSS rules. |
