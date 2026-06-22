@@ -1,5 +1,6 @@
 ---
 title: Dashboard Deployment Instructions
+page-layout: full
 ---
 
 # First Steps

@@ -16,6 +16,8 @@ website:
         text: Markdown Contents
       - href: static_assets.qmd
         text: Static Assets
+      - href: troubleshooting.qmd
+        text: Troubleshooting
       - section: "Reference"
         contents:
           - reference/index.qmd
