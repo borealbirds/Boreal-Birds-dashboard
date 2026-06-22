@@ -1,0 +1,28 @@
+# ui.pages.welcome { #app.ui.pages.welcome }
+
+`ui.pages.welcome`
+
+Welcome tab layout and announcement sub-components for the dashboard.
+
+Constructs the landing interface view, pulling text content and dynamic 
+updates out of localized markdown utility assets.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [welcome_tab](#app.ui.pages.welcome.welcome_tab) | Build the primary interface landing tab panel layout view. |
+
+### welcome_tab { #app.ui.pages.welcome.welcome_tab }
+
+```python
+ui.pages.welcome.welcome_tab()
+```
+
+Build the primary interface landing tab panel layout view.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type     | Description                                                      |
+|--------|----------|------------------------------------------------------------------|
+|        | NavPanel | The completed layout container housing cards and project briefs. |

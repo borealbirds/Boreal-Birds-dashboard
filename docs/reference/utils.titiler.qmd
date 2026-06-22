@@ -1,0 +1,37 @@
+# utils.titiler { #app.utils.titiler }
+
+`utils.titiler`
+
+The TiTiler mapping gateway: part of the data access layer for the BAM dashboard backend.
+
+## Main Capabilities {.doc-section .doc-section-main-capabilities}
+
+* Monitors the dynamic cloud raster tiler API health status.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [tiler_is_healthy](#app.utils.titiler.tiler_is_healthy) | Check the health status of the remote TiTiler API gateway. |
+
+### tiler_is_healthy { #app.utils.titiler.tiler_is_healthy }
+
+```python
+utils.titiler.tiler_is_healthy()
+```
+
+Check the health status of the remote TiTiler API gateway.
+
+Uses a basic Time-To-Live (TTL) caching mechanism to prevent spamming
+the health endpoint on rapid UI reactive invalidations.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                                                |
+|--------|--------|------------------------------------------------------------------------------------------------------------|
+|        | bool   | True if the tiler endpoint responds with a status code of 200 and an 'ok' status payload, False otherwise. |
+
+#### Notes {.doc-section .doc-section-notes}
+
+The cache state is managed globally by the `_tiler_health_cache` dictionary
+using the window duration defined in `TILER_HEALTH_TTL`.

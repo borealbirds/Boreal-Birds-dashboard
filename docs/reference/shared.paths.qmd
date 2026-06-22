@@ -1,0 +1,57 @@
+# shared.paths { #app.shared.paths }
+
+`shared.paths`
+
+Paths to files and folders located in the app directory and remote server.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [get_tif_path](#app.shared.paths.get_tif_path) | Construct the remote HTTP target URL path to a Cloud Optimized GeoTIFF from filter inputs. |
+| [url_exists](#app.shared.paths.url_exists) | Verify the availability of a specific asset URL on the DRAC server. |
+
+### get_tif_path { #app.shared.paths.get_tif_path }
+
+```python
+shared.paths.get_tif_path(species_id, region, year)
+```
+
+Construct the remote HTTP target URL path to a Cloud Optimized GeoTIFF from filter inputs.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name       | Type   | Description                                                             | Default    |
+|------------|--------|-------------------------------------------------------------------------|------------|
+| species_id | str    | The unique alpha-numeric lookup identifier code for the species.        | _required_ |
+| region     | str    | The regional sub-boundary identifier string (e.g., 'Canada', 'Alaska'). | _required_ |
+| year       | int    | The target modeling year parameter.                                     | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                 |
+|--------|--------|-----------------------------------------------------------------------------|
+|        | str    | The absolute concatenated URL address location pointing to the raster file. |
+
+### url_exists { #app.shared.paths.url_exists }
+
+```python
+shared.paths.url_exists(url)
+```
+
+Verify the availability of a specific asset URL on the DRAC server.
+
+Performs a lightweight HEAD request to verify file existence without
+downloading the payload.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type   | Description                      | Default    |
+|--------|--------|----------------------------------|------------|
+| url    | str    | The full URL string to evaluate. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                        |
+|--------|--------|--------------------------------------------------------------------|
+|        | bool   | True if the server responds with status code 200, False otherwise. |

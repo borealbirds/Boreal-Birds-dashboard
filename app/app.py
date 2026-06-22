@@ -14,23 +14,25 @@ app : App
     The instantiated Shiny application runtime object.
 """
 
-from pathlib import Path
-
 from shiny import App, Inputs, Outputs, Session, ui
 
-from server.server_v5 import server_v5
-from ui.methods import methods_tab
-from ui.landbirds_v4 import landbirds_v4_tab
-from ui.landbirds_v5 import landbirds_v5_tab
-from ui.model_access import citing_tab, tools_tab
-from ui.welcome import welcome_tab
-from utils.components import audio, footer, website, website_contact
+from assets.sounds import audio
+from server.landbird_v5_server import landbird_v5_server
+from shared.paths import WWW_DIR
 
-www_dir = Path(__file__).parent / "www"
+from ui.components.contact import website, website_contact
+from ui.components.layout import footer
+
+from ui.pages.methods import methods_tab
+from ui.pages.landbirds_v4 import landbirds_v4_tab
+from ui.pages.landbirds_v5 import landbirds_v5_tab
+from ui.pages.model_access import citing_tab, tools_tab
+from ui.pages.welcome import welcome_tab
+
 
 app_ui = ui.page_navbar(
     ui.head_content(
-        ui.include_css(str(www_dir / "styles.css")),
+        ui.include_css(str(WWW_DIR / "styles.css")),
         ui.tags.link(rel="icon", href="img/favicon.png", type="image/x-icon"),
         audio(),
     ),
@@ -52,7 +54,7 @@ app_ui = ui.page_navbar(
         website(),
         website_contact(),
     ),
-    selected="Landbirds v5",
+    selected="Welcome",
     id="tabs",
     title=ui.tags.a(
         ui.tags.img(
@@ -86,7 +88,7 @@ def server(input: Inputs, output: Outputs, session: Session) -> None:
     -------
     None
     """
-    server_v5(input, output, session)
+    landbird_v5_server(input, output, session)
 
 
-app = App(app_ui, server, static_assets=www_dir)
+app = App(app_ui, server, static_assets=WWW_DIR)

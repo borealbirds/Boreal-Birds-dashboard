@@ -1,0 +1,122 @@
+# domain.map { #app.domain.map }
+
+`domain.map`
+
+Geospatial map helper utilities and vector boundary processing.
+
+Manages geographic center metric fallbacks, handles tiler error HTML widgets, 
+and slices, processes, and packs shapefiles into interactive ipyleaflet 
+GeoJSON layout layers.
+
+## Functions
+
+| Name | Description |
+| --- | --- |
+| [build_region_layer](#app.domain.map.build_region_layer) | Build an interactive vector boundary layout layer for a specific region. |
+| [get_map_error_html](#app.domain.map.get_map_error_html) | Generate fallback HTML widgets based on active raster tiler states from TiTiler API. |
+| [get_region_gdf](#app.domain.map.get_region_gdf) | Filter the global subregions layer by specified geographic regions. |
+| [load_subregion_boundaries](#app.domain.map.load_subregion_boundaries) | Load and simplify ecological shapefile data in WGS84 (EPSG:4326). |
+| [zoom_from_span](#app.domain.map.zoom_from_span) | Calculate an ideal interactive map zoom factor using geographic coordinate spans. |
+
+### build_region_layer { #app.domain.map.build_region_layer }
+
+```python
+domain.map.build_region_layer(region_name)
+```
+
+Build an interactive vector boundary layout layer for a specific region.
+
+Precomputes centroids, geographic spans, and viewport bounding matrices 
+for each feature to support responsive hover maps and hover controls.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name        | Type   | Description                                            | Default    |
+|-------------|--------|--------------------------------------------------------|------------|
+| region_name | str    | The name of the target region to process and assemble. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name          | Type          | Description                                                        |
+|---------------|---------------|--------------------------------------------------------------------|
+| layer         | GeoJSON       | The vector map layer styled with default and active hover rules.   |
+| hover_card    | HTML          | An HTML widget element displaying contextual subregion attributes. |
+| hover_control | WidgetControl | The leaflet control interface wrapping the hover card node.        |
+
+### get_map_error_html { #app.domain.map.get_map_error_html }
+
+```python
+domain.map.get_map_error_html(status)
+```
+
+Generate fallback HTML widgets based on active raster tiler states from TiTiler API.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type   | Description                                                                                       | Default    |
+|--------|--------|---------------------------------------------------------------------------------------------------|------------|
+| status | str    | The current status flag identifier ('missing', 'loading', 'tiler_starting', 'tiler_unavailable'). | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                       |
+|--------|--------|-------------------------------------------------------------------|
+|        | HTML   | An ipywidgets HTML container holding user-facing status messages. |
+
+### get_region_gdf { #app.domain.map.get_region_gdf }
+
+```python
+domain.map.get_region_gdf(region)
+```
+
+Filter the global subregions layer by specified geographic regions.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type   | Description                                                   | Default    |
+|--------|--------|---------------------------------------------------------------|------------|
+| region | str    | The region identifier key ('Canada', 'Lower48', or 'Alaska'). | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                                                |
+|--------|------------------|------------------------------------------------------------|
+|        | gpd.GeoDataFrame | The subset of subregion rows matching the regional filter. |
+
+### load_subregion_boundaries { #app.domain.map.load_subregion_boundaries }
+
+```python
+domain.map.load_subregion_boundaries()
+```
+
+Load and simplify ecological shapefile data in WGS84 (EPSG:4326).
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type             | Description                             |
+|--------|------------------|-----------------------------------------|
+|        | gpd.GeoDataFrame | Simplified subregion boundary polygons. |
+
+### zoom_from_span { #app.domain.map.zoom_from_span }
+
+```python
+domain.map.zoom_from_span(span_x, span_y)
+```
+
+Calculate an ideal interactive map zoom factor using geographic coordinate spans.
+
+Normalizes vertical height aspects and evaluates maximum layout widths 
+to map raw decimal dimensions onto hardcoded zoom levels.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type   | Description                                                 | Default    |
+|--------|--------|-------------------------------------------------------------|------------|
+| span_x | float  | The maximum horizontal bounding dimension (longitude span). | _required_ |
+| span_y | float  | The maximum vertical bounding dimension (latitude span).    | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                             |
+|--------|--------|-------------------------------------------------------------------------|
+|        | float  | The computed leaf-let map zoom factor integer or decimal approximation. |

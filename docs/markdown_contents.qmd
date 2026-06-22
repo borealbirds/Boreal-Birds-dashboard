@@ -12,30 +12,30 @@ page-layout: full
   - Reference
 
 - - `welcome.md`
-  - content for the welcome tab
-  - `app/ui/welcome.py`
+  - content for the welcome main tab
+  - `app/content/welcome.py`
 
 - - `announcements.md`
-  - description...
-  - `app/ui/welcome.py`
+  - content for any short-term notices
+  - `app/content/welcome.py`
 
 - - `tools.md`
-  - description...
-  - `app/ui/model_access.py`
+  - location for externally available materials
+  - `app/content/model_access.py`
 
 - - `citing.md`
-  - description...
+  - instructions on how to cite the model results
   - `app/ui/model_access.py`
 
 :::
 
-# Methods (see `app/ui/methods.py`)
+# Methods (see `app/content/methods.py`)
 
 
 ::: {.list-table}
 
 - - Files
-  - description
+  - Description
 
 - - `methods-intro.md`
   - method introduction
@@ -48,7 +48,7 @@ page-layout: full
 ::: {.list-table}
 
 - - Markdown Files
-  - description
+  - Description
 
 - - `study-area.md`
   - Study Area

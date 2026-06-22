@@ -1,0 +1,11 @@
+# assets.icons { #app.assets.icons }
+
+`assets.icons`
+
+UI Asset Icon Library Module.
+
+## Attributes {.doc-section .doc-section-attributes}
+
+| Name                 | Type          | Description                                                                                                                       |
+|----------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| question_circle_fill | shiny.ui.HTML | Bootstrap question-circle-fill inline SVG icon wrapper element used  extensively to trigger info tooltips on application headers. |
