@@ -10,7 +10,8 @@ import requests
 import time
 
 # Live Posit Connect Cloud dynamic map tiler base domain address
-PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
+#PRODUCTION_TILER_BASE = "https://019e4735-507f-07a0-1ae5-b96da68b058b.share.connect.posit.cloud"
+PRODUCTION_TILER_BASE = "https://019eb2cb-ac49-6b4d-3572-88e92c9d7db1.share.connect.posit.cloud"
 
 # cache to check titiler API health status
 TILER_HEALTH_TTL = 30
